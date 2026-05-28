@@ -1956,14 +1956,14 @@ var _DICT = {
   }
 };
 
-var _lang = localStorage.getItem('ae_lang') || 'en';
+var _lang = sessionStorage.getItem('ae_lang') || 'en';
 var _I = _DICT[_lang] || _DICT.en;
 
 function setLang(lang) {
   if (!_DICT[lang]) return;
   _lang = lang;
   _I = _DICT[lang];
-  localStorage.setItem('ae_lang', lang);
+  sessionStorage.setItem('ae_lang', lang);
 
   var flagD = {en:'🇬🇧 EN', es:'🇪🇸 ES', it:'🇮🇹 IT'};
   var flagM = {en:'🇬🇧 English', es:'🇪🇸 Español', it:'🇮🇹 Italiano'};
@@ -2879,7 +2879,7 @@ function resetSubmitForm(){
 
 (function(){
 
-  _lang = localStorage.getItem('ae_lang') || 'en';
+  _lang = sessionStorage.getItem('ae_lang') || 'en';
   _I = _DICT[_lang] || _DICT.en;
   ['en','es','it'].forEach(function(l){
     var flagD={en:'🇬🇧 EN',es:'🇪🇸 ES',it:'🇮🇹 IT'};
