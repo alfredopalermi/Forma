@@ -1031,11 +1031,11 @@
   });
 
   /* ── SUPABASE FETCH ──────────────────────────── */
-  const [{ data: raw }, { data: stackData }] = await Promise.all([
-    sb.from('tools').select('*').order('id'),
-    sb.from('user_stacks').select('tool_slug').eq('user_id', authUser.id),
-  ]);
-  userStack = stackData ? stackData.map(r => r.tool_slug) : [];
+  const { data: raw } = await sb.from('tools').select('*').order('id');
+  try {
+    const { data: stackData } = await sb.from('user_stacks').select('tool_slug').eq('user_id', authUser.id);
+    userStack = stackData ? stackData.map(r => r.tool_slug) : [];
+  } catch(e) { userStack = []; }
   if (raw && raw.length) {
     TOOLS = raw.map(t => ({
       id:       t.id,
