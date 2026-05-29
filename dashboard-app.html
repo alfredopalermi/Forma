@@ -974,6 +974,7 @@
   ];
 
   let TOOLS = [];
+  let userStack = [];
   let panelOpen = false;
   let sidebarOpen = false;
   let respIdx = 0;
@@ -983,8 +984,12 @@
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-  function getBookmarks() {
-    try { return JSON.parse(localStorage.getItem('bookmarks') || '[]'); } catch { return []; }
+  function getBookmarks() { return userStack; }
+
+  async function removeFromStack(slug) {
+    userStack = userStack.filter(s => s !== slug);
+    await sb.from('user_stacks').delete().eq('user_id', authUser.id).eq('tool_slug', slug);
+    renderStack();
   }
 
   function priceBadge(p) {
@@ -1026,7 +1031,11 @@
   });
 
   /* ── SUPABASE FETCH ──────────────────────────── */
-  const { data: raw } = await sb.from('tools').select('*').order('id');
+  const [{ data: raw }, { data: stackData }] = await Promise.all([
+    sb.from('tools').select('*').order('id'),
+    sb.from('user_stacks').select('tool_slug').eq('user_id', authUser.id),
+  ]);
+  userStack = stackData ? stackData.map(r => r.tool_slug) : [];
   if (raw && raw.length) {
     TOOLS = raw.map(t => ({
       id:       t.id,
@@ -1074,9 +1083,8 @@
   })();
 
   /* ── RENDER: MY AI STACK ─────────────────────── */
-  (function () {
-    const bookmarks = getBookmarks();
-    const saved = TOOLS.filter(t => bookmarks.includes(t.slug) || bookmarks.includes(String(t.id)));
+  function renderStack() {
+    const saved = TOOLS.filter(t => userStack.includes(t.slug));
 
     if (!saved.length) {
       $('stackBody').innerHTML = `
@@ -1090,17 +1098,21 @@
     }
 
     const html = saved.slice(0, 8).map(t => `
-      <a href="${esc(t.website)}" class="tool-card" target="_blank" rel="noopener">
-        <div class="tc-head">
-          <div class="tool-logo">${esc(t.logo)}</div>
-          <div class="tool-name">${esc(t.name)}</div>
-        </div>
-        <div class="tool-tagline">${esc(t.tagline)}</div>
-        <div class="tc-foot">${priceBadge(t.pricing)}<span class="tool-cat">${esc(t.category)}</span></div>
-      </a>`).join('');
+      <div class="tool-card" style="position:relative;">
+        <button onclick="removeFromStack('${esc(t.slug)}')" title="Remove" style="position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-3);line-height:1;padding:2px 5px;border-radius:4px;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'">✕</button>
+        <a href="${esc(t.website)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;">
+          <div class="tc-head">
+            <div class="tool-logo">${esc(t.logo)}</div>
+            <div class="tool-name">${esc(t.name)}</div>
+          </div>
+          <div class="tool-tagline">${esc(t.tagline)}</div>
+          <div class="tc-foot">${priceBadge(t.pricing)}<span class="tool-cat">${esc(t.category)}</span></div>
+        </a>
+      </div>`).join('');
 
     $('stackBody').innerHTML = `<div class="cards-grid stagger">${html}</div>`;
-  })();
+  }
+  renderStack();
 
   /* ── RENDER: RECOMMENDED ─────────────────────── */
   (function () {

@@ -1621,9 +1621,16 @@ function renderWhatsNew(){
 }
 
 function toggleBm(slug){
-  if(bookmarks.includes(slug))bookmarks=bookmarks.filter(s=>s!==slug);else bookmarks.push(slug);
+  var adding=!bookmarks.includes(slug);
+  if(adding)bookmarks.push(slug);else bookmarks=bookmarks.filter(s=>s!==slug);
   saveState();updateBmBadges();refreshCard(slug);
-  toast(bookmarks.includes(slug)?'Saved ♥':'Removed');
+  toast(adding?'Saved ♥':'Removed');
+  _sb.auth.getSession().then(function(res){
+    var sess=res&&res.data&&res.data.session;
+    if(!sess)return;
+    if(adding)_sb.from('user_stacks').insert({user_id:sess.user.id,tool_slug:slug}).then();
+    else _sb.from('user_stacks').delete().eq('user_id',sess.user.id).eq('tool_slug',slug).then();
+  });
 }
 function updateBmBadges(){
   bnavUpdateBadge();
@@ -2822,6 +2829,15 @@ function resetSubmitForm(){
       });
     }
   } catch(e) { console.error('Supabase fetch error:', e); }
+
+  // Load user stack from Supabase if logged in, override localStorage bookmarks
+  try {
+    var _sess = (await _sb.auth.getSession()).data.session;
+    if (_sess) {
+      var _sr = await _sb.from('user_stacks').select('tool_slug').eq('user_id', _sess.user.id);
+      if (_sr.data) { bookmarks = _sr.data.map(function(r){return r.tool_slug;}); saveState(); }
+    }
+  } catch(e) {}
 
   render('home');
   updateBmBadges();updateCmpBar();
