@@ -651,9 +651,10 @@
       background: rgba(0,0,0,.38);
       z-index: 99;
       opacity: 0;
+      pointer-events: none;
       transition: opacity 260ms ease;
     }
-    .sb-overlay.vis { opacity:1; }
+    .sb-overlay.vis { opacity:1; pointer-events: auto; }
 
     /* ── LOADING ────────────────────────────────── */
     #app-loader {
@@ -661,6 +662,7 @@
       background: var(--bg);
       display: flex; align-items:center; justify-content:center; flex-direction:column; gap:18px;
       z-index: 9999;
+      pointer-events: none;
     }
     .loader-logo { display:flex; align-items:center; gap:9px; }
     .loader-logo-txt { font-family:var(--font-serif); font-size:19px; letter-spacing:-.02em; }
