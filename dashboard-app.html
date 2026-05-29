@@ -933,17 +933,30 @@
     setTimeout(() => _loader.remove(), 280);
   }
 
-  try {
-
   /* ── CONFIG ──────────────────────────────────── */
   const SUPA_URL = 'https://jymxvabsnaulijwvoxia.supabase.co';
   const SUPA_KEY = 'sb_publishable_a_KTvPaMDHo4IbK4bnjXwA_oMN8gybB';
+
+  /* Client autenticato (per auth + user_stacks) */
   const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
+  /* Client anonimo (per leggere tools pubblici — bypassa RLS auth) */
+  const sbPub = supabase.createClient(SUPA_URL, SUPA_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+  });
+
   /* ── AUTH GUARD ──────────────────────────────── */
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) { window.location.replace('login.html'); return; }
-  const authUser = session.user;
+  let authUser;
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.replace('login.html'); return; }
+    authUser = session.user;
+  } catch(e) {
+    window.location.replace('login.html');
+    return;
+  }
+
+  try {
 
   /* ── CATEGORIES ──────────────────────────────── */
   const CATS = [
@@ -1041,28 +1054,30 @@
   });
 
   /* ── SUPABASE FETCH ──────────────────────────── */
-  const { data: raw, error: toolsErr } = await sb.from('tools').select('*').order('id');
-  if (toolsErr) console.error('Tools fetch error:', toolsErr);
+  try {
+    const { data: raw, error: toolsErr } = await sbPub.from('tools').select('*').order('id');
+    if (toolsErr) { console.error('Tools fetch error:', toolsErr); }
+    else if (raw && raw.length) {
+      TOOLS = raw.map(t => ({
+        id:       t.id,
+        name:     t.name,
+        slug:     t.slug,
+        tagline:  t.tagline || '',
+        category: t.category || '',
+        pricing:  t.pricing || '',
+        featured: t.featured || false,
+        tier:     t.tier || 's',
+        website:  t.website || '#',
+        logo:     t.logo || '◎',
+        tags:     t.tags || [],
+        votes:    t.votes || 0,
+      }));
+    }
+  } catch(e) { console.error('Tools exception:', e); }
   try {
     const { data: stackData } = await sb.from('user_stacks').select('tool_slug').eq('user_id', authUser.id);
     userStack = stackData ? stackData.map(r => r.tool_slug) : [];
   } catch(e) { userStack = []; }
-  if (raw && raw.length) {
-    TOOLS = raw.map(t => ({
-      id:       t.id,
-      name:     t.name,
-      slug:     t.slug,
-      tagline:  t.tagline || '',
-      category: t.category || '',
-      pricing:  t.pricing || '',
-      featured: t.featured || false,
-      tier:     t.tier || 's',
-      website:  t.website || '#',
-      logo:     t.logo || '◎',
-      tags:     t.tags || [],
-      votes:    t.votes || 0,
-    }));
-  }
 
   /* ── RENDER: SIDEBAR CATS ────────────────────── */
   $('sbCats').innerHTML = CATS.map(c =>
