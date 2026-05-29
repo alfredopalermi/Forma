@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sign in — Forma</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 L18.5 13.5 L30 16 L18.5 18.5 L16 30 L13.5 18.5 L2 16 L13.5 13.5 Z' fill='%23111'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #FAFAFA;
+      --bg-2:        #F3F4F6;
+      --surface:     #FFFFFF;
+      --border:      #E5E7EB;
+      --border-soft: #F0F0F0;
+      --text:        #111111;
+      --text-2:      #4B5563;
+      --text-3:      #9CA3AF;
+      --text-inv:    #FFFFFF;
+      --accent-soft: rgba(17,17,17,.06);
+      --err:         #EF4444;
+      --ok:          #10B981;
+      --tr:          160ms ease;
+      --font-sans:   'DM Sans', system-ui, sans-serif;
+      --font-serif:  'DM Serif Display', Georgia, serif;
+    }
+    [data-theme="dark"] {
+      --bg:          #0F0F0F;
+      --bg-2:        #1A1A1A;
+      --surface:     #161616;
+      --border:      #2A2A2A;
+      --border-soft: #222222;
+      --text:        #F0F0F0;
+      --text-2:      #A0A0A0;
+      --text-3:      #555555;
+      --text-inv:    #111111;
+      --accent-soft: rgba(240,240,240,.06);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* ── LOGO ──────────────────────────────────── */
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+      color: var(--text);
+      margin-bottom: 32px;
+    }
+    .auth-logo-mark svg { width: 18px; height: 18px; }
+    .auth-logo-word {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    /* ── CARD ──────────────────────────────────── */
+    .auth-card {
+      width: 100%;
+      max-width: 380px;
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 28px 28px 24px;
+    }
+
+    /* ── TABS ──────────────────────────────────── */
+    .auth-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 0 0 12px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--text-3);
+      cursor: pointer;
+      transition: color var(--tr), border-color var(--tr);
+      margin-bottom: -1px;
+    }
+    .auth-tab:hover { color: var(--text-2); }
+    .auth-tab.active { color: var(--text); font-weight: 500; border-bottom-color: var(--text); }
+
+    /* ── FIELDS ────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .field label { font-size: 12px; font-weight: 500; color: var(--text-2); }
+    .field input {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      outline: none;
+      transition: border-color var(--tr);
+    }
+    .field input:focus { border-color: var(--text-3); }
+    .field input::placeholder { color: var(--text-3); }
+    .field input.err { border-color: var(--err); }
+
+    /* ── MESSAGES ──────────────────────────────── */
+    .auth-err {
+      font-size: 12px;
+      color: var(--err);
+      margin-bottom: 12px;
+      min-height: 0;
+      display: none;
+    }
+    .auth-err.show { display: block; }
+    .auth-ok {
+      font-size: 12px;
+      color: var(--ok);
+      background: rgba(16,185,129,.08);
+      border: 1px solid rgba(16,185,129,.2);
+      border-radius: 7px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      display: none;
+      line-height: 1.5;
+    }
+    .auth-ok.show { display: block; }
+
+    /* ── SUBMIT ────────────────────────────────── */
+    .auth-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--text);
+      background: var(--text);
+      color: var(--text-inv);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity var(--tr);
+      margin-top: 4px;
+    }
+    .auth-btn:hover { opacity: .82; }
+    .auth-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* ── FOOTER ────────────────────────────────── */
+    .auth-footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-3);
+    }
+    .auth-footer a {
+      color: var(--text-2);
+      text-decoration: none;
+      transition: color var(--tr);
+    }
+    .auth-footer a:hover { color: var(--text); }
+
+    /* ── LOADER OVERLAY ────────────────────────── */
+    #page-loader {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999;
+    }
+    .spin {
+      width: 18px; height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--text);
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── THEME TOGGLE ──────────────────────────── */
+    .top-bar {
+      position: fixed;
+      top: 16px; right: 16px;
+    }
+    .theme-btn {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-3);
+      cursor: pointer;
+      font-size: 13px;
+      transition: all var(--tr);
+    }
+    .theme-btn:hover { background: var(--accent-soft); color: var(--text); }
+  </style>
+</head>
+<body>
+
+<div id="page-loader"><div class="spin"></div></div>
+
+<div class="top-bar">
+  <button class="theme-btn" id="themeBtn">◑</button>
+</div>
+
+<a href="index.html" class="auth-logo">
+  <span class="auth-logo-mark">
+    <svg viewBox="0 0 100 100" fill="currentColor">
+      <path d="M50 0 L59.2 40.8 L100 50 L59.2 59.2 L50 100 L40.8 59.2 L0 50 L40.8 40.8 Z"/>
+    </svg>
+  </span>
+  <span class="auth-logo-word">Forma</span>
+</a>
+
+<div class="auth-card">
+  <!-- Tabs -->
+  <div class="auth-tabs">
+    <button class="auth-tab active" id="tabSignin">Sign in</button>
+    <button class="auth-tab" id="tabSignup">Create account</button>
+  </div>
+
+  <!-- Sign In -->
+  <form id="formSignin">
+    <div class="field">
+      <label for="siEmail">Email</label>
+      <input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email" required>
+    </div>
+    <div class="field">
+      <label for="siPass">Password</label>
+      <input type="password" id="siPass" placeholder="••••••••" autocomplete="current-password" required>
+    </div>
+    <div class="auth-err" id="siErr"></div>
+    <button type="submit" class="auth-btn" id="siBtn">Sign in</button>
+  </form>
+
+  <!-- Sign Up -->
+  <form id="formSignup" style="display:none">
+    <div class="field">
+      <label for="suEmail">Email</label>
+      <input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email" required>
+    </div>
+    <div class="field">
+      <label for="suPass">Password</label>
+      <input type="password" id="suPass" placeholder="At least 8 characters" autocomplete="new-password" required minlength="8">
+    </div>
+    <div class="auth-err" id="suErr"></div>
+    <div class="auth-ok" id="suOk"></div>
+    <button type="submit" class="auth-btn" id="suBtn">Create account</button>
+  </form>
+</div>
+
+<div class="auth-footer">
+  <a href="index.html">← Browse the directory</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(async function () {
+  'use strict';
+
+  const SUPA_URL = 'https://jymxvabsnaulijwvoxia.supabase.co';
+  const SUPA_KEY = 'sb_publishable_a_KTvPaMDHo4IbK4bnjXwA_oMN8gybB';
+  const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  /* ── THEME ─────────────────────────────────── */
+  const applyTheme = t => {
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('forma-theme', t);
+  };
+  applyTheme(localStorage.getItem('forma-theme') || 'light');
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  /* ── AUTH STATE LISTENER ────────────────────── */
+  sb.auth.onAuthStateChange((event, session) => {
+    if (session) window.location.replace('dashboard-app.html');
+  });
+
+  /* ── CHECK EXISTING SESSION ─────────────────── */
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    window.location.replace('dashboard-app.html');
+    return;
+  }
+
+  /* ── HIDE LOADER ────────────────────────────── */
+  const loader = document.getElementById('page-loader');
+  loader.style.transition = 'opacity 200ms ease';
+  loader.style.opacity = '0';
+  setTimeout(() => loader.remove(), 200);
+
+  /* ── UTILS ──────────────────────────────────── */
+  const $ = id => document.getElementById(id);
+
+  function setErr(elId, msg) {
+    const el = $(elId);
+    el.textContent = msg;
+    el.classList.toggle('show', !!msg);
+  }
+
+  function setLoading(btn, loading) {
+    btn.disabled = loading;
+    btn.textContent = loading ? '…' : btn.dataset.label;
+  }
+
+  /* ── TABS ───────────────────────────────────── */
+  const tabs = { signin: $('tabSignin'), signup: $('tabSignup') };
+  const forms = { signin: $('formSignin'), signup: $('formSignup') };
+
+  function switchTab(to) {
+    Object.keys(tabs).forEach(k => {
+      tabs[k].classList.toggle('active', k === to);
+      forms[k].style.display = k === to ? '' : 'none';
+    });
+    setErr('siErr', '');
+    setErr('suErr', '');
+    $('suOk').classList.remove('show');
+  }
+
+  $('tabSignin').addEventListener('click', () => switchTab('signin'));
+  $('tabSignup').addEventListener('click', () => switchTab('signup'));
+
+  /* ── SAVE BTN LABELS ────────────────────────── */
+  $('siBtn').dataset.label = 'Sign in';
+  $('suBtn').dataset.label = 'Create account';
+
+  /* ── SIGN IN ────────────────────────────────── */
+  $('formSignin').addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = $('siEmail').value.trim();
+    const pass  = $('siPass').value;
+    setErr('siErr', '');
+    setLoading($('siBtn'), true);
+
+    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+
+    if (error) {
+      setLoading($('siBtn'), false);
+      const msg = error.message.includes('Invalid login') || error.message.includes('invalid')
+        ? 'Email or password is incorrect.'
+        : error.message;
+      setErr('siErr', msg);
+    }
+    // On success, onAuthStateChange fires → redirect handled above
+  });
+
+  /* ── SIGN UP ────────────────────────────────── */
+  $('formSignup').addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = $('suEmail').value.trim();
+    const pass  = $('suPass').value;
+    setErr('suErr', '');
+    $('suOk').classList.remove('show');
+    setLoading($('suBtn'), true);
+
+    const { data, error } = await sb.auth.signUp({ email, password: pass });
+
+    setLoading($('suBtn'), false);
+
+    if (error) {
+      setErr('suErr', error.message);
+      return;
+    }
+
+    if (data.session) {
+      // Auto-confirm enabled — redirect immediately
+      window.location.replace('dashboard-app.html');
+    } else {
+      // Email confirmation required
+      $('suOk').textContent = 'Account created! Check your inbox to confirm your email, then sign in.';
+      $('suOk').classList.add('show');
+      $('suBtn').disabled = true;
+    }
+  });
+
+})();
+</script>
+</body>
+</html>

@@ -115,6 +115,7 @@
         </div>
 
         <button class="theme-toggle" id="theme-btn-desk" onclick="toggleTheme()">☽</button>
+        <a href="login.html" id="signin-nav" style="display:inline-flex;align-items:center;padding:7px 14px;border-radius:8px;border:1px solid #E5E7EB;color:#111111;font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;white-space:nowrap;line-height:1;">Sign in</a>
         <button class="btn-ghost" onclick="go('bookmarks')">
           <span id="nl-saved">♡ Saved</span> <span class="bm-badge" id="bm-badge-desk" style="display:none"></span>
         </button>
@@ -149,6 +150,10 @@
       <span class="drawer-nav-item-icon">♡</span>
       <span id="drawer-bm-lbl">Saved</span> <span class="bm-badge" id="bm-badge-drawer" style="display:none;margin-left:6px"></span>
     </div>
+    <a href="login.html" class="drawer-nav-item" style="text-decoration:none;color:inherit;display:flex;align-items:center">
+      <span class="drawer-nav-item-icon">→</span>
+      <span>Sign in</span>
+    </a>
   </div>
   <div class="drawer-actions">
     <!-- Dark mode toggle -->
@@ -3217,5 +3222,23 @@ setTimeout(function(){
     </div>
   </div>
 </div>
+
+<!-- Sign in pill — fixed top-right -->
+<a href="login.html" id="signin-pill" style="position:fixed;bottom:24px;right:24px;z-index:99999;display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:100px;background:#111111;color:#ffffff;font-family:system-ui,sans-serif;font-size:13px;font-weight:600;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);cursor:pointer;white-space:nowrap;">Sign in →</a>
+<script>
+(function(){
+  try {
+    var raw = localStorage.getItem('sb-jymxvabsnaulijwvoxia-auth-token');
+    var loggedIn = false;
+    if (raw) { var s = JSON.parse(raw); loggedIn = !!(s && s.access_token); }
+    var pill = document.getElementById('signin-pill');
+    var nav  = document.getElementById('signin-nav');
+    if (loggedIn) {
+      if (pill) { pill.textContent = '⊞ Dashboard'; pill.href = 'dashboard-app.html'; }
+      if (nav)  { nav.textContent  = '⊞ Dashboard'; nav.href  = 'dashboard-app.html'; }
+    }
+  } catch(e){}
+})();
+</script>
 </body>
 </html>
