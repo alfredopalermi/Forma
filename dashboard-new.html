@@ -390,15 +390,58 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 window._formaAuthPromise = (async () => {
-  const _sb = supabase.createClient(
-    'https://jymxvabsnaulijwvoxia.supabase.co',
-    'sb_publishable_a_KTvPaMDHo4IbK4bnjXwA_oMN8gybB'
-  );
-  window._formaSb = _sb;
+  const SUPA_URL = 'https://jymxvabsnaulijwvoxia.supabase.co';
+  const SUPA_KEY = 'sb_publishable_a_KTvPaMDHo4IbK4bnjXwA_oMN8gybB';
+  const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+  const sbPub = supabase.createClient(SUPA_URL, SUPA_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+  });
+  window._formaSb = sb;
+
+  let session;
   try {
-    const { data: { session } } = await _sb.auth.getSession();
-    return session;
+    const r = await sb.auth.getSession();
+    session = r.data.session;
   } catch(e) { return null; }
+  if (!session) return null;
+
+  // Set Italian as default language if user hasn't set one
+  if (!localStorage.getItem('forma.lang')) {
+    localStorage.setItem('forma.lang', 'it');
+  }
+
+  // Fetch real tools (public read, no auth needed)
+  try {
+    const { data: toolsData } = await sbPub.from('tools').select('*').order('id');
+    if (toolsData && toolsData.length) {
+      window.TOOLS = toolsData.map(t => ({
+        id:      t.slug,
+        n:       t.name,
+        c:       t.category || '',
+        d:       t.tagline  || '',
+        m:       (t.logo && t.logo.length <= 2) ? t.logo : t.name.charAt(0).toUpperCase(),
+        pricing: t.pricing  || '',
+        website: t.website  || '#',
+        featured:t.featured || false,
+        votes:   t.votes    || 0,
+      }));
+    }
+  } catch(e) {}
+
+  // Fetch user stack
+  try {
+    const { data: stackData } = await sb.from('user_stacks').select('tool_slug').eq('user_id', session.user.id);
+    if (stackData && stackData.length) {
+      const slugs = stackData.map(r => r.tool_slug);
+      window.DEFAULT_STACK = slugs;
+      window.DEFAULT_SAVED = slugs;
+    } else {
+      window.DEFAULT_STACK = [];
+      window.DEFAULT_SAVED = [];
+    }
+  } catch(e) { window.DEFAULT_STACK = []; window.DEFAULT_SAVED = []; }
+
+  return session;
 })();
 </script>
 
@@ -1694,7 +1737,7 @@ const NAV = [
 function App(){
   const [tw, setTweak] = useTweaks(TWEAK_DEFAULTS);
 
-  const [lang, setLang] = useState(()=>localStorage.getItem('forma.lang')||'en');
+  const [lang, setLang] = useState(()=>localStorage.getItem('forma.lang')||'it');
   useEffect(()=>{ localStorage.setItem('forma.lang',lang); document.documentElement.lang=lang; },[lang]);
   const t = window.makeT(lang);
 
@@ -1877,6 +1920,12 @@ function App(){
 (window._formaAuthPromise || Promise.resolve(null)).then(session => {
   if (!session) { window.location.replace('login.html'); return; }
   window._formaUser = session.user;
+  // Set real user name in tweaks
+  if (window._formaUser && window._formaUser.email) {
+    var _uname = window._formaUser.email.split('@')[0];
+    _uname = _uname.charAt(0).toUpperCase() + _uname.slice(1);
+    if (typeof TWEAK_DEFAULTS !== 'undefined') TWEAK_DEFAULTS.userName = _uname;
+  }
   const loader = document.getElementById('page-loader');
   if (loader) { loader.style.transition='opacity 280ms ease'; loader.style.opacity='0'; setTimeout(()=>loader.remove(),280); }
   ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
