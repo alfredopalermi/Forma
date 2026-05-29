@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forma — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("b659f12a-abeb-4ffa-bad6-9aeb49a953dd") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("c5372f7a-1368-424c-a7b7-6f32687cf581") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("2244523e-f462-4e9b-a118-9b1cdd83308c") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("3646415c-077b-43f3-a424-e32141a31784") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("b659f12a-abeb-4ffa-bad6-9aeb49a953dd") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("c5372f7a-1368-424c-a7b7-6f32687cf581") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("2244523e-f462-4e9b-a118-9b1cdd83308c") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("3646415c-077b-43f3-a424-e32141a31784") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("b659f12a-abeb-4ffa-bad6-9aeb49a953dd") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("c5372f7a-1368-424c-a7b7-6f32687cf581") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("2244523e-f462-4e9b-a118-9b1cdd83308c") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("3646415c-077b-43f3-a424-e32141a31784") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("b659f12a-abeb-4ffa-bad6-9aeb49a953dd") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("c5372f7a-1368-424c-a7b7-6f32687cf581") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("2244523e-f462-4e9b-a118-9b1cdd83308c") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("3646415c-077b-43f3-a424-e32141a31784") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("22266e0b-e632-4cba-9397-8fcda448eee2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("b049fd5a-e933-48e9-9c3d-0005a1226768") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("39b64810-f19e-4d21-817f-2b227f62c348") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("51af4d2d-cceb-4a0e-8d9d-e6d1811f7d87") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("22266e0b-e632-4cba-9397-8fcda448eee2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("b049fd5a-e933-48e9-9c3d-0005a1226768") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("39b64810-f19e-4d21-817f-2b227f62c348") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("51af4d2d-cceb-4a0e-8d9d-e6d1811f7d87") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("22266e0b-e632-4cba-9397-8fcda448eee2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("b049fd5a-e933-48e9-9c3d-0005a1226768") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("39b64810-f19e-4d21-817f-2b227f62c348") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("51af4d2d-cceb-4a0e-8d9d-e6d1811f7d87") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("22266e0b-e632-4cba-9397-8fcda448eee2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("b049fd5a-e933-48e9-9c3d-0005a1226768") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("39b64810-f19e-4d21-817f-2b227f62c348") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("51af4d2d-cceb-4a0e-8d9d-e6d1811f7d87") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("22266e0b-e632-4cba-9397-8fcda448eee2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("b049fd5a-e933-48e9-9c3d-0005a1226768") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("39b64810-f19e-4d21-817f-2b227f62c348") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("51af4d2d-cceb-4a0e-8d9d-e6d1811f7d87") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("22266e0b-e632-4cba-9397-8fcda448eee2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("b049fd5a-e933-48e9-9c3d-0005a1226768") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("39b64810-f19e-4d21-817f-2b227f62c348") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("51af4d2d-cceb-4a0e-8d9d-e6d1811f7d87") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+</style>
+</head>
+<body>
+
+<div id="page-loader" style="position:fixed;inset:0;background:#FAFAF8;display:flex;align-items:center;justify-content:center;z-index:9999;">
+  <svg width="32" height="32" viewBox="0 0 100 100" fill="#16140E"><path d="M50 0 L59.2 40.8 L100 50 L59.2 59.2 L50 100 L40.8 59.2 L0 50 L40.8 40.8 Z"/></svg>
+</div>
+
+<div id="root"></div>
+
+<script>const TWEAK_DEFAULTS = {
+    "userName": "Alfredo",
+    "accent": "Monochrome",
+    "cardStyle": "Soft rounded",
+    "showActivity": true,
+    "showTrending": true
+  };</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+window._formaAuthPromise = (async () => {
+  const _sb = supabase.createClient(
+    'https://jymxvabsnaulijwvoxia.supabase.co',
+    'sb_publishable_a_KTvPaMDHo4IbK4bnjXwA_oMN8gybB'
+  );
+  window._formaSb = _sb;
+  try {
+    const { data: { session } } = await _sb.auth.getSession();
+    return session;
+  } catch(e) { return null; }
+})();
+</script>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+/* BEGIN USAGE */
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+// Exports (to window): useTweaks, TweaksPanel, TweakSection, TweakRow, TweakSlider,
+//   TweakToggle, TweakRadio, TweakSelect, TweakText, TweakNumber, TweakColor, TweakButton.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "palette": ["#D97757", "#29261b", "#f6f4ef"],
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        options={['#D97757', '#2A6FDB', '#1F8A5B', '#7A5AE0']}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakColor  label="Palette" value={t.palette}
+//                        options={[['#D97757', '#29261b', '#f6f4ef'],
+//                                  ['#475569', '#0f172a', '#f1f5f9']]}
+//                        onChange={(v) => setTweak('palette', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// TweakRadio is the segmented control for 2–3 short options (auto-falls-back to
+// TweakSelect past ~16/~10 chars per label); reach for TweakSelect directly when
+// options are many or long. For color tweaks always curate 3-4 options rather than
+// a free picker; an option can also be a whole 2–5 color palette (the stored value
+// is the array). The Tweak* controls are a floor, not a ceiling — build custom
+// controls inside the panel if a tweak calls for UI they don't cover.
+/* END USAGE */
+// ─────────────────────────────────────────────────────────────────────────────
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+
+  .twk-field{appearance:none;box-sizing:border-box;width:100%;min-width:0;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+
+  .twk-num{display:flex;align-items:center;box-sizing:border-box;min-width:0;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+
+  .twk-chips{display:flex;gap:6px}
+  .twk-chip{position:relative;appearance:none;flex:1;min-width:0;height:46px;
+    padding:0;border:0;border-radius:6px;overflow:hidden;cursor:default;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+    transition:transform .12s cubic-bezier(.3,.7,.4,1),box-shadow .12s}
+  .twk-chip:hover{transform:translateY(-1px);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.12)}
+  .twk-chip[data-on="1"]{box-shadow:0 0 0 1.5px rgba(0,0,0,.85),
+    0 2px 6px rgba(0,0,0,.15)}
+  .twk-chip>span{position:absolute;top:0;bottom:0;right:0;width:34%;
+    display:flex;flex-direction:column;box-shadow:-1px 0 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i{flex:1;box-shadow:0 -1px 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i:first-child{box-shadow:none}
+  .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+`;
+
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    // Same-window signal so in-page listeners (deck-stage rail thumbnails)
+    // can react — the parent message only reaches the host, not peers.
+    window.dispatchEvent(new CustomEvent('tweakchange', { detail: edits }));
+  }, []);
+  return [values, setTweak];
+}
+
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({ title = 'Tweaks', children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel" data-omelette-chrome=""
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">
+          {children}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  // Segments wrap mid-word once per-segment width runs out. The track is
+  // ~248px (280 panel − 28 body pad − 4 seg pad), each button loses 12px
+  // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
+  // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
+  // back to a dropdown rather than wrap.
+  const labelLen = (o) => String(typeof o === 'object' ? o.label : o).length;
+  const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
+  const fitsAsSegments = maxLen <= ({ 2: 16, 3: 10 }[options.length] ?? 0);
+  if (!fitsAsSegments) {
+    // <select> emits strings — map back to the original option value so the
+    // fallback stays type-preserving (numbers, booleans) like the segment path.
+    const resolve = (s) => {
+      const m = options.find((o) => String(typeof o === 'object' ? o.value : o) === s);
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
+    };
+    return <TweakSelect label={label} value={value} options={options}
+                        onChange={(s) => onChange(resolve(s))} />;
+  }
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+// Relative-luminance contrast pick — checkmarks drawn over a swatch need to
+// read on both #111 and #fafafa without per-option configuration. Hex input
+// only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
+function __twkIsLight(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, (c) => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (Number.isNaN(n)) return true;
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return r * 299 + g * 587 + b * 114 > 148000;
+}
+
+const __TwkCheck = ({ light }) => (
+  <svg viewBox="0 0 14 14" aria-hidden="true">
+    <path d="M3 7.2 5.8 10 11 4.2" fill="none" strokeWidth="2.2"
+          strokeLinecap="round" strokeLinejoin="round"
+          stroke={light ? 'rgba(0,0,0,.78)' : '#fff'} />
+  </svg>
+);
+
+// TweakColor — curated color/palette picker. Each option is either a single
+// hex string or an array of 1-5 hex strings; the card adapts — a lone color
+// renders solid, a palette renders colors[0] as the hero (left ~2/3) with the
+// rest stacked in a sharp column on the right. onChange emits the
+// option in the shape it was passed (string stays string, array stays array).
+// Without options it falls back to the native color input for back-compat.
+function TweakColor({ label, value, options, onChange }) {
+  if (!options || !options.length) {
+    return (
+      <div className="twk-row twk-row-h">
+        <div className="twk-lbl"><span>{label}</span></div>
+        <input type="color" className="twk-swatch" value={value}
+               onChange={(e) => onChange(e.target.value)} />
+      </div>
+    );
+  }
+  // Native <input type=color> emits lowercase hex per the HTML spec, so
+  // compare case-insensitively. String() guards JSON.stringify(undefined),
+  // which returns the primitive undefined (no .toLowerCase).
+  const key = (o) => String(JSON.stringify(o)).toLowerCase();
+  const cur = key(value);
+  return (
+    <TweakRow label={label}>
+      <div className="twk-chips" role="radiogroup">
+        {options.map((o, i) => {
+          const colors = Array.isArray(o) ? o : [o];
+          const [hero, ...rest] = colors;
+          const sup = rest.slice(0, 4);
+          const on = key(o) === cur;
+          return (
+            <button key={i} type="button" className="twk-chip" role="radio"
+                    aria-checked={on} data-on={on ? '1' : '0'}
+                    aria-label={colors.join(', ')} title={colors.join(' · ')}
+                    style={{ background: hero }}
+                    onClick={() => onChange(o)}>
+              {sup.length > 0 && (
+                <span>
+                  {sup.map((c, j) => <i key={j} style={{ background: c }} />)}
+                </span>
+              )}
+              {on && <__TwkCheck light={__twkIsLight(hero)} />}
+            </button>
+          );
+        })}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+</script>
+<script type="text/babel">/* ============================================================
+   Forma — shared data, brand atoms, icons, i18n
+   ============================================================ */
+
+/* 4-point sparkle brand mark */
+window.Star = ({size=18, color, style, cls=''}) => (
+  <svg className={"star "+cls} width={size} height={size} viewBox="0 0 100 100" style={style} aria-hidden="true">
+    <path d="M50 0 L59.2 40.8 L100 50 L59.2 59.2 L50 100 L40.8 59.2 L0 50 L40.8 40.8 Z" fill={color||'currentColor'}/>
+  </svg>
+);
+
+/* minimal line icons */
+const I = (d, fill=false) => ({size=20, color='currentColor', sw=1.6}={}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={fill?color:'none'} stroke={fill?'none':color}
+       strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>
+);
+window.Icon = {
+  home: I(<><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></>),
+  stack: I(<><path d="M12 3 3 7.5 12 12l9-4.5L12 3Z"/><path d="m3 12 9 4.5L21 12"/><path d="m3 16.5 9 4.5 9-4.5"/></>),
+  discover: I(<><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></>),
+  collections: I(<><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></>),
+  trending: I(<><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v5h-5"/></>),
+  settings: I(<><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M2 12h3m14 0h3M4.2 19.8l2.1-2.1m11.4-11.4 2.1-2.1"/></>),
+  plus: I(<><path d="M12 5v14M5 12h14"/></>),
+  arrow: I(<><path d="M5 12h14M13 6l6 6-6 6"/></>),
+  bell: I(<><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 20a2 2 0 0 0 4 0"/></>),
+  search: I(<><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></>),
+  menu: I(<><path d="M3 6h18M3 12h18M3 18h18"/></>),
+  close: I(<><path d="M6 6l12 12M18 6 6 18"/></>),
+  send: I(<><path d="M4 12 20 4l-6 16-3-7-7-1Z"/></>),
+  check: I(<><path d="M5 12.5 10 17l9-10"/></>),
+  camera: I(<><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L19 6h0a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="12.5" r="3.2"/></>),
+  lock: I(<><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></>),
+  globe: I(<><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.5 2.6 15 0 18M12 3c-2.6 2.5-2.6 15 0 18"/></>),
+  user: I(<><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></>),
+  bolt: I(<><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></>),
+};
+
+/* ---------------- tools ---------------- */
+window.TOOLS = [
+  {id:'jasper', n:'Jasper', c:'Writing', d:'Long-form drafting that keeps your voice.', m:'J'},
+  {id:'descript', n:'Descript', c:'Video', d:'Edit video by editing the transcript.', m:'D'},
+  {id:'gamma', n:'Gamma', c:'Design', d:'Decks & one-pagers from a prompt.', m:'G'},
+  {id:'perplexity', n:'Perplexity', c:'Research', d:'Answers with real, cited sources.', m:'P'},
+  {id:'opus', n:'Opus Clip', c:'Video', d:'Turn long video into ready-to-post shorts.', m:'O'},
+  {id:'notion', n:'Notion AI', c:'Productivity', d:'Draft & summarize inside your docs.', m:'N'},
+  {id:'eleven', n:'ElevenLabs', c:'Audio', d:'Natural voiceover for reels & podcasts.', m:'E'},
+  {id:'grammarly', n:'Grammarly', c:'Writing', d:'Polish tone, clarity and grammar.', m:'G'},
+  {id:'canva', n:'Canva AI', c:'Design', d:'On-brand visuals in a few clicks.', m:'C'},
+  {id:'midjourney', n:'Midjourney', c:'Design', d:'Striking original imagery from text.', m:'M'},
+  {id:'otter', n:'Otter.ai', c:'Productivity', d:'Auto notes & summaries from calls.', m:'O'},
+  {id:'taplio', n:'Taplio', c:'Marketing', d:'Plan & schedule your LinkedIn content.', m:'T'},
+  {id:'beehiiv', n:'beehiiv', c:'Marketing', d:'Grow and monetize your newsletter.', m:'B'},
+  {id:'make', n:'Make', c:'Automation', d:'Connect your tools into workflows.', m:'M'},
+];
+window.toolsById = Object.fromEntries(window.TOOLS.map(t=>[t.id,t]));
+
+window.CATEGORIES = ['All','Writing','Design','Video','Marketing','Research','Productivity','Audio','Automation'];
+
+window.RECO = [
+  {id:'opus', why:'For your LinkedIn goal'},
+  {id:'notion', why:'Pairs with your writing stack'},
+  {id:'eleven', why:'Trending in Content'},
+  {id:'taplio', why:'Most-saved this week'},
+];
+window.TRENDING = [
+  {id:'gamma', t:'+38%', badge:''},
+  {id:'opus', t:'+126%', badge:'New'},
+  {id:'perplexity', t:'+54%', badge:''},
+  {id:'beehiiv', t:'+71%', badge:'New'},
+  {id:'midjourney', t:'+22%', badge:''},
+];
+window.COLLECTIONS = [
+  {id:'linkedin', n:'LinkedIn Growth', tools:['taplio','opus','jasper','gamma','perplexity','canva']},
+  {id:'newsletter', n:'Newsletter Stack', tools:['beehiiv','jasper','grammarly','notion']},
+  {id:'visual', n:'Visual Branding', tools:['canva','midjourney','gamma','descript','eleven']},
+  {id:'content', n:'Content Creation', tools:['descript','opus','eleven','jasper','grammarly','notion','canva','gamma']},
+];
+/* default personal stack ids */
+window.DEFAULT_STACK = ['jasper','descript','gamma','perplexity'];
+window.DEFAULT_SAVED = ['jasper','descript','gamma','perplexity','opus','notion','taplio'];
+
+/* activity feed (relative time keys) */
+window.ACTIVITY = [
+  {ic:'plus', key:'act_added', a:'Gamma', t:'2h'},
+  {ic:'collections', key:'act_collection', a:'LinkedIn Growth', t:'Yesterday'},
+  {ic:'star', key:'act_saved', a:'Opus Clip', t:'Yesterday'},
+  {ic:'trending', key:'act_trending', a:'beehiiv', t:'2d'},
+  {ic:'user', key:'act_profile', a:'', t:'3d'},
+];
+
+/* ---------------- i18n ---------------- */
+const STR = {
+  // nav
+  nav_home:['Home','Home','Inicio'], nav_stack:['My Stack','Il mio Stack','Mi Stack'],
+  nav_discover:['Discover','Esplora','Explorar'], nav_collections:['Collections','Collezioni','Colecciones'],
+  nav_trending:['Trending','Tendenze','Tendencias'], nav_settings:['Settings','Impostazioni','Ajustes'],
+  // greeting / hero
+  greet_morning:['Good morning','Buongiorno','Buenos días'],
+  greet_after:['Good afternoon','Buon pomeriggio','Buenas tardes'],
+  greet_evening:['Good evening','Buonasera','Buenas noches'],
+  tagline:['Your operating system for building a brand with AI.',
+           'Il tuo sistema operativo per costruire un brand con l\u2019AI.',
+           'Tu sistema operativo para construir una marca con IA.'],
+  cta_discover:['Discover tools','Esplora i tool','Explorar herramientas'],
+  cta_build:['Build my stack','Crea il mio stack','Crear mi stack'],
+  // section titles
+  s_stack:['My AI Stack','Il mio AI Stack','Mi Stack de IA'],
+  s_stack_sub:['Your personal ecosystem of tools','Il tuo ecosistema personale di strumenti','Tu ecosistema personal de herramientas'],
+  s_reco:['Recommended for you','Consigliati per te','Recomendado para ti'],
+  s_reco_sub:['Based on your goal and saved tools','In base al tuo obiettivo e ai tool salvati','Según tu objetivo y herramientas guardadas'],
+  s_collections:['Saved Collections','Collezioni salvate','Colecciones guardadas'],
+  s_trending:['Trending tools','Tool in crescita','Herramientas en tendencia'],
+  s_activity:['Recent activity','Attività recente','Actividad reciente'],
+  // generic
+  manage:['Manage','Gestisci','Gestionar'], see_all:['See all','Vedi tutti','Ver todo'],
+  add:['Add','Aggiungi','Añadir'], added:['Added','Aggiunto','Añadido'],
+  add_tool:['Add tool','Aggiungi tool','Añadir herramienta'],
+  new_collection:['New collection','Nuova collezione','Nueva colección'],
+  in_stack:['In your stack','Nel tuo stack','En tu stack'],
+  saved_n:['Saved','Salvati','Guardados'], collections_n:['Collections','Collezioni','Colecciones'],
+  new_week:['New this week','Nuovi questa settimana','Nuevos esta semana'],
+  tools_count:['tools','tool','herramientas'],
+  open:['Open','Apri','Abrir'], view:['View','Vedi','Ver'],
+  // assistant
+  asst:['Assistant','Assistente','Asistente'],
+  asst_sub:['Always one step ahead','Sempre un passo avanti','Siempre un paso adelante'],
+  asst_hero:['Tell me what you want to build.','Dimmi cosa vuoi costruire.','Dime qué quieres construir.'],
+  asst_hero_sub:['I\u2019ll assemble the right stack for your goal — in seconds.',
+                 'Assemblo lo stack giusto per il tuo obiettivo — in pochi secondi.',
+                 'Armo el stack ideal para tu objetivo — en segundos.'],
+  asst_ph:['Ask Forma anything…','Chiedimi qualsiasi cosa…','Pregúntame lo que quieras…'],
+  open_asst:['Open Assistant','Apri l\u2019Assistente','Abrir Asistente'],
+  asst_g1:['Want to grow on LinkedIn? I\u2019d start with Opus Clip and a writing tool.',
+           'Vuoi crescere su LinkedIn? Partirei da Opus Clip e un tool di scrittura.',
+           '¿Quieres crecer en LinkedIn? Empezaría con Opus Clip y una herramienta de escritura.'],
+  // settings
+  set_title:['Profile settings','Impostazioni profilo','Ajustes de perfil'],
+  set_sub:['Manage your account, preferences and language.','Gestisci account, preferenze e lingua.','Gestiona tu cuenta, preferencias e idioma.'],
+  set_profile:['Profile','Profilo','Perfil'],
+  set_photo:['Profile photo','Foto profilo','Foto de perfil'],
+  set_photo_hint:['PNG or JPG, square works best','PNG o JPG, meglio quadrata','PNG o JPG, mejor cuadrada'],
+  set_change_photo:['Change photo','Cambia foto','Cambiar foto'],
+  set_remove:['Remove','Rimuovi','Quitar'],
+  set_name:['Full name','Nome completo','Nombre completo'],
+  set_handle:['Username','Nome utente','Usuario'],
+  set_bio:['Headline','Headline','Titular'],
+  set_account:['Account','Account','Cuenta'],
+  set_email:['Email address','Indirizzo email','Correo electrónico'],
+  set_password:['Password','Password','Contraseña'],
+  set_current_pw:['Current password','Password attuale','Contraseña actual'],
+  set_new_pw:['New password','Nuova password','Nueva contraseña'],
+  set_confirm_pw:['Confirm new password','Conferma nuova password','Confirmar nueva contraseña'],
+  set_change_pw:['Change password','Cambia password','Cambiar contraseña'],
+  set_lang:['Language','Lingua','Idioma'],
+  set_lang_sub:['Forma\u2019s interface will switch instantly.','L\u2019interfaccia di Forma cambierà subito.','La interfaz de Forma cambiará al instante.'],
+  set_save:['Save changes','Salva modifiche','Guardar cambios'],
+  set_saved_toast:['Changes saved','Modifiche salvate','Cambios guardados'],
+  set_pw_toast:['Password updated','Password aggiornata','Contraseña actualizada'],
+  set_pw_mismatch:['Passwords don\u2019t match','Le password non corrispondono','Las contraseñas no coinciden'],
+  edit_profile:['Edit profile','Modifica profilo','Editar perfil'],
+  // toasts
+  t_added:['added to your stack','aggiunto al tuo stack','añadido a tu stack'],
+  t_removed:['removed from your stack','rimosso dal tuo stack','quitado de tu stack'],
+  t_saved:['saved','salvato','guardado'],
+  // activity strings (with {x})
+  act_added:['Added {x} to your stack','Hai aggiunto {x} allo stack','Añadiste {x} a tu stack'],
+  act_collection:['Created the collection {x}','Hai creato la collezione {x}','Creaste la colección {x}'],
+  act_saved:['Saved {x}','Hai salvato {x}','Guardaste {x}'],
+  act_trending:['{x} is trending in your categories','{x} è di tendenza nelle tue categorie','{x} es tendencia en tus categorías'],
+  act_profile:['Updated your profile','Hai aggiornato il profilo','Actualizaste tu perfil'],
+  pro_plan:['Pro plan','Piano Pro','Plan Pro'],
+};
+const LANGS = ['en','it','es']; window.LANGS = LANGS;
+window.LANG_LABEL = {en:'English', it:'Italiano', es:'Español'};
+window.makeT = (lang) => {
+  const i = Math.max(0, LANGS.indexOf(lang));
+  return (key, vars) => {
+    let s = (STR[key] && STR[key][i]) || key;
+    if(vars) Object.entries(vars).forEach(([k,v])=> s = s.replace('{'+k+'}', v));
+    return s;
+  };
+};
+
+/* monogram component */
+window.Mono = ({m,size=44,r,fs=18}) => (
+  <div className="mono" style={{width:size,height:size,borderRadius:r||'var(--rsm)',fontSize:fs}}>{m}</div>
+);
+</script>
+<script type="text/babel">/* ============================================================
+   Forma — Home + section views (Stack, Discover, Collections, Trending)
+   ============================================================ */
+const { useState:hUseState, useMemo:hUseMemo } = React;
+
+/* ---- shared tool card ---- */
+window.ToolCard = function ToolCard({id, why, t, inStack, saved, onStack, onSave, dense}){
+  const tl=window.toolsById[id]; if(!tl) return null;
+  return (
+    <div className="tcard" onClick={()=>onStack(id)}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <window.Mono m={tl.m}/>
+        <div className={"heart"+(saved?' on':'')} onClick={e=>{e.stopPropagation();onSave(id);}} aria-label="save">
+          {saved?'\u2665':'\u2661'}
+        </div>
+      </div>
+      <div>
+        <div style={{fontWeight:600,fontSize:15.5}}>{tl.n}</div>
+        <div className="meta" style={{marginTop:3,lineHeight:1.45,minHeight:dense?0:34}}>{tl.d}</div>
+      </div>
+      <div style={{display:'flex',alignItems:'center',gap:8,marginTop:'auto',paddingTop:4}}>
+        <span className="tag">{tl.c}</span>
+        {why && <span className="meta" style={{display:'inline-flex',alignItems:'center',gap:5,fontSize:11.5}}><window.Star size={10} color="var(--ink-3)"/>{why}</span>}
+        <button className={inStack?'pill':'pill dark'} style={{marginLeft:'auto',padding:'7px 13px',fontSize:12.5}}
+          onClick={e=>{e.stopPropagation();onStack(id);}}>
+          {inStack ? <><window.Icon.check size={14}/> {t('in_stack')}</> : <>+ {t('add')}</>}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const SectionHead = ({title, sub, action, onAction}) => (
+  <div style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',gap:16,marginBottom:18}}>
+    <div>
+      <h2 className="serif" style={{fontSize:24,fontWeight:700,letterSpacing:'-.005em'}}>{title}</h2>
+      {sub && <div className="meta" style={{marginTop:5}}>{sub}</div>}
+    </div>
+    {action && <button className="pill ghost" style={{padding:'8px 4px',fontSize:13,color:'var(--ink-2)',border:'none'}} onClick={onAction}>
+      {action} <window.Icon.arrow size={15}/></button>}
+  </div>
+);
+window.SectionHead = SectionHead;
+
+const grid = (min=240)=>({display:'grid',gridTemplateColumns:`repeat(auto-fill,minmax(${min}px,1fr))`,gap:16});
+
+/* ===================== HOME ===================== */
+window.HomeView = function HomeView(props){
+  const {t, name, stack, saved, actions, collections, nav, showActivity, showTrending, lang} = props;
+  const hour=new Date().getHours();
+  const greet = hour<12?t('greet_morning'):hour<18?t('greet_after'):t('greet_evening');
+  const card = (id,why)=>(<window.ToolCard key={id} id={id} why={why} t={t}
+      inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave}/>);
+
+  return (
+    <div className="stagger" style={{display:'flex',flexDirection:'column',gap:46}}>
+      {/* hero */}
+      <header style={{animationDelay:'0ms'}}>
+        <div className="label" style={{marginBottom:14}}>{new Date().toLocaleDateString(lang,{weekday:'long',month:'long',day:'numeric'})}</div>
+        <h1 className="serif" style={{fontSize:'clamp(34px,5vw,52px)',fontWeight:800,letterSpacing:'-.015em',lineHeight:1.03}}>
+          {greet}, {name}.
+        </h1>
+        <p className="serif" style={{fontSize:'clamp(18px,2.4vw,23px)',fontStyle:'italic',color:'var(--ink-2)',marginTop:12,maxWidth:560}}>
+          {t('tagline')}
+        </p>
+        <div style={{display:'flex',gap:11,marginTop:26,flexWrap:'wrap'}}>
+          <button className="pill dark" onClick={()=>nav('discover')}><window.Star size={14} color="#fff"/> {t('cta_discover')}</button>
+          <button className="pill" onClick={()=>nav('stack')}>{t('cta_build')}</button>
+        </div>
+      </header>
+
+      {/* my stack */}
+      <section>
+        <SectionHead title={t('s_stack')} sub={t('s_stack_sub')} action={t('manage')} onAction={()=>nav('stack')}/>
+        <div style={grid(238)}>
+          {[...stack].slice(0,4).map(id=>card(id))}
+          <button onClick={()=>nav('discover')} style={{border:'1.5px dashed var(--line)',borderRadius:20,background:'transparent',
+            display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:10,color:'var(--ink-3)',cursor:'pointer',minHeight:150,transition:'.16s'}}
+            onMouseEnter={e=>e.currentTarget.style.borderColor='var(--ink-3)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--line)'}>
+            <window.Icon.plus size={22}/><span style={{fontSize:13,fontWeight:500}}>{t('add_tool')}</span>
+          </button>
+        </div>
+      </section>
+
+      {/* recommended */}
+      <section>
+        <SectionHead title={t('s_reco')} sub={t('s_reco_sub')} action={t('see_all')} onAction={()=>nav('discover')}/>
+        <div style={grid(258)}>{window.RECO.map(r=>card(r.id, r.why))}</div>
+      </section>
+
+      {/* collections */}
+      <section>
+        <SectionHead title={t('s_collections')} action={t('new_collection')} onAction={()=>nav('collections')}/>
+        <div style={grid(220)}>
+          {collections.slice(0,4).map(c=>(
+            <button key={c.id} className="tcard" style={{alignItems:'stretch',textAlign:'left'}} onClick={()=>nav('collections',c.id)}>
+              <div className="ph" style={{height:90,position:'relative',overflow:'hidden'}}>
+                <div style={{position:'absolute',inset:0,display:'flex',alignItems:'flex-end',gap:6,padding:12}}>
+                  {c.tools.slice(0,4).map(id=><div key={id} className="mono" style={{width:30,height:30,fontSize:13,borderRadius:9}}>{window.toolsById[id].m}</div>)}
+                </div>
+              </div>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginTop:'auto'}}>
+                <div><div className="serif" style={{fontWeight:700,fontSize:16}}>{c.n}</div>
+                  <div className="meta" style={{marginTop:2}}>{c.tools.length} {t('tools_count')}</div></div>
+                <window.Icon.arrow size={16} color="var(--ink-3)"/>
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* trending + activity row */}
+      {(showTrending||showActivity) && (
+      <section style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))',gap:24}}>
+        {showTrending && (
+          <div>
+            <SectionHead title={t('s_trending')} action={t('see_all')} onAction={()=>nav('trending')}/>
+            <div className="soft" style={{padding:'8px 8px',boxShadow:'var(--shadow-sm)'}}>
+              {window.TRENDING.slice(0,5).map((tr,i)=>{const tl=window.toolsById[tr.id];return(
+                <div key={tr.id} className="toolrow" style={{padding:'12px 14px',borderTop:i?'1px solid var(--line-2)':'none',cursor:'pointer'}}
+                  onClick={()=>actions.toggleStack(tr.id)}>
+                  <span className="serif" style={{fontSize:15,color:'var(--ink-3)',width:18}}>{i+1}</span>
+                  <window.Mono m={tl.m} size={36} r={10} fs={15}/>
+                  <div style={{flex:1,minWidth:0}}><div style={{fontWeight:600,fontSize:14}}>{tl.n} {tr.badge&&<span className="tag" style={{marginLeft:6,padding:'2px 8px',fontSize:10,color:'var(--ink)',borderColor:'var(--ink)'}}>{tr.badge}</span>}</div><div className="meta">{tl.c}</div></div>
+                  <span style={{fontSize:13,fontWeight:600,color:'#3aa76d'}}>{tr.t}</span>
+                </div>
+              );})}
+            </div>
+          </div>
+        )}
+        {showActivity && (
+          <div>
+            <SectionHead title={t('s_activity')}/>
+            <div className="soft" style={{padding:'8px 8px',boxShadow:'var(--shadow-sm)'}}>
+              {window.ACTIVITY.map((a,i)=>{const Ic=a.ic==='star'?window.Star:(window.Icon[a.ic]||window.Icon.bolt);return(
+                <div key={i} className="toolrow" style={{padding:'13px 14px',borderTop:i?'1px solid var(--line-2)':'none',alignItems:'flex-start'}}>
+                  <div style={{width:34,height:34,borderRadius:10,background:'var(--fill)',display:'grid',placeItems:'center',flex:'none',color:'var(--ink)'}}>
+                    <Ic size={16}/>
+                  </div>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13.5,lineHeight:1.4}}
+                      dangerouslySetInnerHTML={{__html:t(a.key,{x:`<b style="font-weight:600">${a.a}</b>`})}}/>
+                    <div className="meta" style={{marginTop:2,fontSize:11.5}}>{a.t}</div>
+                  </div>
+                </div>
+              );})}
+            </div>
+          </div>
+        )}
+      </section>
+      )}
+    </div>
+  );
+};
+
+/* ===================== MY STACK ===================== */
+window.StackView = function StackView({t, stack, saved, actions, nav, lang}){
+  const stackArr=[...stack], savedOnly=[...saved].filter(id=>!stack.has(id));
+  const card=(id)=>(<window.ToolCard key={id} id={id} t={t} inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave}/>);
+  return (
+    <div className="stagger" style={{display:'flex',flexDirection:'column',gap:40}}>
+      <header>
+        <div className="label" style={{marginBottom:12}}>{t('nav_stack')}</div>
+        <h1 className="serif" style={{fontSize:'clamp(30px,4vw,42px)',fontWeight:800,letterSpacing:'-.01em'}}>{t('s_stack')}</h1>
+        <p className="meta" style={{marginTop:8,fontSize:14}}>{stackArr.length} {t('tools_count')} · {savedOnly.length} {t('saved_n').toLowerCase()}</p>
+      </header>
+      <section>
+        <SectionHead title={t('in_stack')} action={t('cta_discover')} onAction={()=>nav('discover')}/>
+        {stackArr.length? <div style={grid(238)}>{stackArr.map(card)}</div>
+          : <div className="meta">—</div>}
+      </section>
+      {savedOnly.length>0 && (
+        <section>
+          <SectionHead title={t('saved_n')}/>
+          <div style={grid(238)}>{savedOnly.map(card)}</div>
+        </section>
+      )}
+    </div>
+  );
+};
+
+/* ===================== DISCOVER ===================== */
+window.DiscoverView = function DiscoverView({t, stack, saved, actions, lang}){
+  const [cat,setCat]=hUseState('All'); const [q,setQ]=hUseState('');
+  const list=hUseMemo(()=>window.TOOLS.filter(tl=>
+    (cat==='All'||tl.c===cat) && (!q || (tl.n+tl.d+tl.c).toLowerCase().includes(q.toLowerCase()))
+  ),[cat,q]);
+  return (
+    <div className="fade-in" style={{display:'flex',flexDirection:'column',gap:28}}>
+      <header>
+        <div className="label" style={{marginBottom:12}}>{t('nav_discover')}</div>
+        <h1 className="serif" style={{fontSize:'clamp(30px,4vw,42px)',fontWeight:800,letterSpacing:'-.01em'}}>{t('cta_discover')}</h1>
+      </header>
+      <div style={{display:'flex',alignItems:'center',gap:11,background:'var(--surface)',border:'1px solid var(--line)',borderRadius:999,padding:'13px 20px',maxWidth:520,boxShadow:'var(--shadow-sm)'}}>
+        <window.Icon.search size={18} color="var(--ink-3)"/>
+        <input value={q} onChange={e=>setQ(e.target.value)} placeholder={t('asst_ph')} style={{border:'none',outline:'none',background:'transparent',flex:1,fontSize:14.5}}/>
+      </div>
+      <div className="scrl" style={{display:'flex',gap:8,paddingBottom:4,overflowX:'auto'}}>
+        {window.CATEGORIES.map(c=><button key={c} className={"chip"+(cat===c?' on':'')} onClick={()=>setCat(c)}>{c}</button>)}
+      </div>
+      <div style={grid(248)}>
+        {list.map(tl=><window.ToolCard key={tl.id} id={tl.id} t={t} inStack={stack.has(tl.id)} saved={saved.has(tl.id)} onStack={actions.toggleStack} onSave={actions.toggleSave}/>)}
+      </div>
+    </div>
+  );
+};
+
+/* ===================== COLLECTIONS ===================== */
+window.CollectionsView = function CollectionsView({t, collections, openId, stack, saved, actions, nav, lang}){
+  const col = collections.find(c=>c.id===openId);
+  if(col){
+    return (
+      <div className="fade-in" style={{display:'flex',flexDirection:'column',gap:26}}>
+        <button className="pill ghost" style={{alignSelf:'flex-start',border:'none',padding:'6px 4px'}} onClick={()=>nav('collections')}>
+          <span style={{transform:'rotate(180deg)',display:'inline-flex'}}><window.Icon.arrow size={16}/></span> {t('nav_collections')}
+        </button>
+        <header>
+          <div className="label" style={{marginBottom:10}}>{t('nav_collections')}</div>
+          <h1 className="serif" style={{fontSize:'clamp(30px,4vw,42px)',fontWeight:800,letterSpacing:'-.01em'}}>{col.n}</h1>
+          <p className="meta" style={{marginTop:8}}>{col.tools.length} {t('tools_count')}</p>
+        </header>
+        <div style={grid(248)}>
+          {col.tools.map(id=><window.ToolCard key={id} id={id} t={t} inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave}/>)}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="fade-in" style={{display:'flex',flexDirection:'column',gap:26}}>
+      <header style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',gap:16,flexWrap:'wrap'}}>
+        <div>
+          <div className="label" style={{marginBottom:12}}>{t('nav_collections')}</div>
+          <h1 className="serif" style={{fontSize:'clamp(30px,4vw,42px)',fontWeight:800,letterSpacing:'-.01em'}}>{t('s_collections')}</h1>
+        </div>
+        <button className="pill"><window.Icon.plus size={15}/> {t('new_collection')}</button>
+      </header>
+      <div style={grid(260)}>
+        {collections.map(c=>(
+          <button key={c.id} className="tcard" style={{textAlign:'left'}} onClick={()=>nav('collections',c.id)}>
+            <div className="ph" style={{height:120,position:'relative',overflow:'hidden'}}>
+              <div style={{position:'absolute',inset:0,display:'flex',flexWrap:'wrap',alignContent:'flex-end',gap:7,padding:14}}>
+                {c.tools.slice(0,6).map(id=><div key={id} className="mono" style={{width:34,height:34,fontSize:14,borderRadius:10}}>{window.toolsById[id].m}</div>)}
+              </div>
+            </div>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginTop:6}}>
+              <div><div className="serif" style={{fontWeight:700,fontSize:18}}>{c.n}</div>
+                <div className="meta" style={{marginTop:2}}>{c.tools.length} {t('tools_count')}</div></div>
+              <window.Icon.arrow size={17} color="var(--ink-3)"/>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ===================== TRENDING ===================== */
+window.TrendingView = function TrendingView({t, stack, saved, actions, lang}){
+  return (
+    <div className="fade-in" style={{display:'flex',flexDirection:'column',gap:26}}>
+      <header>
+        <div className="label" style={{marginBottom:12}}>{t('nav_trending')}</div>
+        <h1 className="serif" style={{fontSize:'clamp(30px,4vw,42px)',fontWeight:800,letterSpacing:'-.01em'}}>{t('s_trending')}</h1>
+      </header>
+      <div className="soft" style={{padding:'8px 10px'}}>
+        {window.TRENDING.map((tr,i)=>{const tl=window.toolsById[tr.id];return(
+          <div key={tr.id} className="toolrow" style={{padding:'16px 14px',borderTop:i?'1px solid var(--line-2)':'none'}}>
+            <span className="serif" style={{fontSize:22,color:'var(--ink-3)',width:30}}>{i+1}</span>
+            <window.Mono m={tl.m} size={46} r={13} fs={19}/>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:600,fontSize:16}}>{tl.n} {tr.badge&&<span className="tag" style={{marginLeft:6,padding:'2px 8px',fontSize:10,color:'var(--ink)',borderColor:'var(--ink)'}}>{tr.badge}</span>}</div>
+              <div className="meta" style={{marginTop:2}}>{tl.d}</div>
+            </div>
+            <span style={{fontSize:14,fontWeight:600,color:'#3aa76d'}}>{tr.t}</span>
+            <button className={stack.has(tr.id)?'pill':'pill dark'} style={{padding:'8px 14px',fontSize:13}} onClick={()=>actions.toggleStack(tr.id)}>
+              {stack.has(tr.id)?<><window.Icon.check size={14}/> {t('in_stack')}</>:<>+ {t('add')}</>}
+            </button>
+          </div>
+        );})}
+      </div>
+    </div>
+  );
+};
+</script>
+<script type="text/babel">/* ============================================================
+   Forma — AI Assistant (conversation engine, canned but reactive)
+   ============================================================ */
+const { useState:aUseState, useRef:aUseRef, useEffect:aUseEffect } = React;
+
+/* goal -> recipe */
+const RECIPES = {
+  linkedin: {q:['Grow on LinkedIn','Crescere su LinkedIn','Crecer en LinkedIn'],
+    name:'LinkedIn Growth', tools:['taplio','opus','jasper','gamma'],
+    r:['Here\u2019s a lean LinkedIn stack: schedule with Taplio, turn talks into clips with Opus Clip, draft posts with Jasper, and make carousels in Gamma.',
+       'Ecco uno stack snello per LinkedIn: pianifica con Taplio, crea clip con Opus Clip, scrivi i post con Jasper e i caroselli con Gamma.',
+       'Un stack ágil para LinkedIn: programa con Taplio, crea clips con Opus Clip, redacta con Jasper y carruseles en Gamma.']},
+  newsletter:{q:['Start a newsletter','Avviare una newsletter','Crear un newsletter'],
+    name:'Newsletter Stack', tools:['beehiiv','jasper','grammarly','notion'],
+    r:['For a newsletter I\u2019d pair beehiiv for sending & growth, Jasper for drafts, Grammarly to polish, and Notion AI to plan issues.',
+       'Per una newsletter userei beehiiv per invio e crescita, Jasper per le bozze, Grammarly per rifinire e Notion AI per pianificare.',
+       'Para un newsletter usaría beehiiv para envío y crecimiento, Jasper para borradores, Grammarly para pulir y Notion AI para planear.']},
+  visual:{q:['Visual branding','Branding visivo','Branding visual'],
+    name:'Visual Branding', tools:['canva','midjourney','gamma','descript'],
+    r:['Build a visual identity with Midjourney for original imagery, Canva AI for on-brand assets, Gamma for layouts, and Descript for video.',
+       'Costruisci un\u2019identità visiva con Midjourney per le immagini, Canva AI per gli asset, Gamma per i layout e Descript per i video.',
+       'Crea una identidad visual con Midjourney, Canva AI para assets, Gamma para layouts y Descript para video.']},
+  video:{q:['Repurpose my video','Riusare i miei video','Reutilizar mis videos'],
+    name:'Content Repurposing', tools:['descript','opus','eleven'],
+    r:['To repurpose video: edit fast in Descript, cut shorts with Opus Clip, and add voiceover with ElevenLabs.',
+       'Per riusare i video: monta veloce in Descript, taglia gli short con Opus Clip e aggiungi voce con ElevenLabs.',
+       'Para reutilizar video: edita rápido en Descript, corta shorts con Opus Clip y añade voz con ElevenLabs.']},
+};
+
+function pickRecipe(text){
+  const s=(text||'').toLowerCase();
+  if(/linkedin|personal brand|post/.test(s)) return 'linkedin';
+  if(/news|email|mail|subscrib|iscrit|boletin|newsletter/.test(s)) return 'newsletter';
+  if(/visual|brand|logo|image|design|grafic|imagen/.test(s)) return 'visual';
+  if(/video|reel|short|clip|youtube|podcast/.test(s)) return 'video';
+  return 'linkedin';
+}
+
+window.Assistant = function Assistant({t, lang, accent, onAddMany, onSaveCollection, compact}){
+  const li = Math.max(0, window.LANGS.indexOf(lang));
+  const [msgs,setMsgs]=aUseState([{from:'a', text:t('asst_g1')}]);
+  const [text,setText]=aUseState('');
+  const [typing,setTyping]=aUseState(false);
+  const endRef=aUseRef(null);
+  aUseEffect(()=>{ endRef.current && endRef.current.scrollIntoView?null:null;
+    const sc=endRef.current&&endRef.current.parentElement; if(sc) sc.scrollTop=sc.scrollHeight; },[msgs,typing]);
+
+  function respond(userText){
+    const key=pickRecipe(userText);
+    const rec=RECIPES[key];
+    setTyping(true);
+    setTimeout(()=>{
+      setTyping(false);
+      setMsgs(m=>[...m,{from:'a', text:rec.r[li], tools:rec.tools, recipe:key}]);
+    }, 750);
+  }
+  function send(v){
+    const val=(v??text).trim(); if(!val) return;
+    setMsgs(m=>[...m,{from:'u', text:val}]); setText(''); respond(val);
+  }
+  const quick = Object.values(RECIPES).map(r=>r.q[li]);
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',height:'100%',minHeight:0}}>
+      <div style={{display:'flex',alignItems:'center',gap:9}}>
+        <window.Star size={17} color="var(--accent)"/>
+        <div style={{fontWeight:600,fontSize:15}}>{t('asst')}</div>
+        <span className="meta" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:6}}>
+          <span style={{width:7,height:7,borderRadius:9,background:'#3aa76d',display:'inline-block'}}></span>online
+        </span>
+      </div>
+      <div className="meta" style={{marginTop:4,marginBottom:14}}>{t('asst_sub')}</div>
+
+      <div className="scrl" style={{flex:1,minHeight:0,display:'flex',flexDirection:'column',gap:12,paddingRight:4}}>
+        {msgs.map((m,i)=>(
+          <div key={i} className="fade-in" style={{alignSelf:m.from==='u'?'flex-end':'flex-start',maxWidth:'90%'}}>
+            <div style={{
+              background:m.from==='u'?'var(--accent)':'var(--fill)', color:m.from==='u'?'#fff':'var(--ink)',
+              borderRadius:m.from==='u'?'16px 16px 4px 16px':'16px 16px 16px 4px',
+              padding:'11px 14px',fontSize:13.5,lineHeight:1.5}}>
+              {m.text}
+            </div>
+            {m.tools && (
+              <div style={{marginTop:9,display:'flex',flexDirection:'column',gap:7}}>
+                {m.tools.map(id=>{const tl=window.toolsById[id];return(
+                  <div key={id} className="toolrow" style={{background:'var(--surface)',border:'1px solid var(--line)',borderRadius:12,padding:'8px 10px'}}>
+                    <window.Mono m={tl.m} size={30} r={9} fs={13}/>
+                    <div style={{flex:1,minWidth:0}}><div style={{fontWeight:600,fontSize:13}}>{tl.n}</div><div className="meta" style={{fontSize:11}}>{tl.c}</div></div>
+                  </div>
+                );})}
+                <div style={{display:'flex',gap:7,marginTop:2}}>
+                  <button className="pill dark" style={{padding:'8px 13px',fontSize:12.5,flex:1}}
+                    onClick={()=>onAddMany(m.tools)}>{t('add')} → {t('nav_stack')}</button>
+                  <button className="pill" style={{padding:'8px 13px',fontSize:12.5,flex:1}}
+                    onClick={()=>onSaveCollection(RECIPES[m.recipe].name, m.tools)}>{t('s_collections').split(' ')[0]} +</button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+        {typing && (
+          <div style={{alignSelf:'flex-start',background:'var(--fill)',borderRadius:'16px 16px 16px 4px',padding:'13px 16px',display:'flex',gap:5}}>
+            {[0,1,2].map(i=><span key={i} style={{width:6,height:6,borderRadius:9,background:'var(--ink-3)',animation:`bob 1s ${i*0.15}s infinite`}}></span>)}
+          </div>
+        )}
+        <div ref={endRef}></div>
+      </div>
+
+      {/* quick replies */}
+      <div style={{display:'flex',flexWrap:'wrap',gap:7,margin:'12px 0'}}>
+        {quick.map(q=>(
+          <button key={q} className="chip" style={{padding:'7px 12px',fontSize:12}} onClick={()=>send(q)}>{q}</button>
+        ))}
+      </div>
+
+      {/* composer */}
+      <div style={{display:'flex',alignItems:'center',gap:9,background:'var(--surface)',border:'1px solid var(--line)',borderRadius:16,padding:'7px 7px 7px 15px'}}>
+        <input value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>{if(e.key==='Enter')send();}}
+          placeholder={t('asst_ph')} style={{border:'none',outline:'none',background:'transparent',flex:1,fontSize:13.5}}/>
+        <button className="avatar" style={{width:34,height:34,border:'none',cursor:'pointer'}} onClick={()=>send()}>
+          <window.Icon.send size={16} color="#fff"/>
+        </button>
+      </div>
+      <style>{`@keyframes bob{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}`}</style>
+    </div>
+  );
+};
+</script>
+<script type="text/babel">/* ============================================================
+   Forma — Profile Settings (photo, profile, email, password, language)
+   ============================================================ */
+const { useState:sUseState, useRef:sUseRef } = React;
+
+const SetCard = ({icon:Ic, title, sub, children}) => (
+  <div className="soft fade-in" style={{padding:'26px 28px',boxShadow:'var(--shadow-sm)'}}>
+    <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:20}}>
+      <div style={{width:38,height:38,borderRadius:11,background:'var(--fill)',display:'grid',placeItems:'center',color:'var(--ink)'}}>
+        <Ic size={19}/>
+      </div>
+      <div>
+        <h3 style={{fontSize:16,fontWeight:600}}>{title}</h3>
+        {sub && <div className="meta" style={{marginTop:2}}>{sub}</div>}
+      </div>
+    </div>
+    {children}
+  </div>
+);
+
+const Field = ({label, children}) => (
+  <label className="field"><span className="meta" style={{fontWeight:500,color:'var(--ink-2)'}}>{label}</span>{children}</label>
+);
+
+window.Settings = function Settings({t, lang, setLang, profile, setProfile, onToast}){
+  const [form,setForm]=sUseState(profile);
+  const [pw,setPw]=sUseState({cur:'',nw:'',cf:''});
+  const fileRef=sUseRef(null);
+  const up=(k,v)=>setForm(f=>({...f,[k]:v}));
+
+  function onFile(e){
+    const f=e.target.files&&e.target.files[0]; if(!f) return;
+    const rd=new FileReader(); rd.onload=()=>{ up('photo', rd.result); }; rd.readAsDataURL(f);
+  }
+  function saveProfile(){ setProfile(form); onToast(t('set_saved_toast'), 'check'); }
+  function changePw(){
+    if(!pw.nw || pw.nw!==pw.cf){ onToast(t('set_pw_mismatch'),'lock'); return; }
+    setPw({cur:'',nw:'',cf:''}); onToast(t('set_pw_toast'),'lock');
+  }
+
+  return (
+    <div style={{maxWidth:720,margin:'0 auto',display:'flex',flexDirection:'column',gap:18,paddingBottom:40}}>
+      <div className="fade-in">
+        <div className="label" style={{marginBottom:10}}>{t('nav_settings')}</div>
+        <h1 className="serif" style={{fontSize:38,fontWeight:800,letterSpacing:'-.01em'}}>{t('set_title')}</h1>
+        <p className="meta" style={{marginTop:8,fontSize:14}}>{t('set_sub')}</p>
+      </div>
+
+      {/* photo + profile */}
+      <SetCard icon={window.Icon.user} title={t('set_profile')}>
+        <div style={{display:'flex',alignItems:'center',gap:18,marginBottom:22}}>
+          <div className="avatar" style={{width:76,height:76,fontSize:30,
+                backgroundImage:form.photo?`url(${form.photo})`:'none'}}>
+            {!form.photo && form.name.slice(0,1)}
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontWeight:600,fontSize:14.5,marginBottom:2}}>{t('set_photo')}</div>
+            <div className="meta" style={{marginBottom:12}}>{t('set_photo_hint')}</div>
+            <div style={{display:'flex',gap:9}}>
+              <button className="pill" style={{padding:'9px 15px',fontSize:13}} onClick={()=>fileRef.current.click()}>
+                <window.Icon.camera size={15}/> {t('set_change_photo')}
+              </button>
+              {form.photo && <button className="pill ghost" style={{padding:'9px 15px',fontSize:13,color:'var(--ink-3)'}} onClick={()=>up('photo',null)}>{t('set_remove')}</button>}
+              <input ref={fileRef} type="file" accept="image/*" onChange={onFile} style={{display:'none'}}/>
+            </div>
+          </div>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
+          <Field label={t('set_name')}><input className="input" value={form.name} onChange={e=>up('name',e.target.value)}/></Field>
+          <Field label={t('set_handle')}><input className="input" value={form.handle} onChange={e=>up('handle',e.target.value)}/></Field>
+        </div>
+        <div style={{marginTop:14}}>
+          <Field label={t('set_bio')}><input className="input" value={form.bio} onChange={e=>up('bio',e.target.value)}/></Field>
+        </div>
+      </SetCard>
+
+      {/* account / email */}
+      <SetCard icon={window.Icon.user} title={t('set_account')}>
+        <Field label={t('set_email')}>
+          <input className="input" type="email" value={form.email} onChange={e=>up('email',e.target.value)}/>
+        </Field>
+        <div style={{marginTop:18,display:'flex',justifyContent:'flex-end'}}>
+          <button className="pill dark" onClick={saveProfile}><window.Icon.check size={16} color="#fff"/> {t('set_save')}</button>
+        </div>
+      </SetCard>
+
+      {/* password */}
+      <SetCard icon={window.Icon.lock} title={t('set_password')}>
+        <div style={{display:'flex',flexDirection:'column',gap:14}}>
+          <Field label={t('set_current_pw')}><input className="input" type="password" placeholder="••••••••" value={pw.cur} onChange={e=>setPw(p=>({...p,cur:e.target.value}))}/></Field>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
+            <Field label={t('set_new_pw')}><input className="input" type="password" placeholder="••••••••" value={pw.nw} onChange={e=>setPw(p=>({...p,nw:e.target.value}))}/></Field>
+            <Field label={t('set_confirm_pw')}><input className="input" type="password" placeholder="••••••••" value={pw.cf} onChange={e=>setPw(p=>({...p,cf:e.target.value}))}/></Field>
+          </div>
+        </div>
+        <div style={{marginTop:18,display:'flex',justifyContent:'flex-end'}}>
+          <button className="pill" onClick={changePw}><window.Icon.lock size={15}/> {t('set_change_pw')}</button>
+        </div>
+      </SetCard>
+
+      {/* language */}
+      <SetCard icon={window.Icon.globe} title={t('set_lang')} sub={t('set_lang_sub')}>
+        <div style={{display:'flex',flexDirection:'column',gap:10}}>
+          {window.LANGS.map(L=>(
+            <button key={L} onClick={()=>setLang(L)} style={{
+              display:'flex',alignItems:'center',gap:13,padding:'14px 16px',borderRadius:14,cursor:'pointer',textAlign:'left',
+              border:'1px solid '+(lang===L?'var(--ink)':'var(--line)'),
+              background:lang===L?'var(--fill)':'var(--surface)',transition:'.16s'}}>
+              <span style={{fontFamily:'var(--serif)',fontWeight:700,fontSize:15,width:30}}>{L.toUpperCase()}</span>
+              <span style={{flex:1,fontWeight:500,fontSize:14.5}}>{window.LANG_LABEL[L]}</span>
+              <span style={{width:22,height:22,borderRadius:999,display:'grid',placeItems:'center',
+                    border:'1px solid '+(lang===L?'var(--ink)':'var(--line)'),background:lang===L?'var(--ink)':'transparent'}}>
+                {lang===L && <window.Icon.check size={13} color="#fff"/>}
+              </span>
+            </button>
+          ))}
+        </div>
+      </SetCard>
+    </div>
+  );
+};
+</script>
+<script type="text/babel">/* ============================================================
+   Forma — App shell (Command layout): sidebar + main + assistant
+   ============================================================ */
+const { useState, useEffect, useRef, useCallback } = React;
+const { useTweaks, TweaksPanel, TweakSection, TweakText, TweakRadio, TweakToggle } = window;
+
+const ACCENTS = {
+  'Monochrome':'#16140E',
+  'Sage':'oklch(0.52 0.055 155)',
+  'Clay':'oklch(0.55 0.085 55)',
+  'Indigo':'oklch(0.52 0.085 268)',
+};
+
+const NAV = [
+  {id:'home', ic:'home', key:'nav_home'},
+  {id:'stack', ic:'stack', key:'nav_stack'},
+  {id:'discover', ic:'discover', key:'nav_discover'},
+  {id:'collections', ic:'collections', key:'nav_collections'},
+  {id:'trending', ic:'trending', key:'nav_trending'},
+];
+
+function App(){
+  const [tw, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  const [lang, setLang] = useState(()=>localStorage.getItem('forma.lang')||'en');
+  useEffect(()=>{ localStorage.setItem('forma.lang',lang); document.documentElement.lang=lang; },[lang]);
+  const t = window.makeT(lang);
+
+  const [route, setRoute] = useState({v:'home', p:null});
+  const nav = useCallback((v,p=null)=>{ setRoute({v,p}); setMenu(false); document.querySelector('#main')?.scrollTo(0,0); },[]);
+
+  const [stack, setStack] = useState(()=>new Set(window.DEFAULT_STACK));
+  const [saved, setSaved] = useState(()=>new Set(window.DEFAULT_SAVED));
+  const [collections, setCollections] = useState(()=>window.COLLECTIONS.map(c=>({...c})));
+  const [profile, setProfile] = useState({name:tw.userName||'Alfredo', handle:'alfredo', bio:'Building my personal brand with AI', email:'alfredo@forma.app', photo:null});
+
+  useEffect(()=>{ setProfile(p=> p.name===tw.userName?p:({...p,name:tw.userName})); },[tw.userName]);
+
+  /* accent + card style -> CSS vars */
+  useEffect(()=>{ document.documentElement.style.setProperty('--accent', ACCENTS[tw.accent]||ACCENTS.Monochrome); },[tw.accent]);
+  useEffect(()=>{
+    const r=document.documentElement.style;
+    if(tw.cardStyle==='Editorial flat'){ r.setProperty('--rcard','12px'); r.setProperty('--rsm','10px');
+      r.setProperty('--shadow','0 1px 0 rgba(22,20,14,.04)'); r.setProperty('--shadow-sm','0 1px 0 rgba(22,20,14,.03)'); }
+    else { r.setProperty('--rcard','22px'); r.setProperty('--rsm','14px');
+      r.setProperty('--shadow','0 1px 2px rgba(22,20,14,.05), 0 12px 32px rgba(22,20,14,.06)');
+      r.setProperty('--shadow-sm','0 1px 2px rgba(22,20,14,.04), 0 4px 12px rgba(22,20,14,.04)'); }
+  },[tw.cardStyle]);
+
+  /* toast */
+  const [toast, setToast] = useState(null); const tmr=useRef();
+  const fire = useCallback((msg,icon)=>{ setToast({msg,icon,id:Date.now()}); clearTimeout(tmr.current); tmr.current=setTimeout(()=>setToast(null),2200); },[]);
+
+  /* actions */
+  const toggleStack = useCallback((id)=>{ setStack(s=>{ const n=new Set(s); if(n.has(id)){n.delete(id); fire(`${window.toolsById[id].n} ${t('t_removed')}`,'close');} else {n.add(id); fire(`${window.toolsById[id].n} ${t('t_added')}`,'check');} return n; }); },[fire,lang]);
+  const toggleSave = useCallback((id)=>{ setSaved(s=>{ const n=new Set(s); if(n.has(id))n.delete(id); else {n.add(id); fire(`${window.toolsById[id].n} ${t('t_saved')}`,'star');} return n; }); },[fire,lang]);
+  const addMany = useCallback((ids)=>{ setStack(s=>{ const n=new Set(s); ids.forEach(i=>n.add(i)); return n; }); fire(`${ids.length} → ${t('nav_stack')}`,'check'); },[fire,lang]);
+  const saveCollection = useCallback((name,ids)=>{ const id='c'+Date.now(); setCollections(c=>[{id,n:name,tools:ids},...c]); fire(`${name} ${t('t_saved')}`,'collections'); nav('collections',id); },[fire,lang,nav]);
+  const actions = {toggleStack, toggleSave, addMany, saveCollection};
+
+  /* responsive */
+  const [w,setW]=useState(window.innerWidth);
+  useEffect(()=>{ const f=()=>setW(window.innerWidth); window.addEventListener('resize',f); return ()=>window.removeEventListener('resize',f); },[]);
+  const desktop = w>=1120, tablet = w>=760 && w<1120, mobile = w<760;
+  const [asst,setAsst]=useState(false);   // assistant drawer (tablet/mobile)
+  const [menu,setMenu]=useState(false);    // mobile menu (unused now / reserved)
+
+  const viewProps = {t, lang, name:profile.name, stack, saved, actions, collections, nav,
+                     showActivity:tw.showActivity, showTrending:tw.showTrending};
+
+  const View = () => {
+    switch(route.v){
+      case 'stack': return <window.StackView {...viewProps}/>;
+      case 'discover': return <window.DiscoverView {...viewProps}/>;
+      case 'collections': return <window.CollectionsView {...viewProps} openId={route.p}/>;
+      case 'trending': return <window.TrendingView {...viewProps}/>;
+      case 'settings': return <window.Settings t={t} lang={lang} setLang={setLang} profile={profile} setProfile={setProfile} onToast={fire}/>;
+      default: return <window.HomeView {...viewProps}/>;
+    }
+  };
+
+  const Avatar = ({size=38,fs=15}) => (
+    <div className="avatar" style={{width:size,height:size,fontSize:fs, backgroundImage:profile.photo?`url(${profile.photo})`:'none'}}>
+      {!profile.photo && profile.name.slice(0,1)}
+    </div>
+  );
+
+  /* ---- sidebar (desktop/tablet) ---- */
+  const Sidebar = () => (
+    <aside style={{borderRight:'1px solid var(--line)',padding:'24px 16px',display:'flex',flexDirection:'column',gap:5,
+                   width:230,flex:'none',height:'100%',background:'var(--bg)'}}>
+      <div style={{padding:'4px 10px 22px',cursor:'pointer'}} onClick={()=>nav('home')}>
+        <div className="wordmark" style={{fontSize:21}}><window.Star size={17}/> Forma</div>
+      </div>
+      {NAV.map(n=>{const Ic=window.Icon[n.ic];const on=route.v===n.id;return(
+        <div key={n.id} className={"sideitem"+(on?' on':'')} onClick={()=>nav(n.id)}>
+          <Ic size={19}/> {t(n.key)}
+        </div>
+      );})}
+      <div style={{flex:1}}/>
+      <button className="sideitem" style={{background:'transparent',width:'100%',border:'1px solid transparent',justifyContent:'flex-start'}} onClick={()=>setAsst(true)}>
+        <window.Star size={17} color="var(--accent)"/> {t('asst')}
+      </button>
+      <div className={"sideitem"+(route.v==='settings'?' on':'')} onClick={()=>nav('settings')} style={{marginTop:6,borderTop:'1px solid var(--line)',borderRadius:0,paddingTop:14,marginBottom:4}}>
+        <Avatar size={30} fs={13}/>
+        <div style={{lineHeight:1.2,overflow:'hidden'}}>
+          <div style={{fontSize:13.5,fontWeight:600,whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>{profile.name}</div>
+          <div className="meta" style={{fontSize:11}}>{t('pro_plan')}</div>
+        </div>
+      </div>
+    </aside>
+  );
+
+  /* ---- assistant rail / drawer ---- */
+  const AsstInner = () => (
+    <window.Assistant t={t} lang={lang} accent={tw.accent} onAddMany={addMany} onSaveCollection={saveCollection}/>
+  );
+  const AsstRail = () => (
+    <aside style={{borderLeft:'1px solid var(--line)',background:'var(--surface)',padding:'24px 20px',width:330,flex:'none',height:'100%'}}>
+      <AsstInner/>
+    </aside>
+  );
+
+  /* ---- mobile bottom nav ---- */
+  const BOTTOM=[NAV[0],NAV[2],NAV[1],NAV[3],{id:'settings',ic:'settings',key:'nav_settings'}];
+  const BottomBar = () => (
+    <nav style={{position:'fixed',bottom:0,left:0,right:0,height:64,background:'rgba(255,255,255,.92)',backdropFilter:'blur(12px)',
+                 borderTop:'1px solid var(--line)',display:'flex',zIndex:90,paddingBottom:'env(safe-area-inset-bottom)'}}>
+      {BOTTOM.map(n=>{const Ic=window.Icon[n.ic];const on=route.v===n.id;return(
+        <button key={n.id} onClick={()=>nav(n.id)} style={{flex:1,border:'none',background:'transparent',display:'flex',flexDirection:'column',
+          alignItems:'center',justifyContent:'center',gap:3,color:on?'var(--ink)':'var(--ink-3)',cursor:'pointer',fontSize:10,fontWeight:500}}>
+          <Ic size={21}/>{t(n.key)}
+        </button>
+      );})}
+    </nav>
+  );
+  const MobileTop = () => (
+    <header style={{position:'sticky',top:0,zIndex:80,display:'flex',alignItems:'center',gap:12,padding:'14px 18px',
+                    background:'rgba(250,250,248,.9)',backdropFilter:'blur(10px)',borderBottom:'1px solid var(--line)'}}>
+      <div className="wordmark" style={{fontSize:20}} onClick={()=>nav('home')}><window.Star size={16}/> Forma</div>
+      <div style={{flex:1}}/>
+      <button className="heart" onClick={()=>nav('settings')} style={{background:'transparent'}}><Avatar size={32} fs={13}/></button>
+    </header>
+  );
+  const AsstFab = () => (
+    <button onClick={()=>setAsst(true)} style={{position:'fixed',right:18,bottom: mobile?78:24,zIndex:91,width:56,height:56,borderRadius:999,
+      background:'var(--accent)',border:'none',color:'#fff',boxShadow:'var(--shadow-lg)',cursor:'pointer',display:'grid',placeItems:'center',
+      transition:'transform .15s'}} onMouseDown={e=>e.currentTarget.style.transform='scale(.92)'} onMouseUp={e=>e.currentTarget.style.transform=''}>
+      <window.Star size={24} color="#fff"/>
+    </button>
+  );
+
+  return (
+    <div style={{height:'100%',display:'flex',flexDirection:'column'}}>
+      <div style={{flex:1,display:'flex',minHeight:0}}>
+        {!mobile && <Sidebar/>}
+        <main id="main" className="scrl" style={{flex:1,minWidth:0,height:'100%',overflowY:'auto'}}>
+          {mobile && <MobileTop/>}
+          <div style={{maxWidth:1040,margin:'0 auto',padding: mobile?'22px 18px 90px':'40px var(--gut) 60px'}}>
+            <View/>
+          </div>
+        </main>
+        {desktop && <AsstRail/>}
+      </div>
+
+      {mobile && <BottomBar/>}
+      {/* assistant FAB on tablet+mobile (rail hidden) */}
+      {!desktop && route.v!=='settings' && <AsstFab/>}
+
+      {/* assistant drawer */}
+      {!desktop && (
+        <div className={"scrim"+(asst?' show':'')} onClick={()=>setAsst(false)}>
+          <div onClick={e=>e.stopPropagation()} style={{background:'var(--surface)',borderRadius:24,width:'100%',maxWidth:440,
+               height: mobile?'82vh':'76vh',padding:'22px 20px',display:'flex',flexDirection:'column',boxShadow:'var(--shadow-lg)',
+               transform:asst?'none':'translateY(20px) scale(.97)',transition:'.24s cubic-bezier(.2,.8,.3,1)'}}>
+            <button className="heart" style={{alignSelf:'flex-end',background:'transparent',marginBottom:6}} onClick={()=>setAsst(false)}><window.Icon.close size={16}/></button>
+            <div style={{flex:1,minHeight:0}}><AsstInner/></div>
+          </div>
+        </div>
+      )}
+
+      {/* toast */}
+      {toast && (
+        <div className={"toast show"} key={toast.id}>
+          {toast.icon==='star'?<window.Star size={15} color="#fff"/>:React.createElement(window.Icon[toast.icon]||window.Icon.check,{size:16,color:'#fff'})}
+          {toast.msg}
+        </div>
+      )}
+
+      {/* Tweaks */}
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Identity"/>
+        <TweakText label="Your name" value={tw.userName} onChange={v=>setTweak('userName',v)}/>
+        <TweakSection label="Look & feel"/>
+        <TweakRadio label="Accent" value={tw.accent} options={Object.keys(ACCENTS)} onChange={v=>setTweak('accent',v)}/>
+        <TweakRadio label="Card style" value={tw.cardStyle} options={['Soft rounded','Editorial flat']} onChange={v=>setTweak('cardStyle',v)}/>
+        <TweakSection label="Sections"/>
+        <TweakToggle label="Trending tools" value={tw.showTrending} onChange={v=>setTweak('showTrending',v)}/>
+        <TweakToggle label="Activity feed" value={tw.showActivity} onChange={v=>setTweak('showActivity',v)}/>
+      </TweaksPanel>
+    </div>
+  );
+}
+
+(window._formaAuthPromise || Promise.resolve(null)).then(session => {
+  if (!session) { window.location.replace('login.html'); return; }
+  window._formaUser = session.user;
+  const loader = document.getElementById('page-loader');
+  if (loader) { loader.style.transition='opacity 280ms ease'; loader.style.opacity='0'; setTimeout(()=>loader.remove(),280); }
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+});
+</script>
+
+</body>
+</html>

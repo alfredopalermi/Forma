@@ -288,13 +288,13 @@
 
   /* ── AUTH STATE LISTENER ────────────────────── */
   sb.auth.onAuthStateChange((event, session) => {
-    if (session) window.location.replace('dashboard-app.html');
+    if (session) window.location.replace('dashboard-new.html');
   });
 
   /* ── CHECK EXISTING SESSION ─────────────────── */
   const { data: { session } } = await sb.auth.getSession();
   if (session) {
-    window.location.replace('dashboard-app.html');
+    window.location.replace('dashboard-new.html');
     return;
   }
 
@@ -384,7 +384,7 @@
 
     if (data.session) {
       // Auto-confirm enabled — redirect immediately
-      window.location.replace('dashboard-app.html');
+      window.location.replace('dashboard-new.html');
     } else {
       // Email confirmation required
       $('suOk').textContent = 'Account created! Check your inbox to confirm your email, then sign in.';
