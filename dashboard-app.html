@@ -925,6 +925,16 @@
 (async function () {
   'use strict';
 
+  const _loader = document.getElementById('app-loader');
+  function hideLoader() {
+    if (!_loader) return;
+    _loader.style.transition = 'opacity 280ms ease';
+    _loader.style.opacity = '0';
+    setTimeout(() => _loader.remove(), 280);
+  }
+
+  try {
+
   /* ── CONFIG ──────────────────────────────────── */
   const SUPA_URL = 'https://jymxvabsnaulijwvoxia.supabase.co';
   const SUPA_KEY = 'sb_publishable_a_KTvPaMDHo4IbK4bnjXwA_oMN8gybB';
@@ -1031,7 +1041,8 @@
   });
 
   /* ── SUPABASE FETCH ──────────────────────────── */
-  const { data: raw } = await sb.from('tools').select('*').order('id');
+  const { data: raw, error: toolsErr } = await sb.from('tools').select('*').order('id');
+  if (toolsErr) console.error('Tools fetch error:', toolsErr);
   try {
     const { data: stackData } = await sb.from('user_stacks').select('tool_slug').eq('user_id', authUser.id);
     userStack = stackData ? stackData.map(r => r.tool_slug) : [];
@@ -1259,11 +1270,11 @@
     if (isMob()) closeSidebar();
   });
 
-  /* ── HIDE LOADER ─────────────────────────────── */
-  const loader = $('app-loader');
-  loader.style.transition = 'opacity 280ms ease';
-  loader.style.opacity = '0';
-  setTimeout(() => loader.remove(), 280);
+  } catch (err) {
+    console.error('Dashboard init error:', err);
+  } finally {
+    hideLoader();
+  }
 
 })();
 </script>
