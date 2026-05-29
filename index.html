@@ -124,6 +124,7 @@
 
       <!-- Mobile right -->
       <div class="mobile-only" style="align-items:center;gap:8px">
+        <a href="login.html" id="signin-mob" style="font-size:12px;font-weight:500;color:#111111;text-decoration:none;padding:5px 10px;border:1px solid #E5E7EB;border-radius:7px;white-space:nowrap;line-height:1;">Sign in</a>
         <button class="mobile-search-btn" onclick="openSearch()">⌕</button>
         <button class="theme-toggle" id="theme-btn-mob" onclick="toggleTheme()">☽</button>
         <button class="hamburger" id="hamburger" onclick="toggleDrawer()">
@@ -3234,9 +3235,11 @@ setTimeout(function(){
     if (raw) { var s = JSON.parse(raw); loggedIn = !!(s && s.access_token); }
     var pill = document.getElementById('signin-pill');
     var nav  = document.getElementById('signin-nav');
+    var mob  = document.getElementById('signin-mob');
     if (loggedIn) {
       if (pill) { pill.textContent = '⊞ Dashboard'; pill.href = 'dashboard-app.html'; }
       if (nav)  { nav.textContent  = '⊞ Dashboard'; nav.href  = 'dashboard-app.html'; }
+      if (mob)  { mob.textContent  = '⊞ Dashboard'; mob.href  = 'dashboard-app.html'; }
     }
   } catch(e){}
 })();
