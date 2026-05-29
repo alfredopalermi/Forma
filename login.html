@@ -368,7 +368,12 @@
     $('suOk').classList.remove('show');
     setLoading($('suBtn'), true);
 
-    const { data, error } = await sb.auth.signUp({ email, password: pass });
+    const redirectTo = window.location.origin + '/login.html';
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password: pass,
+      options: { emailRedirectTo: redirectTo }
+    });
 
     setLoading($('suBtn'), false);
 

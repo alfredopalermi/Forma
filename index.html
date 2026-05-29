@@ -3223,8 +3223,9 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- Sign in pill — fixed top-right -->
-<a href="login.html" id="signin-pill" style="position:fixed;bottom:24px;right:24px;z-index:99999;display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:100px;background:#111111;color:#ffffff;font-family:system-ui,sans-serif;font-size:13px;font-weight:600;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);cursor:pointer;white-space:nowrap;">Sign in →</a>
+<!-- Sign in pill — desktop only fallback -->
+<style>@media(max-width:960px){#signin-pill{display:none!important}}</style>
+<a href="login.html" id="signin-pill" style="position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));right:24px;z-index:99999;display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:100px;background:#111111;color:#ffffff;font-family:system-ui,sans-serif;font-size:13px;font-weight:600;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);cursor:pointer;white-space:nowrap;">Sign in →</a>
 <script>
 (function(){
   try {
