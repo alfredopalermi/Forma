@@ -373,19 +373,25 @@
 </head>
 <body>
 
-<div id="page-loader" style="position:fixed;inset:0;background:#FAFAF8;display:flex;align-items:center;justify-content:center;z-index:9999;">
+<div id="page-loader" style="position:fixed;inset:0;background:#FAFAF8;display:flex;align-items:center;justify-content:center;z-index:9999;pointer-events:none;">
   <svg width="32" height="32" viewBox="0 0 100 100" fill="#16140E"><path d="M50 0 L59.2 40.8 L100 50 L59.2 59.2 L50 100 L40.8 59.2 L0 50 L40.8 40.8 Z"/></svg>
 </div>
 
 <div id="root"></div>
 
-<script>const TWEAK_DEFAULTS = {
+<!-- Force Italian BEFORE React reads localStorage -->
+<script>
+if (!localStorage.getItem('forma.lang')) {
+  localStorage.setItem('forma.lang', 'it');
+}
+const TWEAK_DEFAULTS = {
     "userName": "Alfredo",
     "accent": "Monochrome",
     "cardStyle": "Soft rounded",
     "showActivity": true,
     "showTrending": true
-  };</script>
+  };
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
@@ -405,40 +411,25 @@ window._formaAuthPromise = (async () => {
   } catch(e) { return null; }
   if (!session) return null;
 
-  // Set Italian as default language if user hasn't set one
-  if (!localStorage.getItem('forma.lang')) {
-    localStorage.setItem('forma.lang', 'it');
-  }
-
-  // Fetch real tools (public read, no auth needed)
+  // Fetch real tools with anonymous client (bypasses auth RLS)
   try {
-    const { data: toolsData } = await sbPub.from('tools').select('*').order('id');
-    if (toolsData && toolsData.length) {
+    const { data: toolsData, error: te } = await sbPub.from('tools').select('*').order('id');
+    if (!te && toolsData && toolsData.length) {
       window.TOOLS = toolsData.map(t => ({
-        id:      t.slug,
-        n:       t.name,
-        c:       t.category || '',
-        d:       t.tagline  || '',
-        m:       (t.logo && t.logo.length <= 2) ? t.logo : t.name.charAt(0).toUpperCase(),
-        pricing: t.pricing  || '',
-        website: t.website  || '#',
-        featured:t.featured || false,
-        votes:   t.votes    || 0,
+        id: t.slug, n: t.name, c: t.category||'',
+        d: t.tagline||'', m: t.name.charAt(0).toUpperCase(),
+        pricing: t.pricing||'', website: t.website||'#',
+        featured: t.featured||false, votes: t.votes||0,
       }));
     }
   } catch(e) {}
 
-  // Fetch user stack
+  // Fetch user stack (tool slugs saved by this user)
   try {
     const { data: stackData } = await sb.from('user_stacks').select('tool_slug').eq('user_id', session.user.id);
-    if (stackData && stackData.length) {
-      const slugs = stackData.map(r => r.tool_slug);
-      window.DEFAULT_STACK = slugs;
-      window.DEFAULT_SAVED = slugs;
-    } else {
-      window.DEFAULT_STACK = [];
-      window.DEFAULT_SAVED = [];
-    }
+    const slugs = stackData ? stackData.map(r => r.tool_slug) : [];
+    window.DEFAULT_STACK = slugs;
+    window.DEFAULT_SAVED  = slugs;
   } catch(e) { window.DEFAULT_STACK = []; window.DEFAULT_SAVED = []; }
 
   return session;
@@ -1920,11 +1911,12 @@ function App(){
 (window._formaAuthPromise || Promise.resolve(null)).then(session => {
   if (!session) { window.location.replace('login.html'); return; }
   window._formaUser = session.user;
-  // Set real user name in tweaks
   if (window._formaUser && window._formaUser.email) {
-    var _uname = window._formaUser.email.split('@')[0];
-    _uname = _uname.charAt(0).toUpperCase() + _uname.slice(1);
-    if (typeof TWEAK_DEFAULTS !== 'undefined') TWEAK_DEFAULTS.userName = _uname;
+    // Take only first word before '@' and before any dot
+    var parts = window._formaUser.email.split('@')[0].split('.');
+    var firstName = parts[0];
+    firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+    if (typeof TWEAK_DEFAULTS !== 'undefined') TWEAK_DEFAULTS.userName = firstName;
   }
   const loader = document.getElementById('page-loader');
   if (loader) { loader.style.transition='opacity 280ms ease'; loader.style.opacity='0'; setTimeout(()=>loader.remove(),280); }
