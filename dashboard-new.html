@@ -533,6 +533,7 @@ window._formaAuthPromise = (async () => {
         pricing: t.pricing||'', website: t.website||'#',
         featured: t.featured||false, votes: t.votes||0,
       }));
+      window.toolsById = Object.fromEntries(window.TOOLS.map(t=>[t.id,t]));
     }
   } catch(e) {}
 
@@ -1133,20 +1134,20 @@ window.Icon = {
 
 /* ---------------- tools ---------------- */
 window.TOOLS = [
-  {id:'jasper', n:'Jasper', c:'Writing', d:'Long-form drafting that keeps your voice.', m:'J'},
-  {id:'descript', n:'Descript', c:'Video', d:'Edit video by editing the transcript.', m:'D'},
-  {id:'gamma', n:'Gamma', c:'Design', d:'Decks & one-pagers from a prompt.', m:'G'},
-  {id:'perplexity', n:'Perplexity', c:'Research', d:'Answers with real, cited sources.', m:'P'},
-  {id:'opus', n:'Opus Clip', c:'Video', d:'Turn long video into ready-to-post shorts.', m:'O'},
-  {id:'notion', n:'Notion AI', c:'Productivity', d:'Draft & summarize inside your docs.', m:'N'},
-  {id:'eleven', n:'ElevenLabs', c:'Audio', d:'Natural voiceover for reels & podcasts.', m:'E'},
-  {id:'grammarly', n:'Grammarly', c:'Writing', d:'Polish tone, clarity and grammar.', m:'G'},
-  {id:'canva', n:'Canva AI', c:'Design', d:'On-brand visuals in a few clicks.', m:'C'},
-  {id:'midjourney', n:'Midjourney', c:'Design', d:'Striking original imagery from text.', m:'M'},
-  {id:'otter', n:'Otter.ai', c:'Productivity', d:'Auto notes & summaries from calls.', m:'O'},
-  {id:'taplio', n:'Taplio', c:'Marketing', d:'Plan & schedule your LinkedIn content.', m:'T'},
-  {id:'beehiiv', n:'beehiiv', c:'Marketing', d:'Grow and monetize your newsletter.', m:'B'},
-  {id:'make', n:'Make', c:'Automation', d:'Connect your tools into workflows.', m:'M'},
+  {id:'jasper', n:'Jasper', c:'Writing', d:'Long-form drafting that keeps your voice.', m:'J', website:'https://jasper.ai'},
+  {id:'descript', n:'Descript', c:'Video', d:'Edit video by editing the transcript.', m:'D', website:'https://descript.com'},
+  {id:'gamma', n:'Gamma', c:'Design', d:'Decks & one-pagers from a prompt.', m:'G', website:'https://gamma.app'},
+  {id:'perplexity', n:'Perplexity', c:'Research', d:'Answers with real, cited sources.', m:'P', website:'https://perplexity.ai'},
+  {id:'opus', n:'Opus Clip', c:'Video', d:'Turn long video into ready-to-post shorts.', m:'O', website:'https://opus.pro'},
+  {id:'notion', n:'Notion AI', c:'Productivity', d:'Draft & summarize inside your docs.', m:'N', website:'https://notion.so'},
+  {id:'eleven', n:'ElevenLabs', c:'Audio', d:'Natural voiceover for reels & podcasts.', m:'E', website:'https://elevenlabs.io'},
+  {id:'grammarly', n:'Grammarly', c:'Writing', d:'Polish tone, clarity and grammar.', m:'G', website:'https://grammarly.com'},
+  {id:'canva', n:'Canva AI', c:'Design', d:'On-brand visuals in a few clicks.', m:'C', website:'https://canva.com'},
+  {id:'midjourney', n:'Midjourney', c:'Design', d:'Striking original imagery from text.', m:'M', website:'https://midjourney.com'},
+  {id:'otter', n:'Otter.ai', c:'Productivity', d:'Auto notes & summaries from calls.', m:'O', website:'https://otter.ai'},
+  {id:'taplio', n:'Taplio', c:'Marketing', d:'Plan & schedule your LinkedIn content.', m:'T', website:'https://taplio.com'},
+  {id:'beehiiv', n:'beehiiv', c:'Marketing', d:'Grow and monetize your newsletter.', m:'B', website:'https://beehiiv.com'},
+  {id:'make', n:'Make', c:'Automation', d:'Connect your tools into workflows.', m:'M', website:'https://make.com'},
 ];
 window.toolsById = Object.fromEntries(window.TOOLS.map(t=>[t.id,t]));
 
