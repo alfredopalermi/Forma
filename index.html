@@ -67,6 +67,36 @@
 @media(max-width:640px){.admin-form-grid{grid-template-columns:1fr}}
 .admin-form-full{grid-column:1/-1}
 .admin-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border-soft)}
+
+/* ── Dashboard-style card overrides ───────────────────────────── */
+.card-s, .card-m, .card-l {
+  border-color: rgba(17,17,17,.08);
+  border-radius: 20px;
+  box-shadow: none;
+  transition: transform .18s cubic-bezier(.2,.8,.3,1), box-shadow .2s, border-color .2s;
+}
+.card-s:hover, .card-m:hover, .card-l:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 2px 4px rgba(0,0,0,.04), 0 12px 32px rgba(0,0,0,.07);
+  border-color: rgba(17,17,17,.14);
+}
+.tool-logo { border-radius: 10px; border-color: rgba(17,17,17,.08); }
+.tool-logo-lg { border-radius: 13px; border-color: rgba(17,17,17,.08); }
+.category-card { border-radius: 18px; border-color: rgba(17,17,17,.08); }
+.category-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.07); border-color: rgba(17,17,17,.14); }
+.sidebar { border-radius: 20px; border-color: rgba(17,17,17,.08); }
+.search-modal { border-radius: 20px; border-color: rgba(17,17,17,.08); }
+.ob-card, .quiz-modal { border-radius: 22px; border-color: rgba(17,17,17,.08); }
+.quiz-result-card { border-radius: 14px; border-color: rgba(17,17,17,.08); }
+[data-theme="dark"] .card-s, [data-theme="dark"] .card-m, [data-theme="dark"] .card-l,
+[data-theme="dark"] .category-card, [data-theme="dark"] .sidebar,
+[data-theme="dark"] .tool-logo, [data-theme="dark"] .tool-logo-lg {
+  border-color: rgba(255,255,255,.08);
+}
+[data-theme="dark"] .card-s:hover, [data-theme="dark"] .card-m:hover, [data-theme="dark"] .card-l:hover {
+  border-color: rgba(255,255,255,.14);
+  box-shadow: 0 2px 4px rgba(0,0,0,.2), 0 12px 32px rgba(0,0,0,.3);
+}
 </style>
 </head>
 <body>
