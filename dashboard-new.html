@@ -1277,10 +1277,24 @@ window.makeT = (lang) => {
   };
 };
 
-/* monogram component */
-window.Mono = ({m,size=44,r,fs=18}) => (
-  <div className="mono" style={{width:size,height:size,borderRadius:r||'var(--rsm)',fontSize:fs}}>{m}</div>
-);
+/* monogram component — shows favicon when website is provided, falls back to letter */
+window.Mono = ({m, website, size=44, r, fs=18}) => {
+  const domain = website && website !== '#' ? website.replace(/^https?:\/\//,'').replace(/\/.*/,'') : null;
+  const radius = r || 'var(--rsm)';
+  if (domain) {
+    const src = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+    return (
+      <div className="mono" style={{width:size,height:size,borderRadius:radius,padding:4,overflow:'hidden'}}>
+        <img src={src} alt={m} width={size-8} height={size-8}
+             style={{objectFit:'contain',borderRadius:2,display:'block'}}
+             onError={e=>{e.currentTarget.style.display='none';e.currentTarget.parentNode.textContent=m;}}/>
+      </div>
+    );
+  }
+  return (
+    <div className="mono" style={{width:size,height:size,borderRadius:radius,fontSize:fs}}>{m}</div>
+  );
+};
 </script>
 <script type="text/babel">/* ============================================================
    Forma — Home + section views (Stack, Discover, Collections, Trending)
@@ -1293,7 +1307,7 @@ window.ToolCard = function ToolCard({id, why, t, inStack, saved, onStack, onSave
   return (
     <div className="tcard" onClick={()=>onOpen?onOpen(id):onStack(id)}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-        <window.Mono m={tl.m}/>
+        <window.Mono m={tl.m} website={tl.website}/>
         <div className={"heart"+(saved?' on':'')} onClick={e=>{e.stopPropagation();onSave(id);}} aria-label="save">
           {saved?'\u2665':'\u2661'}
         </div>
@@ -1320,7 +1334,7 @@ window.ToolDetailModal = function ToolDetailModal({id, t, inStack, saved, onStac
     <div className="scrim show" onClick={onClose}>
       <div className="modal" onClick={e=>e.stopPropagation()} style={{padding:'32px 28px'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:20}}>
-          <window.Mono m={tl.m} size={52} r={14} fs={22}/>
+          <window.Mono m={tl.m} website={tl.website} size={52} r={14} fs={22}/>
           <button className="heart" style={{background:'transparent',border:'none'}} onClick={onClose}><window.Icon.close size={16}/></button>
         </div>
         <h2 className="serif" style={{fontSize:26,fontWeight:700,marginBottom:6}}>{tl.n}</h2>
@@ -1436,7 +1450,7 @@ window.HomeView = function HomeView(props){
                 <div key={tr.id} className="toolrow" style={{padding:'12px 14px',borderTop:i?'1px solid var(--line-2)':'none',cursor:'pointer'}}
                   onClick={()=>actions.toggleStack(tr.id)}>
                   <span className="serif" style={{fontSize:15,color:'var(--ink-3)',width:18}}>{i+1}</span>
-                  <window.Mono m={tl.m} size={36} r={10} fs={15}/>
+                  <window.Mono m={tl.m} website={tl.website} size={36} r={10} fs={15}/>
                   <div style={{flex:1,minWidth:0}}><div style={{fontWeight:600,fontSize:14}}>{tl.n} {tr.badge&&<span className="tag" style={{marginLeft:6,padding:'2px 8px',fontSize:10,color:'var(--ink)',borderColor:'var(--ink)'}}>{tr.badge}</span>}</div><div className="meta">{tl.c}</div></div>
                   <span style={{fontSize:13,fontWeight:600,color:'#3aa76d'}}>{tr.t}</span>
                 </div>
@@ -1582,7 +1596,7 @@ window.TrendingView = function TrendingView({t, stack, saved, actions, lang}){
         {window.TRENDING.map((tr,i)=>{const tl=window.toolsById[tr.id];return(
           <div key={tr.id} className="toolrow" style={{padding:'16px 14px',borderTop:i?'1px solid var(--line-2)':'none'}}>
             <span className="serif" style={{fontSize:22,color:'var(--ink-3)',width:30}}>{i+1}</span>
-            <window.Mono m={tl.m} size={46} r={13} fs={19}/>
+            <window.Mono m={tl.m} website={tl.website} size={46} r={13} fs={19}/>
             <div style={{flex:1,minWidth:0}}>
               <div style={{fontWeight:600,fontSize:16}}>{tl.n} {tr.badge&&<span className="tag" style={{marginLeft:6,padding:'2px 8px',fontSize:10,color:'var(--ink)',borderColor:'var(--ink)'}}>{tr.badge}</span>}</div>
               <div className="meta" style={{marginTop:2}}>{tl.d}</div>
@@ -1684,7 +1698,7 @@ window.Assistant = function Assistant({t, lang, accent, onAddMany, onSaveCollect
               <div style={{marginTop:9,display:'flex',flexDirection:'column',gap:7}}>
                 {m.tools.map(id=>{const tl=window.toolsById[id];return(
                   <div key={id} className="toolrow" style={{background:'var(--surface)',border:'1px solid var(--line)',borderRadius:12,padding:'8px 10px'}}>
-                    <window.Mono m={tl.m} size={30} r={9} fs={13}/>
+                    <window.Mono m={tl.m} website={tl.website} size={30} r={9} fs={13}/>
                     <div style={{flex:1,minWidth:0}}><div style={{fontWeight:600,fontSize:13}}>{tl.n}</div><div className="meta" style={{fontSize:11}}>{tl.c}</div></div>
                   </div>
                 );})}
