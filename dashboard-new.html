@@ -1427,7 +1427,7 @@ window.HomeView = function HomeView(props){
             <button key={c.id} className="tcard" style={{alignItems:'stretch',textAlign:'left'}} onClick={()=>nav('collections',c.id)}>
               <div className="ph" style={{height:90,position:'relative',overflow:'hidden'}}>
                 <div style={{position:'absolute',inset:0,display:'flex',alignItems:'flex-end',gap:6,padding:12}}>
-                  {c.tools.slice(0,4).map(id=><div key={id} className="mono" style={{width:30,height:30,fontSize:13,borderRadius:9}}>{window.toolsById[id].m}</div>)}
+                  {c.tools.slice(0,4).map(id=>{const tl=window.toolsById[id];return tl?<window.Mono key={id} m={tl.m} website={tl.website} size={30} r={9} fs={13}/>:null;})}
                 </div>
               </div>
               <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginTop:'auto'}}>
@@ -1570,7 +1570,7 @@ window.CollectionsView = function CollectionsView({t, collections, openId, stack
           <button key={c.id} className="tcard" style={{textAlign:'left'}} onClick={()=>nav('collections',c.id)}>
             <div className="ph" style={{height:120,position:'relative',overflow:'hidden'}}>
               <div style={{position:'absolute',inset:0,display:'flex',flexWrap:'wrap',alignContent:'flex-end',gap:7,padding:14}}>
-                {c.tools.slice(0,6).map(id=><div key={id} className="mono" style={{width:34,height:34,fontSize:14,borderRadius:10}}>{window.toolsById[id].m}</div>)}
+                {c.tools.slice(0,6).map(id=>{const tl=window.toolsById[id];return tl?<window.Mono key={id} m={tl.m} website={tl.website} size={34} r={10} fs={14}/>:null;})}
               </div>
             </div>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginTop:6}}>
