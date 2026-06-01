@@ -1288,10 +1288,10 @@ window.Mono = ({m,size=44,r,fs=18}) => (
 const { useState:hUseState, useMemo:hUseMemo } = React;
 
 /* ---- shared tool card ---- */
-window.ToolCard = function ToolCard({id, why, t, inStack, saved, onStack, onSave, dense}){
+window.ToolCard = function ToolCard({id, why, t, inStack, saved, onStack, onSave, onOpen, dense}){
   const tl=window.toolsById[id]; if(!tl) return null;
   return (
-    <div className="tcard" onClick={()=>onStack(id)}>
+    <div className="tcard" onClick={()=>onOpen?onOpen(id):onStack(id)}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
         <window.Mono m={tl.m}/>
         <div className={"heart"+(saved?' on':'')} onClick={e=>{e.stopPropagation();onSave(id);}} aria-label="save">
@@ -1314,6 +1314,38 @@ window.ToolCard = function ToolCard({id, why, t, inStack, saved, onStack, onSave
   );
 };
 
+window.ToolDetailModal = function ToolDetailModal({id, t, inStack, saved, onStack, onSave, onClose}){
+  const tl=window.toolsById[id]; if(!tl) return null;
+  return (
+    <div className="scrim show" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()} style={{padding:'32px 28px'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:20}}>
+          <window.Mono m={tl.m} size={52} r={14} fs={22}/>
+          <button className="heart" style={{background:'transparent',border:'none'}} onClick={onClose}><window.Icon.close size={16}/></button>
+        </div>
+        <h2 className="serif" style={{fontSize:26,fontWeight:700,marginBottom:6}}>{tl.n}</h2>
+        <div className="meta" style={{marginBottom:16,lineHeight:1.6,fontSize:14.5}}>{tl.d}</div>
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:22}}>
+          {tl.c && <span className="tag">{tl.c}</span>}
+          {tl.pricing && <span className="tag">{tl.pricing}</span>}
+        </div>
+        <div style={{display:'flex',gap:10,alignItems:'center'}}>
+          <button className={inStack?'pill':'pill dark'} style={{flex:1,justifyContent:'center'}} onClick={()=>onStack(id)}>
+            {inStack ? <><window.Icon.check size={15}/> {t('in_stack')}</> : <>+ {t('add')}</>}
+          </button>
+          <div className={"heart"+(saved?' on':'')} onClick={()=>onSave(id)} style={{cursor:'pointer'}}>{saved?'♥':'♡'}</div>
+        </div>
+        {tl.website && tl.website!=='#' && (
+          <a href={tl.website} target="_blank" rel="noopener noreferrer"
+             className="pill ghost" style={{display:'flex',marginTop:10,justifyContent:'center',textDecoration:'none',color:'var(--ink-2)',fontSize:13}}>
+            {t('open')} <window.Icon.arrow size={14}/>
+          </a>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const SectionHead = ({title, sub, action, onAction}) => (
   <div style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',gap:16,marginBottom:18}}>
     <div>
@@ -1330,11 +1362,11 @@ const grid = (min=240)=>({display:'grid',gridTemplateColumns:`repeat(auto-fill,m
 
 /* ===================== HOME ===================== */
 window.HomeView = function HomeView(props){
-  const {t, name, stack, saved, actions, collections, nav, showActivity, showTrending, lang} = props;
+  const {t, name, stack, saved, actions, collections, nav, showActivity, showTrending, lang, onOpen} = props;
   const hour=new Date().getHours();
   const greet = hour<12?t('greet_morning'):hour<18?t('greet_after'):t('greet_evening');
   const card = (id,why)=>(<window.ToolCard key={id} id={id} why={why} t={t}
-      inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave}/>);
+      inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave} onOpen={onOpen}/>);
 
   return (
     <div className="stagger" style={{display:'flex',flexDirection:'column',gap:46}}>
@@ -1438,9 +1470,9 @@ window.HomeView = function HomeView(props){
 };
 
 /* ===================== MY STACK ===================== */
-window.StackView = function StackView({t, stack, saved, actions, nav, lang}){
+window.StackView = function StackView({t, stack, saved, actions, nav, lang, onOpen}){
   const stackArr=[...stack], savedOnly=[...saved].filter(id=>!stack.has(id));
-  const card=(id)=>(<window.ToolCard key={id} id={id} t={t} inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave}/>);
+  const card=(id)=>(<window.ToolCard key={id} id={id} t={t} inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave} onOpen={onOpen}/>);
   return (
     <div className="stagger" style={{display:'flex',flexDirection:'column',gap:40}}>
       <header>
@@ -1464,7 +1496,7 @@ window.StackView = function StackView({t, stack, saved, actions, nav, lang}){
 };
 
 /* ===================== DISCOVER ===================== */
-window.DiscoverView = function DiscoverView({t, stack, saved, actions, lang}){
+window.DiscoverView = function DiscoverView({t, stack, saved, actions, lang, onOpen}){
   const [cat,setCat]=hUseState('All'); const [q,setQ]=hUseState('');
   const list=hUseMemo(()=>window.TOOLS.filter(tl=>
     (cat==='All'||tl.c===cat) && (!q || (tl.n+tl.d+tl.c).toLowerCase().includes(q.toLowerCase()))
@@ -1483,14 +1515,14 @@ window.DiscoverView = function DiscoverView({t, stack, saved, actions, lang}){
         {window.CATEGORIES.map(c=><button key={c} className={"chip"+(cat===c?' on':'')} onClick={()=>setCat(c)}>{c}</button>)}
       </div>
       <div style={grid(248)}>
-        {list.map(tl=><window.ToolCard key={tl.id} id={tl.id} t={t} inStack={stack.has(tl.id)} saved={saved.has(tl.id)} onStack={actions.toggleStack} onSave={actions.toggleSave}/>)}
+        {list.map(tl=><window.ToolCard key={tl.id} id={tl.id} t={t} inStack={stack.has(tl.id)} saved={saved.has(tl.id)} onStack={actions.toggleStack} onSave={actions.toggleSave} onOpen={onOpen}/>)}
       </div>
     </div>
   );
 };
 
 /* ===================== COLLECTIONS ===================== */
-window.CollectionsView = function CollectionsView({t, collections, openId, stack, saved, actions, nav, lang}){
+window.CollectionsView = function CollectionsView({t, collections, openId, stack, saved, actions, nav, lang, onOpen}){
   const col = collections.find(c=>c.id===openId);
   if(col){
     return (
@@ -1504,7 +1536,7 @@ window.CollectionsView = function CollectionsView({t, collections, openId, stack
           <p className="meta" style={{marginTop:8}}>{col.tools.length} {t('tools_count')}</p>
         </header>
         <div style={grid(248)}>
-          {col.tools.map(id=><window.ToolCard key={id} id={id} t={t} inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave}/>)}
+          {col.tools.map(id=><window.ToolCard key={id} id={id} t={t} inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave} onOpen={onOpen}/>)}
         </div>
       </div>
     );
@@ -1876,6 +1908,11 @@ function App(){
   const saveCollection = useCallback((name,ids)=>{ const id='c'+Date.now(); setCollections(c=>[{id,n:name,tools:ids},...c]); fire(`${name} ${t('t_saved')}`,'collections'); nav('collections',id); },[fire,lang,nav]);
   const actions = {toggleStack, toggleSave, addMany, saveCollection};
 
+  /* tool detail modal */
+  const [toolModal, setToolModal] = useState(null);
+  const openTool = useCallback((id)=>setToolModal(id),[]);
+  const closeTool = useCallback(()=>setToolModal(null),[]);
+
   /* responsive */
   const [w,setW]=useState(window.innerWidth);
   useEffect(()=>{ const f=()=>setW(window.innerWidth); window.addEventListener('resize',f); return ()=>window.removeEventListener('resize',f); },[]);
@@ -1884,7 +1921,7 @@ function App(){
   const [menu,setMenu]=useState(false);    // mobile menu (unused now / reserved)
 
   const viewProps = {t, lang, name:profile.name, stack, saved, actions, collections, nav,
-                     showActivity:tw.showActivity, showTrending:tw.showTrending};
+                     showActivity:tw.showActivity, showTrending:tw.showTrending, onOpen:openTool};
 
   const View = () => {
     switch(route.v){
@@ -1995,6 +2032,13 @@ function App(){
             <div style={{flex:1,minHeight:0}}><AsstInner/></div>
           </div>
         </div>
+      )}
+
+      {/* tool detail modal */}
+      {toolModal && (
+        <window.ToolDetailModal id={toolModal} t={t}
+          inStack={stack.has(toolModal)} saved={saved.has(toolModal)}
+          onStack={toggleStack} onSave={toggleSave} onClose={closeTool}/>
       )}
 
       {/* toast */}
