@@ -1270,31 +1270,31 @@ function freshTag(t){
   const days=Math.floor((new Date()-new Date(t.addedAt))/86400000);
   return days<=45?`<span class="freshness"><span class="freshness-dot"></span>${_I.card_new}</span>`:`<span class="card-arrow" onclick="go('detail','${t.slug}')">→</span>`;
 }
-function cardS(t){return`<div class="card-s${bookmarks.includes(t.slug)?' bookmarked':''}${t.featured?' featured-card':''}" id="card-${t.slug}">
+function cardS(t){return`<div class="card-s${bookmarks.includes(t.slug)?' bookmarked':''}${t.featured?' featured-card':''}" id="card-${t.slug}" onclick="go('detail','${t.slug}')">
   <div class="card-header"><div class="tool-logo">${logoHTML(t)}</div>${cardBtns(t)}</div>
   <div class="badges">${t.featured?'<span class="badge badge-featured">✦</span>':''}<span class="badge badge-${t.pricing.toLowerCase()}">${t.pricing}</span>${newVisitBadge(t)}</div>
-  <div class="tool-name" onclick="go('detail','${t.slug}')">${t.name}</div>
+  <div class="tool-name">${t.name}</div>
   <div class="tool-tagline">${_tl(t)}</div>
   ${starsHTML(t.slug,'card')}
   <div class="card-footer"><span class="cat-tag">${catIcon(t.category)} ${t.category}</span>${freshTag(t)}</div>
 </div>`}
-function cardM(t){return`<div class="card-m${bookmarks.includes(t.slug)?' bookmarked':''}${t.featured?' featured-card':''}" id="card-${t.slug}">
+function cardM(t){return`<div class="card-m${bookmarks.includes(t.slug)?' bookmarked':''}${t.featured?' featured-card':''}" id="card-${t.slug}" onclick="go('detail','${t.slug}')">
   <div class="card-header">
     <div style="display:flex;align-items:center;gap:9px">
       <div class="tool-logo">${logoHTML(t)}</div>
       <div><div class="badges" style="margin-bottom:2px">${t.featured?'<span class="badge badge-featured">✦</span>':''}<span class="badge badge-${t.pricing.toLowerCase()}">${t.pricing}</span></div>
-      <div class="tool-name" onclick="go('detail','${t.slug}')">${t.name}</div></div>
+      <div class="tool-name">${t.name}</div></div>
     </div>${cardBtns(t)}
   </div>
   <div class="tool-tagline">${_tl(t)}</div>
   ${starsHTML(t.slug,'card')}
   <div class="card-footer"><span class="cat-tag">${catIcon(t.category)} ${t.category}</span>${freshTag(t)}</div>
 </div>`}
-function cardL(t){return`<div class="card-l${bookmarks.includes(t.slug)?' bookmarked':''}${t.featured?' featured-card':''}" id="card-${t.slug}">
+function cardL(t){return`<div class="card-l${bookmarks.includes(t.slug)?' bookmarked':''}${t.featured?' featured-card':''}" id="card-${t.slug}" onclick="go('detail','${t.slug}')">
   <div class="card-l-accent"></div>
   <div class="card-header"><div class="tool-logo tool-logo-lg">${logoHTML(t)}</div>${cardBtns(t)}</div>
   <div class="badges">${t.featured?`<span class="badge badge-featured">✦ ${_I.card_feat}</span>`:''}<span class="badge badge-${t.pricing.toLowerCase()}">${t.pricing}</span></div>
-  <div class="tool-name" onclick="go('detail','${t.slug}')">${t.name}</div>
+  <div class="tool-name">${t.name}</div>
   <div class="tool-tagline">${_tl(t)}</div>
   ${_te(t)?`<div class="card-l-excerpt">"${_te(t)}"</div>`:''}
   <div class="card-footer"><span class="cat-tag">${catIcon(t.category)} ${t.category}</span><span class="card-arrow" onclick="go('detail','${t.slug}')"> ${_I.card_open}</span></div>
