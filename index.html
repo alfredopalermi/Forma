@@ -141,15 +141,15 @@
 <div class="drawer" id="drawer">
   <div class="drawer-header">
     <span>Forma</span>
-    <button class="drawer-close" onclick="closeDrawer()">×</button>
+    <button class="drawer-close" onclick="closeDrawer()" aria-label="Close menu">×</button>
   </div>
   <div class="drawer-nav">
-    <div class="drawer-nav-item" onclick="drawerGo('home')"><span class="drawer-nav-item-icon">◎</span>Home</div>
-    <div class="drawer-nav-item" onclick="drawerGo('directory')" data-drawer-page="directory"><span class="drawer-nav-item-icon">◈</span><span id="drawer-dir-lbl">Directory</span></div>
-    <div class="drawer-nav-item" onclick="drawerGo('categories')" data-drawer-page="categories"><span class="drawer-nav-item-icon">□</span><span id="drawer-cats-lbl">Categories</span></div>
-    <div class="drawer-nav-item" onclick="drawerGo('whats-new')" data-drawer-page="whats-new"><span class="drawer-nav-item-icon">✦</span><span id="drawer-new-lbl">What's New</span></div>
-    <div class="drawer-nav-item" onclick="drawerGo('compare-page')" data-drawer-page="compare-page"><span class="drawer-nav-item-icon">⊕</span><span id="drawer-cmp-lbl">Compare</span></div>
-    <div class="drawer-nav-item" onclick="drawerGo('bookmarks')" data-drawer-page="bookmarks">
+    <div class="drawer-nav-item" onclick="drawerGo('home')" role="button" tabindex="0" onkeydown="_navKeyActivate(event)"><span class="drawer-nav-item-icon">◎</span>Home</div>
+    <div class="drawer-nav-item" onclick="drawerGo('directory')" data-drawer-page="directory" role="button" tabindex="0" onkeydown="_navKeyActivate(event)"><span class="drawer-nav-item-icon">◈</span><span id="drawer-dir-lbl">Directory</span></div>
+    <div class="drawer-nav-item" onclick="drawerGo('categories')" data-drawer-page="categories" role="button" tabindex="0" onkeydown="_navKeyActivate(event)"><span class="drawer-nav-item-icon">□</span><span id="drawer-cats-lbl">Categories</span></div>
+    <div class="drawer-nav-item" onclick="drawerGo('whats-new')" data-drawer-page="whats-new" role="button" tabindex="0" onkeydown="_navKeyActivate(event)"><span class="drawer-nav-item-icon">✦</span><span id="drawer-new-lbl">What's New</span></div>
+    <div class="drawer-nav-item" onclick="drawerGo('compare-page')" data-drawer-page="compare-page" role="button" tabindex="0" onkeydown="_navKeyActivate(event)"><span class="drawer-nav-item-icon">⊕</span><span id="drawer-cmp-lbl">Compare</span></div>
+    <div class="drawer-nav-item" onclick="drawerGo('bookmarks')" data-drawer-page="bookmarks" role="button" tabindex="0" onkeydown="_navKeyActivate(event)">
       <span class="drawer-nav-item-icon">♡</span>
       <span id="drawer-bm-lbl">Saved</span> <span class="bm-badge" id="bm-badge-drawer" style="display:none;margin-left:6px"></span>
     </div>
@@ -1111,6 +1111,9 @@ function applyTheme(){
 function toggleTheme(){dark=!dark;applyTheme()}
 applyTheme();
 
+function _navKeyActivate(e){
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();e.currentTarget.click();}
+}
 function toggleDrawer(){
   const d=document.getElementById('drawer'),o=document.getElementById('drawer-overlay'),h=document.getElementById('hamburger');
   const open=d.classList.toggle('open');
@@ -1241,8 +1244,8 @@ function cardBtns(t){
   const isBm=bookmarks.includes(t.slug),isCmp=compareList.includes(t.slug),voted=myVotes.includes(t.slug);
   return`<div class="card-actions">
     <button class="vote-btn${voted?' voted':''}" onclick="event.stopPropagation();toggleVote('${t.slug}',this)"><span class="vote-icon">♥</span><span>${getVotes(t.slug)}</span></button>
-    <button class="compare-btn${isCmp?' active':''}" onclick="event.stopPropagation();toggleCmp('${t.slug}')">⊕</button>
-    <button class="bookmark-btn${isBm?' active':''}" onclick="event.stopPropagation();toggleBm('${t.slug}')">${isBm?'♥':'♡'}</button>
+    <button class="compare-btn${isCmp?' active':''}" onclick="event.stopPropagation();toggleCmp('${t.slug}')" aria-label="${isCmp?'Remove from compare':'Add to compare'}">⊕</button>
+    <button class="bookmark-btn${isBm?' active':''}" onclick="event.stopPropagation();toggleBm('${t.slug}')" aria-label="${isBm?'Remove bookmark':'Save'}">${isBm?'♥':'♡'}</button>
   </div>`;
 }
 
@@ -1295,7 +1298,7 @@ function listItem(t){
     </div>
     <div class="list-item-actions">
       <button class="list-vote${voted?' voted':''}" onclick="event.stopPropagation();toggleVote('${t.slug}',this)"><span class="vote-icon">♥</span><span>${getVotes(t.slug)}</span></button>
-      <button class="list-bm${isBm?' active':''}" onclick="event.stopPropagation();toggleBm('${t.slug}')">${isBm?'♥':'♡'}</button>
+      <button class="list-bm${isBm?' active':''}" onclick="event.stopPropagation();toggleBm('${t.slug}')" aria-label="${isBm?'Remove bookmark':'Save'}">${isBm?'♥':'♡'}</button>
     </div>
   </div>`;
 }
@@ -1446,6 +1449,7 @@ function searchKey(e){
 document.addEventListener('keydown',e=>{
   if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openSearch()}
   else if(e.key==='Escape'&&document.getElementById('search-overlay').classList.contains('open'))closeSearch();
+  else if(e.key==='Escape'&&document.getElementById('drawer').classList.contains('open'))closeDrawer();
 });
 
 function setView(v){
