@@ -521,7 +521,7 @@ window._formaAuthPromise = (async () => {
   try {
     const r = await sb.auth.getSession();
     session = r.data.session;
-  } catch(e) { return null; }
+  } catch(e) { window._formaAuthError = true; return null; }
   if (!session) return null;
 
   // Fetch real tools with anonymous client (bypasses auth RLS)
@@ -2081,7 +2081,26 @@ function App(){
 }
 
 (window._formaAuthPromise || Promise.resolve(null)).then(session => {
-  if (!session) { window.location.replace('login.html'); return; }
+  if (!session) {
+    if (window._formaAuthError) {
+      var lang = localStorage.getItem('forma.lang') || 'it';
+      var msg = lang==='it' ? 'Impossibile verificare la sessione. Controlla la connessione e riprova.'
+        : lang==='es' ? 'No se pudo verificar la sesión. Comprueba tu conexión e inténtalo de nuevo.'
+        : 'Could not verify your session. Check your connection and retry.';
+      var retryLabel = lang==='it' ? '↻ Riprova' : lang==='es' ? '↻ Reintentar' : '↻ Retry';
+      var loader = document.getElementById('page-loader');
+      if (loader) {
+        loader.style.pointerEvents = 'auto';
+        loader.innerHTML = '<div style="text-align:center;font-family:system-ui,sans-serif;max-width:280px;padding:20px">'
+          + '<p style="margin:0 0 14px;color:#666;font-size:14px">' + msg + '</p>'
+          + '<button onclick="location.reload()" style="padding:9px 18px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:13px">' + retryLabel + '</button>'
+          + '</div>';
+      }
+      return;
+    }
+    window.location.replace('login.html');
+    return;
+  }
   window._formaUser = session.user;
   if (window._formaUser && window._formaUser.email) {
     // Take only first word before '@' and before any dot

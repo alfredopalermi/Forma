@@ -293,10 +293,14 @@
   });
 
   /* ── CHECK EXISTING SESSION ─────────────────── */
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    window.location.replace('dashboard-new.html');
-    return;
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      window.location.replace('dashboard-new.html');
+      return;
+    }
+  } catch (e) {
+    // Couldn't verify (e.g. Supabase unreachable) — fall through to show the login form.
   }
 
   /* ── HIDE LOADER ────────────────────────────── */
