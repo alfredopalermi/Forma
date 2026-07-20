@@ -1225,6 +1225,7 @@ function renderTOTW(){
   const c=document.getElementById('totw-container');if(!c)return;
   const slug=getTOTWSlug();
   const t=TOOLS.find(x=>x.slug===slug)||TOOLS[0];
+  if(!t){c.innerHTML='';return;}
   const weekNum=Math.floor(Date.now()/(7*24*60*60*1000));
   c.innerHTML=`
     <div class="totw" onclick="go('detail','${t.slug}')">
