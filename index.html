@@ -1302,9 +1302,9 @@ function cardL(t){return`<div class="card-l${bookmarks.includes(t.slug)?' bookma
 
 function listItem(t){
   const isBm=bookmarks.includes(t.slug),voted=myVotes.includes(t.slug);
-  return`<div class="list-item${isBm?' list-bookmarked':''}" id="card-${t.slug}" onclick="go('detail','${t.slug}')">
+  return`<div class="list-item${isBm?' list-bookmarked':''}" id="card-${t.slug}">
     <div class="list-item-logo">${logoHTML(t)}</div>
-    <div class="list-item-name">${t.name}</div>
+    <div class="list-item-name" onclick="go('detail','${t.slug}')">${t.name}</div>
     <div class="list-item-tagline">${_tl(t)}</div>
     <div class="list-item-meta">
       <span class="badge badge-${t.pricing.toLowerCase()}">${t.pricing}</span>
