@@ -939,11 +939,12 @@
 <div id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-config.js"></script>
 <script>
 
 var TOOLS=[];
-var _SUPA_URL = 'https://jymxvabsnaulijwvoxia.supabase.co';
-var _SUPA_KEY = 'sb_publishable_a_KTvPaMDHo4IbK4bnjXwA_oMN8gybB';
+var _SUPA_URL = FORMA_SUPABASE_URL;
+var _SUPA_KEY = FORMA_SUPABASE_KEY;
 var _sb = supabase.createClient(_SUPA_URL, _SUPA_KEY);
 
 const CATS=[

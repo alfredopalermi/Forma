@@ -268,12 +268,13 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
 <script>
 (async function () {
   'use strict';
 
-  const SUPA_URL = 'https://jymxvabsnaulijwvoxia.supabase.co';
-  const SUPA_KEY = 'sb_publishable_a_KTvPaMDHo4IbK4bnjXwA_oMN8gybB';
+  const SUPA_URL = FORMA_SUPABASE_URL;
+  const SUPA_KEY = FORMA_SUPABASE_KEY;
   const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
   /* ── THEME ─────────────────────────────────── */
