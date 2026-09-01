@@ -6,12 +6,3 @@ out/
 dist/
 *.tsbuildinfo
 .DS_Store
-
-# File di lavoro/estrazione locali, non parte del sito
-_app_code.js
-_extracted_css.txt
-dashboard-standalone.html
-dashboard.html
-gen_sql.js
-landing.html
-patch_supabase.js
