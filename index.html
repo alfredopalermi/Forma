@@ -97,6 +97,30 @@
   border-color: rgba(255,255,255,.14) !important;
   box-shadow: 0 2px 6px rgba(0,0,0,.3), 0 16px 40px rgba(0,0,0,.4) !important;
 }
+
+/* detail engage bar */
+.detail-engage-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-soft);
+}
+.detail-engage-bar .vote-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  gap: 7px;
+  flex-shrink: 0;
+}
+.detail-engage-bar .vote-icon { font-size: 15px; }
+.vote-label { font-size: 13px; font-weight: 500; }
+.detail-engage-bar #d-star-row .star-row {
+  border-top: none;
+  padding: 0;
+  margin-top: 0;
+}
 </style>
 </head>
 <body>
@@ -502,13 +526,15 @@
               <button class="btn-ghost" id="d-share-btn" onclick="shareDetail()">
                 <span id="d-share-label">↗ Share</span>
               </button>
+            </div>
+            <!-- Engagement bar -->
+            <div class="detail-engage-bar">
               <button class="vote-btn" id="d-vote-btn" onclick="voteDetail()">
-                <span class="vote-icon">♥</span><span id="d-vote-count">0</span>
+                <span class="vote-icon">♥</span><span class="vote-label">Upvote</span><span id="d-vote-count">0</span>
               </button>
+              <div id="d-star-row"></div>
             </div>
           </div>
-          <!-- Star rating on detail page -->
-          <div id="d-star-row" style="margin-top:12px"></div>
         </div>
       </div>
     </div>
