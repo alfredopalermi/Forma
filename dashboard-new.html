@@ -546,6 +546,12 @@ window._formaAuthPromise = (async () => {
     window.DEFAULT_SAVED = list.filter(r => r.kind === 'saved').map(r => r.tool_slug);
   } catch(e) { window.DEFAULT_STACK = []; window.DEFAULT_SAVED = []; }
 
+  // Fetch user-created collections (see supabase_user_collections_migration.sql)
+  try {
+    const { data: colRows } = await sb.from('user_collections').select('id,name,tool_slugs').eq('user_id', session.user.id).order('created_at', { ascending: false });
+    window.USER_COLLECTIONS = (colRows || []).map(r => ({ id: r.id, n: r.name, tools: r.tool_slugs || [] }));
+  } catch(e) { window.USER_COLLECTIONS = []; }
+
   return session;
 })();
 </script>
@@ -1511,23 +1517,6 @@ window.TRENDING = [{
   id: 'midjourney',
   t: '+22%',
   badge: ''
-}];
-window.COLLECTIONS = [{
-  id: 'linkedin',
-  n: 'LinkedIn Growth',
-  tools: ['clay', 'runway-ml', 'jasper', 'gamma', 'perplexity', 'canva-ai']
-}, {
-  id: 'newsletter',
-  n: 'Newsletter Stack',
-  tools: ['n8n', 'jasper', 'grammarly', 'notion-ai']
-}, {
-  id: 'visual',
-  n: 'Visual Branding',
-  tools: ['canva-ai', 'midjourney', 'gamma', 'descript', 'elevenlabs']
-}, {
-  id: 'content',
-  n: 'Content Creation',
-  tools: ['descript', 'runway-ml', 'elevenlabs', 'jasper', 'grammarly', 'notion-ai', 'canva-ai', 'gamma']
 }];
 /* default personal stack ids */
 window.DEFAULT_STACK = ['jasper', 'descript', 'gamma', 'perplexity'];
@@ -3376,7 +3365,7 @@ function App() {
   }, []);
   const [stack, setStack] = useState(() => new Set(window.DEFAULT_STACK));
   const [saved, setSaved] = useState(() => new Set(window.DEFAULT_SAVED));
-  const [collections, setCollections] = useState(() => window.COLLECTIONS.map(c => ({
+  const [collections, setCollections] = useState(() => (window.USER_COLLECTIONS || []).map(c => ({
     ...c
   })));
   const [profile, setProfile] = useState({
@@ -3476,14 +3465,28 @@ function App() {
     }
   }, [fire, lang, stack]);
   const saveCollection = useCallback((name, ids) => {
-    const id = 'c' + Date.now();
+    const localId = 'c' + Date.now();
     setCollections(c => [{
-      id,
+      id: localId,
       n: name,
       tools: ids
     }, ...c]);
     fire(`${name} ${t('t_saved')}`, 'collections');
-    nav('collections', id);
+    nav('collections', localId);
+    const uid = window._formaUser && window._formaUser.id;
+    const sb = window._formaSb;
+    if (uid && sb) {
+      sb.from('user_collections').insert({ user_id: uid, name, tool_slugs: ids }).select('id').single()
+        .then(({ data, error }) => {
+          if (error) {
+            setCollections(c => c.filter(x => x.id !== localId));
+            fire(lang === 'it' ? 'Errore nel salvataggio' : lang === 'es' ? 'Error al guardar' : 'Save failed', 'close');
+          } else if (data) {
+            // swap the temporary local id for the real row id so future actions target the right row
+            setCollections(c => c.map(x => x.id === localId ? { ...x, id: data.id } : x));
+          }
+        });
+    }
   }, [fire, lang, nav]);
   const actions = {
     toggleStack,
