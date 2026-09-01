@@ -552,10 +552,8 @@ window._formaAuthPromise = (async () => {
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<script type="text/babel">
-/* BEGIN USAGE */
+<script>/* BEGIN USAGE */
 // tweaks-panel.jsx
 // Reusable Tweaks shell + form-control helpers.
 // Exports (to window): useTweaks, TweaksPanel, TweakSection, TweakRow, TweakSlider,
@@ -731,13 +729,22 @@ function useTweaks(defaults) {
   // useState-style call doesn't write a "[object Object]" key into the persisted
   // JSON block.
   const setTweak = React.useCallback((keyOrEdits, val) => {
-    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
-      ? keyOrEdits : { [keyOrEdits]: val };
-    setValues((prev) => ({ ...prev, ...edits }));
-    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null ? keyOrEdits : {
+      [keyOrEdits]: val
+    };
+    setValues(prev => ({
+      ...prev,
+      ...edits
+    }));
+    window.parent.postMessage({
+      type: '__edit_mode_set_keys',
+      edits
+    }, '*');
     // Same-window signal so in-page listeners (deck-stage rail thumbnails)
     // can react — the parent message only reaches the host, not peers.
-    window.dispatchEvent(new CustomEvent('tweakchange', { detail: edits }));
+    window.dispatchEvent(new CustomEvent('tweakchange', {
+      detail: edits
+    }));
   }, []);
   return [values, setTweak];
 }
@@ -749,26 +756,31 @@ function useTweaks(defaults) {
 // The close button posts __edit_mode_dismissed so the host's toolbar toggle
 // flips off in lockstep; the host echoes __deactivate_edit_mode back which
 // is what actually hides the panel.
-function TweaksPanel({ title = 'Tweaks', children }) {
+function TweaksPanel({
+  title = 'Tweaks',
+  children
+}) {
   const [open, setOpen] = React.useState(false);
   const dragRef = React.useRef(null);
-  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const offsetRef = React.useRef({
+    x: 16,
+    y: 16
+  });
   const PAD = 16;
-
   const clampToViewport = React.useCallback(() => {
     const panel = dragRef.current;
     if (!panel) return;
-    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const w = panel.offsetWidth,
+      h = panel.offsetHeight;
     const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
     const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
     offsetRef.current = {
       x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
-      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y))
     };
     panel.style.right = offsetRef.current.x + 'px';
     panel.style.bottom = offsetRef.current.y + 'px';
   }, []);
-
   React.useEffect(() => {
     if (!open) return;
     clampToViewport();
@@ -780,34 +792,35 @@ function TweaksPanel({ title = 'Tweaks', children }) {
     ro.observe(document.documentElement);
     return () => ro.disconnect();
   }, [open, clampToViewport]);
-
   React.useEffect(() => {
-    const onMsg = (e) => {
+    const onMsg = e => {
       const t = e?.data?.type;
-      if (t === '__activate_edit_mode') setOpen(true);
-      else if (t === '__deactivate_edit_mode') setOpen(false);
+      if (t === '__activate_edit_mode') setOpen(true);else if (t === '__deactivate_edit_mode') setOpen(false);
     };
     window.addEventListener('message', onMsg);
-    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    window.parent.postMessage({
+      type: '__edit_mode_available'
+    }, '*');
     return () => window.removeEventListener('message', onMsg);
   }, []);
-
   const dismiss = () => {
     setOpen(false);
-    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+    window.parent.postMessage({
+      type: '__edit_mode_dismissed'
+    }, '*');
   };
-
-  const onDragStart = (e) => {
+  const onDragStart = e => {
     const panel = dragRef.current;
     if (!panel) return;
     const r = panel.getBoundingClientRect();
-    const sx = e.clientX, sy = e.clientY;
+    const sx = e.clientX,
+      sy = e.clientY;
     const startRight = window.innerWidth - r.right;
     const startBottom = window.innerHeight - r.bottom;
-    const move = (ev) => {
+    const move = ev => {
       offsetRef.current = {
         x: startRight - (ev.clientX - sx),
-        y: startBottom - (ev.clientY - sy),
+        y: startBottom - (ev.clientY - sy)
       };
       clampToViewport();
     };
@@ -818,73 +831,101 @@ function TweaksPanel({ title = 'Tweaks', children }) {
     window.addEventListener('mousemove', move);
     window.addEventListener('mouseup', up);
   };
-
   if (!open) return null;
-  return (
-    <>
-      <style>{__TWEAKS_STYLE}</style>
-      <div ref={dragRef} className="twk-panel" data-omelette-chrome=""
-           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
-        <div className="twk-hd" onMouseDown={onDragStart}>
-          <b>{title}</b>
-          <button className="twk-x" aria-label="Close tweaks"
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onClick={dismiss}>✕</button>
-        </div>
-        <div className="twk-body">
-          {children}
-        </div>
-      </div>
-    </>
-  );
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("style", null, __TWEAKS_STYLE), /*#__PURE__*/React.createElement("div", {
+    ref: dragRef,
+    className: "twk-panel",
+    "data-omelette-chrome": "",
+    style: {
+      right: offsetRef.current.x,
+      bottom: offsetRef.current.y
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-hd",
+    onMouseDown: onDragStart
+  }, /*#__PURE__*/React.createElement("b", null, title), /*#__PURE__*/React.createElement("button", {
+    className: "twk-x",
+    "aria-label": "Close tweaks",
+    onMouseDown: e => e.stopPropagation(),
+    onClick: dismiss
+  }, "\u2715")), /*#__PURE__*/React.createElement("div", {
+    className: "twk-body"
+  }, children)));
 }
 
 // ── Layout helpers ──────────────────────────────────────────────────────────
 
-function TweakSection({ label, children }) {
-  return (
-    <>
-      <div className="twk-sect">{label}</div>
-      {children}
-    </>
-  );
+function TweakSection({
+  label,
+  children
+}) {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "twk-sect"
+  }, label), children);
 }
-
-function TweakRow({ label, value, children, inline = false }) {
-  return (
-    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
-      <div className="twk-lbl">
-        <span>{label}</span>
-        {value != null && <span className="twk-val">{value}</span>}
-      </div>
-      {children}
-    </div>
-  );
+function TweakRow({
+  label,
+  value,
+  children,
+  inline = false
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: inline ? 'twk-row twk-row-h' : 'twk-row'
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-lbl"
+  }, /*#__PURE__*/React.createElement("span", null, label), value != null && /*#__PURE__*/React.createElement("span", {
+    className: "twk-val"
+  }, value)), children);
 }
 
 // ── Controls ────────────────────────────────────────────────────────────────
 
-function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
-  return (
-    <TweakRow label={label} value={`${value}${unit}`}>
-      <input type="range" className="twk-slider" min={min} max={max} step={step}
-             value={value} onChange={(e) => onChange(Number(e.target.value))} />
-    </TweakRow>
-  );
+function TweakSlider({
+  label,
+  value,
+  min = 0,
+  max = 100,
+  step = 1,
+  unit = '',
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label,
+    value: `${value}${unit}`
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    className: "twk-slider",
+    min: min,
+    max: max,
+    step: step,
+    value: value,
+    onChange: e => onChange(Number(e.target.value))
+  }));
 }
-
-function TweakToggle({ label, value, onChange }) {
-  return (
-    <div className="twk-row twk-row-h">
-      <div className="twk-lbl"><span>{label}</span></div>
-      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
-              role="switch" aria-checked={!!value}
-              onClick={() => onChange(!value)}><i /></button>
-    </div>
-  );
+function TweakToggle({
+  label,
+  value,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "twk-row twk-row-h"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-lbl"
+  }, /*#__PURE__*/React.createElement("span", null, label)), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "twk-toggle",
+    "data-on": value ? '1' : '0',
+    role: "switch",
+    "aria-checked": !!value,
+    onClick: () => onChange(!value)
+  }, /*#__PURE__*/React.createElement("i", null)));
 }
-
-function TweakRadio({ label, value, options, onChange }) {
+function TweakRadio({
+  label,
+  value,
+  options,
+  onChange
+}) {
   const trackRef = React.useRef(null);
   const [dragging, setDragging] = React.useState(false);
   // The active value is read by pointer-move handlers attached for the lifetime
@@ -897,35 +938,43 @@ function TweakRadio({ label, value, options, onChange }) {
   // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
   // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
   // back to a dropdown rather than wrap.
-  const labelLen = (o) => String(typeof o === 'object' ? o.label : o).length;
+  const labelLen = o => String(typeof o === 'object' ? o.label : o).length;
   const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
-  const fitsAsSegments = maxLen <= ({ 2: 16, 3: 10 }[options.length] ?? 0);
+  const fitsAsSegments = maxLen <= ({
+    2: 16,
+    3: 10
+  }[options.length] ?? 0);
   if (!fitsAsSegments) {
     // <select> emits strings — map back to the original option value so the
     // fallback stays type-preserving (numbers, booleans) like the segment path.
-    const resolve = (s) => {
-      const m = options.find((o) => String(typeof o === 'object' ? o.value : o) === s);
+    const resolve = s => {
+      const m = options.find(o => String(typeof o === 'object' ? o.value : o) === s);
       return m === undefined ? s : typeof m === 'object' ? m.value : m;
     };
-    return <TweakSelect label={label} value={value} options={options}
-                        onChange={(s) => onChange(resolve(s))} />;
+    return /*#__PURE__*/React.createElement(TweakSelect, {
+      label: label,
+      value: value,
+      options: options,
+      onChange: s => onChange(resolve(s))
+    });
   }
-  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
-  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const opts = options.map(o => typeof o === 'object' ? o : {
+    value: o,
+    label: o
+  });
+  const idx = Math.max(0, opts.findIndex(o => o.value === value));
   const n = opts.length;
-
-  const segAt = (clientX) => {
+  const segAt = clientX => {
     const r = trackRef.current.getBoundingClientRect();
     const inner = r.width - 4;
-    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    const i = Math.floor((clientX - r.left - 2) / inner * n);
     return opts[Math.max(0, Math.min(n - 1, i))].value;
   };
-
-  const onPointerDown = (e) => {
+  const onPointerDown = e => {
     setDragging(true);
     const v0 = segAt(e.clientX);
     if (v0 !== valueRef.current) onChange(v0);
-    const move = (ev) => {
+    const move = ev => {
       if (!trackRef.current) return;
       const v = segAt(ev.clientX);
       if (v !== valueRef.current) onChange(v);
@@ -938,59 +987,89 @@ function TweakRadio({ label, value, options, onChange }) {
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
   };
-
-  return (
-    <TweakRow label={label}>
-      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
-           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
-        <div className="twk-seg-thumb"
-             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
-                      width: `calc((100% - 4px) / ${n})` }} />
-        {opts.map((o) => (
-          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
-            {o.label}
-          </button>
-        ))}
-      </div>
-    </TweakRow>
-  );
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("div", {
+    ref: trackRef,
+    role: "radiogroup",
+    onPointerDown: onPointerDown,
+    className: dragging ? 'twk-seg dragging' : 'twk-seg'
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-seg-thumb",
+    style: {
+      left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+      width: `calc((100% - 4px) / ${n})`
+    }
+  }), opts.map(o => /*#__PURE__*/React.createElement("button", {
+    key: o.value,
+    type: "button",
+    role: "radio",
+    "aria-checked": o.value === value
+  }, o.label))));
 }
-
-function TweakSelect({ label, value, options, onChange }) {
-  return (
-    <TweakRow label={label}>
-      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
-        {options.map((o) => {
-          const v = typeof o === 'object' ? o.value : o;
-          const l = typeof o === 'object' ? o.label : o;
-          return <option key={v} value={v}>{l}</option>;
-        })}
-      </select>
-    </TweakRow>
-  );
+function TweakSelect({
+  label,
+  value,
+  options,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("select", {
+    className: "twk-field",
+    value: value,
+    onChange: e => onChange(e.target.value)
+  }, options.map(o => {
+    const v = typeof o === 'object' ? o.value : o;
+    const l = typeof o === 'object' ? o.label : o;
+    return /*#__PURE__*/React.createElement("option", {
+      key: v,
+      value: v
+    }, l);
+  })));
 }
-
-function TweakText({ label, value, placeholder, onChange }) {
-  return (
-    <TweakRow label={label}>
-      <input className="twk-field" type="text" value={value} placeholder={placeholder}
-             onChange={(e) => onChange(e.target.value)} />
-    </TweakRow>
-  );
+function TweakText({
+  label,
+  value,
+  placeholder,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "twk-field",
+    type: "text",
+    value: value,
+    placeholder: placeholder,
+    onChange: e => onChange(e.target.value)
+  }));
 }
-
-function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
-  const clamp = (n) => {
+function TweakNumber({
+  label,
+  value,
+  min,
+  max,
+  step = 1,
+  unit = '',
+  onChange
+}) {
+  const clamp = n => {
     if (min != null && n < min) return min;
     if (max != null && n > max) return max;
     return n;
   };
-  const startRef = React.useRef({ x: 0, val: 0 });
-  const onScrubStart = (e) => {
+  const startRef = React.useRef({
+    x: 0,
+    val: 0
+  });
+  const onScrubStart = e => {
     e.preventDefault();
-    startRef.current = { x: e.clientX, val: value };
+    startRef.current = {
+      x: e.clientX,
+      val: value
+    };
     const decimals = (String(step).split('.')[1] || '').length;
-    const move = (ev) => {
+    const move = ev => {
       const dx = ev.clientX - startRef.current.x;
       const raw = startRef.current.val + dx * step;
       const snapped = Math.round(raw / step) * step;
@@ -1003,14 +1082,21 @@ function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) 
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
   };
-  return (
-    <div className="twk-num">
-      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
-      <input type="number" value={value} min={min} max={max} step={step}
-             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
-      {unit && <span className="twk-num-unit">{unit}</span>}
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    className: "twk-num"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "twk-num-lbl",
+    onPointerDown: onScrubStart
+  }, label), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: value,
+    min: min,
+    max: max,
+    step: step,
+    onChange: e => onChange(clamp(Number(e.target.value)))
+  }), unit && /*#__PURE__*/React.createElement("span", {
+    className: "twk-num-unit"
+  }, unit));
 }
 
 // Relative-luminance contrast pick — checkmarks drawn over a swatch need to
@@ -1018,20 +1104,27 @@ function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) 
 // only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
 function __twkIsLight(hex) {
   const h = String(hex).replace('#', '');
-  const x = h.length === 3 ? h.replace(/./g, (c) => c + c) : h.padEnd(6, '0');
+  const x = h.length === 3 ? h.replace(/./g, c => c + c) : h.padEnd(6, '0');
   const n = parseInt(x.slice(0, 6), 16);
   if (Number.isNaN(n)) return true;
-  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  const r = n >> 16 & 255,
+    g = n >> 8 & 255,
+    b = n & 255;
   return r * 299 + g * 587 + b * 114 > 148000;
 }
-
-const __TwkCheck = ({ light }) => (
-  <svg viewBox="0 0 14 14" aria-hidden="true">
-    <path d="M3 7.2 5.8 10 11 4.2" fill="none" strokeWidth="2.2"
-          strokeLinecap="round" strokeLinejoin="round"
-          stroke={light ? 'rgba(0,0,0,.78)' : '#fff'} />
-  </svg>
-);
+const __TwkCheck = ({
+  light
+}) => /*#__PURE__*/React.createElement("svg", {
+  viewBox: "0 0 14 14",
+  "aria-hidden": "true"
+}, /*#__PURE__*/React.createElement("path", {
+  d: "M3 7.2 5.8 10 11 4.2",
+  fill: "none",
+  strokeWidth: "2.2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  stroke: light ? 'rgba(0,0,0,.78)' : '#fff'
+}));
 
 // TweakColor — curated color/palette picker. Each option is either a single
 // hex string or an array of 1-5 hex strings; the card adapts — a lone color
@@ -1039,1066 +1132,2744 @@ const __TwkCheck = ({ light }) => (
 // rest stacked in a sharp column on the right. onChange emits the
 // option in the shape it was passed (string stays string, array stays array).
 // Without options it falls back to the native color input for back-compat.
-function TweakColor({ label, value, options, onChange }) {
+function TweakColor({
+  label,
+  value,
+  options,
+  onChange
+}) {
   if (!options || !options.length) {
-    return (
-      <div className="twk-row twk-row-h">
-        <div className="twk-lbl"><span>{label}</span></div>
-        <input type="color" className="twk-swatch" value={value}
-               onChange={(e) => onChange(e.target.value)} />
-      </div>
-    );
+    return /*#__PURE__*/React.createElement("div", {
+      className: "twk-row twk-row-h"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "twk-lbl"
+    }, /*#__PURE__*/React.createElement("span", null, label)), /*#__PURE__*/React.createElement("input", {
+      type: "color",
+      className: "twk-swatch",
+      value: value,
+      onChange: e => onChange(e.target.value)
+    }));
   }
   // Native <input type=color> emits lowercase hex per the HTML spec, so
   // compare case-insensitively. String() guards JSON.stringify(undefined),
   // which returns the primitive undefined (no .toLowerCase).
-  const key = (o) => String(JSON.stringify(o)).toLowerCase();
+  const key = o => String(JSON.stringify(o)).toLowerCase();
   const cur = key(value);
-  return (
-    <TweakRow label={label}>
-      <div className="twk-chips" role="radiogroup">
-        {options.map((o, i) => {
-          const colors = Array.isArray(o) ? o : [o];
-          const [hero, ...rest] = colors;
-          const sup = rest.slice(0, 4);
-          const on = key(o) === cur;
-          return (
-            <button key={i} type="button" className="twk-chip" role="radio"
-                    aria-checked={on} data-on={on ? '1' : '0'}
-                    aria-label={colors.join(', ')} title={colors.join(' · ')}
-                    style={{ background: hero }}
-                    onClick={() => onChange(o)}>
-              {sup.length > 0 && (
-                <span>
-                  {sup.map((c, j) => <i key={j} style={{ background: c }} />)}
-                </span>
-              )}
-              {on && <__TwkCheck light={__twkIsLight(hero)} />}
-            </button>
-          );
-        })}
-      </div>
-    </TweakRow>
-  );
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-chips",
+    role: "radiogroup"
+  }, options.map((o, i) => {
+    const colors = Array.isArray(o) ? o : [o];
+    const [hero, ...rest] = colors;
+    const sup = rest.slice(0, 4);
+    const on = key(o) === cur;
+    return /*#__PURE__*/React.createElement("button", {
+      key: i,
+      type: "button",
+      className: "twk-chip",
+      role: "radio",
+      "aria-checked": on,
+      "data-on": on ? '1' : '0',
+      "aria-label": colors.join(', '),
+      title: colors.join(' · '),
+      style: {
+        background: hero
+      },
+      onClick: () => onChange(o)
+    }, sup.length > 0 && /*#__PURE__*/React.createElement("span", null, sup.map((c, j) => /*#__PURE__*/React.createElement("i", {
+      key: j,
+      style: {
+        background: c
+      }
+    }))), on && /*#__PURE__*/React.createElement(__TwkCheck, {
+      light: __twkIsLight(hero)
+    }));
+  })));
 }
-
-function TweakButton({ label, onClick, secondary = false }) {
-  return (
-    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
-            onClick={onClick}>{label}</button>
-  );
+function TweakButton({
+  label,
+  onClick,
+  secondary = false
+}) {
+  return /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: secondary ? 'twk-btn secondary' : 'twk-btn',
+    onClick: onClick
+  }, label);
 }
-
 Object.assign(window, {
-  useTweaks, TweaksPanel, TweakSection, TweakRow,
-  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
-  TweakText, TweakNumber, TweakColor, TweakButton,
-});
-</script>
-<script type="text/babel">/* ============================================================
+  useTweaks,
+  TweaksPanel,
+  TweakSection,
+  TweakRow,
+  TweakSlider,
+  TweakToggle,
+  TweakRadio,
+  TweakSelect,
+  TweakText,
+  TweakNumber,
+  TweakColor,
+  TweakButton
+});</script>
+<script>/* ============================================================
    Forma — shared data, brand atoms, icons, i18n
    ============================================================ */
 
 /* 4-point sparkle brand mark */
-window.Star = ({size=18, color, style, cls=''}) => (
-  <svg className={"star "+cls} width={size} height={size} viewBox="0 0 100 100" style={style} aria-hidden="true">
-    <path d="M50 0 L59.2 40.8 L100 50 L59.2 59.2 L50 100 L40.8 59.2 L0 50 L40.8 40.8 Z" fill={color||'currentColor'}/>
-  </svg>
-);
+window.Star = ({
+  size = 18,
+  color,
+  style,
+  cls = ''
+}) => /*#__PURE__*/React.createElement("svg", {
+  className: "star " + cls,
+  width: size,
+  height: size,
+  viewBox: "0 0 100 100",
+  style: style,
+  "aria-hidden": "true"
+}, /*#__PURE__*/React.createElement("path", {
+  d: "M50 0 L59.2 40.8 L100 50 L59.2 59.2 L50 100 L40.8 59.2 L0 50 L40.8 40.8 Z",
+  fill: color || 'currentColor'
+}));
 
 /* minimal line icons */
-const I = (d, fill=false) => ({size=20, color='currentColor', sw=1.6}={}) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill={fill?color:'none'} stroke={fill?'none':color}
-       strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>
-);
+const I = (d, fill = false) => ({
+  size = 20,
+  color = 'currentColor',
+  sw = 1.6
+} = {}) => /*#__PURE__*/React.createElement("svg", {
+  width: size,
+  height: size,
+  viewBox: "0 0 24 24",
+  fill: fill ? color : 'none',
+  stroke: fill ? 'none' : color,
+  strokeWidth: sw,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  "aria-hidden": "true"
+}, d);
 window.Icon = {
-  home: I(<><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></>),
-  stack: I(<><path d="M12 3 3 7.5 12 12l9-4.5L12 3Z"/><path d="m3 12 9 4.5L21 12"/><path d="m3 16.5 9 4.5 9-4.5"/></>),
-  discover: I(<><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></>),
-  collections: I(<><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></>),
-  trending: I(<><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v5h-5"/></>),
-  settings: I(<><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M2 12h3m14 0h3M4.2 19.8l2.1-2.1m11.4-11.4 2.1-2.1"/></>),
-  plus: I(<><path d="M12 5v14M5 12h14"/></>),
-  arrow: I(<><path d="M5 12h14M13 6l6 6-6 6"/></>),
-  bell: I(<><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 20a2 2 0 0 0 4 0"/></>),
-  search: I(<><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></>),
-  menu: I(<><path d="M3 6h18M3 12h18M3 18h18"/></>),
-  close: I(<><path d="M6 6l12 12M18 6 6 18"/></>),
-  send: I(<><path d="M4 12 20 4l-6 16-3-7-7-1Z"/></>),
-  check: I(<><path d="M5 12.5 10 17l9-10"/></>),
-  camera: I(<><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L19 6h0a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="12.5" r="3.2"/></>),
-  lock: I(<><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></>),
-  globe: I(<><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.5 2.6 15 0 18M12 3c-2.6 2.5-2.6 15 0 18"/></>),
-  user: I(<><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></>),
-  bolt: I(<><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></>),
+  home: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M3 10.5 12 3l9 7.5"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M5 9.5V20h5v-6h4v6h5V9.5"
+  }))),
+  stack: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M12 3 3 7.5 12 12l9-4.5L12 3Z"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m3 12 9 4.5L21 12"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m3 16.5 9 4.5 9-4.5"
+  }))),
+  discover: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("circle", {
+    cx: "11",
+    cy: "11",
+    r: "7"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m20 20-3.2-3.2"
+  }))),
+  collections: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("rect", {
+    x: "3",
+    y: "3",
+    width: "7.5",
+    height: "7.5",
+    rx: "2"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "13.5",
+    y: "3",
+    width: "7.5",
+    height: "7.5",
+    rx: "2"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "3",
+    y: "13.5",
+    width: "7.5",
+    height: "7.5",
+    rx: "2"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "13.5",
+    y: "13.5",
+    width: "7.5",
+    height: "7.5",
+    rx: "2"
+  }))),
+  trending: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M3 17l6-6 4 4 8-8"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M21 7v5h-5"
+  }))),
+  settings: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "3"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M12 2v3m0 14v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M2 12h3m14 0h3M4.2 19.8l2.1-2.1m11.4-11.4 2.1-2.1"
+  }))),
+  plus: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M12 5v14M5 12h14"
+  }))),
+  arrow: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M5 12h14M13 6l6 6-6 6"
+  }))),
+  bell: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M10 20a2 2 0 0 0 4 0"
+  }))),
+  search: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("circle", {
+    cx: "11",
+    cy: "11",
+    r: "7"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m20 20-3.2-3.2"
+  }))),
+  menu: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M3 6h18M3 12h18M3 18h18"
+  }))),
+  close: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M6 6l12 12M18 6 6 18"
+  }))),
+  send: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M4 12 20 4l-6 16-3-7-7-1Z"
+  }))),
+  check: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M5 12.5 10 17l9-10"
+  }))),
+  camera: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M3 8a2 2 0 0 1 2-2h2l1.5-2h7L19 6h0a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12.5",
+    r: "3.2"
+  }))),
+  lock: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("rect", {
+    x: "4",
+    y: "10",
+    width: "16",
+    height: "10",
+    rx: "2.5"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 10V7a4 4 0 0 1 8 0v3"
+  }))),
+  globe: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "9"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M3 12h18M12 3c2.6 2.5 2.6 15 0 18M12 3c-2.6 2.5-2.6 15 0 18"
+  }))),
+  user: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "8",
+    r: "4"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M4 20c0-4 4-6 8-6s8 2 8 6"
+  }))),
+  bolt: I(/*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+    d: "M13 2 4 14h7l-1 8 9-12h-7l1-8Z"
+  })))
 };
 
 /* ---------------- tools ---------------- */
-window.TOOLS = [
-  {id:'jasper', n:'Jasper', c:'Writing', d:'Long-form drafting that keeps your voice.', m:'J', website:'https://jasper.ai'},
-  {id:'descript', n:'Descript', c:'Video', d:'Edit video by editing the transcript.', m:'D', website:'https://descript.com'},
-  {id:'gamma', n:'Gamma', c:'Design', d:'Decks & one-pagers from a prompt.', m:'G', website:'https://gamma.app'},
-  {id:'perplexity', n:'Perplexity', c:'Research', d:'Answers with real, cited sources.', m:'P', website:'https://perplexity.ai'},
-  {id:'opus', n:'Opus Clip', c:'Video', d:'Turn long video into ready-to-post shorts.', m:'O', website:'https://opus.pro'},
-  {id:'notion', n:'Notion AI', c:'Productivity', d:'Draft & summarize inside your docs.', m:'N', website:'https://notion.so'},
-  {id:'eleven', n:'ElevenLabs', c:'Audio', d:'Natural voiceover for reels & podcasts.', m:'E', website:'https://elevenlabs.io'},
-  {id:'grammarly', n:'Grammarly', c:'Writing', d:'Polish tone, clarity and grammar.', m:'G', website:'https://grammarly.com'},
-  {id:'canva', n:'Canva AI', c:'Design', d:'On-brand visuals in a few clicks.', m:'C', website:'https://canva.com'},
-  {id:'midjourney', n:'Midjourney', c:'Design', d:'Striking original imagery from text.', m:'M', website:'https://midjourney.com'},
-  {id:'otter', n:'Otter.ai', c:'Productivity', d:'Auto notes & summaries from calls.', m:'O', website:'https://otter.ai'},
-  {id:'taplio', n:'Taplio', c:'Marketing', d:'Plan & schedule your LinkedIn content.', m:'T', website:'https://taplio.com'},
-  {id:'beehiiv', n:'beehiiv', c:'Marketing', d:'Grow and monetize your newsletter.', m:'B', website:'https://beehiiv.com'},
-  {id:'make', n:'Make', c:'Automation', d:'Connect your tools into workflows.', m:'M', website:'https://make.com'},
-];
-window.toolsById = Object.fromEntries(window.TOOLS.map(t=>[t.id,t]));
-
-window.CATEGORIES = ['All','Writing','Design','Video','Marketing','Research','Productivity','Audio','Automation'];
-
-window.RECO = [
-  {id:'opus', why:'For your LinkedIn goal'},
-  {id:'notion', why:'Pairs with your writing stack'},
-  {id:'eleven', why:'Trending in Content'},
-  {id:'taplio', why:'Most-saved this week'},
-];
-window.TRENDING = [
-  {id:'gamma', t:'+38%', badge:''},
-  {id:'opus', t:'+126%', badge:'New'},
-  {id:'perplexity', t:'+54%', badge:''},
-  {id:'beehiiv', t:'+71%', badge:'New'},
-  {id:'midjourney', t:'+22%', badge:''},
-];
-window.COLLECTIONS = [
-  {id:'linkedin', n:'LinkedIn Growth', tools:['taplio','opus','jasper','gamma','perplexity','canva']},
-  {id:'newsletter', n:'Newsletter Stack', tools:['beehiiv','jasper','grammarly','notion']},
-  {id:'visual', n:'Visual Branding', tools:['canva','midjourney','gamma','descript','eleven']},
-  {id:'content', n:'Content Creation', tools:['descript','opus','eleven','jasper','grammarly','notion','canva','gamma']},
-];
+window.TOOLS = [{
+  id: 'jasper',
+  n: 'Jasper',
+  c: 'Writing',
+  d: 'Long-form drafting that keeps your voice.',
+  m: 'J',
+  website: 'https://jasper.ai'
+}, {
+  id: 'descript',
+  n: 'Descript',
+  c: 'Video',
+  d: 'Edit video by editing the transcript.',
+  m: 'D',
+  website: 'https://descript.com'
+}, {
+  id: 'gamma',
+  n: 'Gamma',
+  c: 'Design',
+  d: 'Decks & one-pagers from a prompt.',
+  m: 'G',
+  website: 'https://gamma.app'
+}, {
+  id: 'perplexity',
+  n: 'Perplexity',
+  c: 'Research',
+  d: 'Answers with real, cited sources.',
+  m: 'P',
+  website: 'https://perplexity.ai'
+}, {
+  id: 'opus',
+  n: 'Opus Clip',
+  c: 'Video',
+  d: 'Turn long video into ready-to-post shorts.',
+  m: 'O',
+  website: 'https://opus.pro'
+}, {
+  id: 'notion',
+  n: 'Notion AI',
+  c: 'Productivity',
+  d: 'Draft & summarize inside your docs.',
+  m: 'N',
+  website: 'https://notion.so'
+}, {
+  id: 'eleven',
+  n: 'ElevenLabs',
+  c: 'Audio',
+  d: 'Natural voiceover for reels & podcasts.',
+  m: 'E',
+  website: 'https://elevenlabs.io'
+}, {
+  id: 'grammarly',
+  n: 'Grammarly',
+  c: 'Writing',
+  d: 'Polish tone, clarity and grammar.',
+  m: 'G',
+  website: 'https://grammarly.com'
+}, {
+  id: 'canva',
+  n: 'Canva AI',
+  c: 'Design',
+  d: 'On-brand visuals in a few clicks.',
+  m: 'C',
+  website: 'https://canva.com'
+}, {
+  id: 'midjourney',
+  n: 'Midjourney',
+  c: 'Design',
+  d: 'Striking original imagery from text.',
+  m: 'M',
+  website: 'https://midjourney.com'
+}, {
+  id: 'otter',
+  n: 'Otter.ai',
+  c: 'Productivity',
+  d: 'Auto notes & summaries from calls.',
+  m: 'O',
+  website: 'https://otter.ai'
+}, {
+  id: 'taplio',
+  n: 'Taplio',
+  c: 'Marketing',
+  d: 'Plan & schedule your LinkedIn content.',
+  m: 'T',
+  website: 'https://taplio.com'
+}, {
+  id: 'beehiiv',
+  n: 'beehiiv',
+  c: 'Marketing',
+  d: 'Grow and monetize your newsletter.',
+  m: 'B',
+  website: 'https://beehiiv.com'
+}, {
+  id: 'make',
+  n: 'Make',
+  c: 'Automation',
+  d: 'Connect your tools into workflows.',
+  m: 'M',
+  website: 'https://make.com'
+}];
+window.toolsById = Object.fromEntries(window.TOOLS.map(t => [t.id, t]));
+window.CATEGORIES = ['All', 'Writing', 'Design', 'Video', 'Marketing', 'Research', 'Productivity', 'Audio', 'Automation'];
+window.RECO = [{
+  id: 'opus',
+  why: 'For your LinkedIn goal'
+}, {
+  id: 'notion',
+  why: 'Pairs with your writing stack'
+}, {
+  id: 'eleven',
+  why: 'Trending in Content'
+}, {
+  id: 'taplio',
+  why: 'Most-saved this week'
+}];
+window.TRENDING = [{
+  id: 'gamma',
+  t: '+38%',
+  badge: ''
+}, {
+  id: 'opus',
+  t: '+126%',
+  badge: 'New'
+}, {
+  id: 'perplexity',
+  t: '+54%',
+  badge: ''
+}, {
+  id: 'beehiiv',
+  t: '+71%',
+  badge: 'New'
+}, {
+  id: 'midjourney',
+  t: '+22%',
+  badge: ''
+}];
+window.COLLECTIONS = [{
+  id: 'linkedin',
+  n: 'LinkedIn Growth',
+  tools: ['taplio', 'opus', 'jasper', 'gamma', 'perplexity', 'canva']
+}, {
+  id: 'newsletter',
+  n: 'Newsletter Stack',
+  tools: ['beehiiv', 'jasper', 'grammarly', 'notion']
+}, {
+  id: 'visual',
+  n: 'Visual Branding',
+  tools: ['canva', 'midjourney', 'gamma', 'descript', 'eleven']
+}, {
+  id: 'content',
+  n: 'Content Creation',
+  tools: ['descript', 'opus', 'eleven', 'jasper', 'grammarly', 'notion', 'canva', 'gamma']
+}];
 /* default personal stack ids */
-window.DEFAULT_STACK = ['jasper','descript','gamma','perplexity'];
-window.DEFAULT_SAVED = ['jasper','descript','gamma','perplexity','opus','notion','taplio'];
+window.DEFAULT_STACK = ['jasper', 'descript', 'gamma', 'perplexity'];
+window.DEFAULT_SAVED = ['jasper', 'descript', 'gamma', 'perplexity', 'opus', 'notion', 'taplio'];
 
 /* activity feed (relative time keys) */
-window.ACTIVITY = [
-  {ic:'plus', key:'act_added', a:'Gamma', t:'2h'},
-  {ic:'collections', key:'act_collection', a:'LinkedIn Growth', t:'Yesterday'},
-  {ic:'star', key:'act_saved', a:'Opus Clip', t:'Yesterday'},
-  {ic:'trending', key:'act_trending', a:'beehiiv', t:'2d'},
-  {ic:'user', key:'act_profile', a:'', t:'3d'},
-];
+window.ACTIVITY = [{
+  ic: 'plus',
+  key: 'act_added',
+  a: 'Gamma',
+  t: '2h'
+}, {
+  ic: 'collections',
+  key: 'act_collection',
+  a: 'LinkedIn Growth',
+  t: 'Yesterday'
+}, {
+  ic: 'star',
+  key: 'act_saved',
+  a: 'Opus Clip',
+  t: 'Yesterday'
+}, {
+  ic: 'trending',
+  key: 'act_trending',
+  a: 'beehiiv',
+  t: '2d'
+}, {
+  ic: 'user',
+  key: 'act_profile',
+  a: '',
+  t: '3d'
+}];
 
 /* ---------------- i18n ---------------- */
 const STR = {
   // nav
-  nav_home:['Home','Home','Inicio'], nav_stack:['My Stack','Il mio Stack','Mi Stack'],
-  nav_discover:['Discover','Esplora','Explorar'], nav_collections:['Collections','Collezioni','Colecciones'],
-  nav_trending:['Trending','Tendenze','Tendencias'], nav_settings:['Settings','Impostazioni','Ajustes'],
+  nav_home: ['Home', 'Home', 'Inicio'],
+  nav_stack: ['My Stack', 'Il mio Stack', 'Mi Stack'],
+  nav_discover: ['Discover', 'Esplora', 'Explorar'],
+  nav_collections: ['Collections', 'Collezioni', 'Colecciones'],
+  nav_trending: ['Trending', 'Tendenze', 'Tendencias'],
+  nav_settings: ['Settings', 'Impostazioni', 'Ajustes'],
   // greeting / hero
-  greet_morning:['Good morning','Buongiorno','Buenos días'],
-  greet_after:['Good afternoon','Buon pomeriggio','Buenas tardes'],
-  greet_evening:['Good evening','Buonasera','Buenas noches'],
-  tagline:['Your operating system for building a brand with AI.',
-           'Il tuo sistema operativo per costruire un brand con l\u2019AI.',
-           'Tu sistema operativo para construir una marca con IA.'],
-  cta_discover:['Discover tools','Esplora i tool','Explorar herramientas'],
-  cta_build:['Build my stack','Crea il mio stack','Crear mi stack'],
+  greet_morning: ['Good morning', 'Buongiorno', 'Buenos días'],
+  greet_after: ['Good afternoon', 'Buon pomeriggio', 'Buenas tardes'],
+  greet_evening: ['Good evening', 'Buonasera', 'Buenas noches'],
+  tagline: ['Your operating system for building a brand with AI.', 'Il tuo sistema operativo per costruire un brand con l\u2019AI.', 'Tu sistema operativo para construir una marca con IA.'],
+  cta_discover: ['Discover tools', 'Esplora i tool', 'Explorar herramientas'],
+  cta_build: ['Build my stack', 'Crea il mio stack', 'Crear mi stack'],
   // section titles
-  s_stack:['My AI Stack','Il mio AI Stack','Mi Stack de IA'],
-  s_stack_sub:['Your personal ecosystem of tools','Il tuo ecosistema personale di strumenti','Tu ecosistema personal de herramientas'],
-  s_reco:['Recommended for you','Consigliati per te','Recomendado para ti'],
-  s_reco_sub:['Based on your goal and saved tools','In base al tuo obiettivo e ai tool salvati','Según tu objetivo y herramientas guardadas'],
-  s_collections:['Saved Collections','Collezioni salvate','Colecciones guardadas'],
-  s_trending:['Trending tools','Tool in crescita','Herramientas en tendencia'],
-  s_activity:['Recent activity','Attività recente','Actividad reciente'],
+  s_stack: ['My AI Stack', 'Il mio AI Stack', 'Mi Stack de IA'],
+  s_stack_sub: ['Your personal ecosystem of tools', 'Il tuo ecosistema personale di strumenti', 'Tu ecosistema personal de herramientas'],
+  s_reco: ['Recommended for you', 'Consigliati per te', 'Recomendado para ti'],
+  s_reco_sub: ['Based on your goal and saved tools', 'In base al tuo obiettivo e ai tool salvati', 'Según tu objetivo y herramientas guardadas'],
+  s_collections: ['Saved Collections', 'Collezioni salvate', 'Colecciones guardadas'],
+  s_trending: ['Trending tools', 'Tool in crescita', 'Herramientas en tendencia'],
+  s_activity: ['Recent activity', 'Attività recente', 'Actividad reciente'],
   // generic
-  manage:['Manage','Gestisci','Gestionar'], see_all:['See all','Vedi tutti','Ver todo'],
-  add:['Add','Aggiungi','Añadir'], added:['Added','Aggiunto','Añadido'],
-  add_tool:['Add tool','Aggiungi tool','Añadir herramienta'],
-  new_collection:['New collection','Nuova collezione','Nueva colección'],
-  in_stack:['In your stack','Nel tuo stack','En tu stack'],
-  saved_n:['Saved','Salvati','Guardados'], collections_n:['Collections','Collezioni','Colecciones'],
-  new_week:['New this week','Nuovi questa settimana','Nuevos esta semana'],
-  tools_count:['tools','tool','herramientas'],
-  open:['Open','Apri','Abrir'], view:['View','Vedi','Ver'],
+  manage: ['Manage', 'Gestisci', 'Gestionar'],
+  see_all: ['See all', 'Vedi tutti', 'Ver todo'],
+  add: ['Add', 'Aggiungi', 'Añadir'],
+  added: ['Added', 'Aggiunto', 'Añadido'],
+  add_tool: ['Add tool', 'Aggiungi tool', 'Añadir herramienta'],
+  new_collection: ['New collection', 'Nuova collezione', 'Nueva colección'],
+  in_stack: ['In your stack', 'Nel tuo stack', 'En tu stack'],
+  saved_n: ['Saved', 'Salvati', 'Guardados'],
+  collections_n: ['Collections', 'Collezioni', 'Colecciones'],
+  new_week: ['New this week', 'Nuovi questa settimana', 'Nuevos esta semana'],
+  tools_count: ['tools', 'tool', 'herramientas'],
+  open: ['Open', 'Apri', 'Abrir'],
+  view: ['View', 'Vedi', 'Ver'],
   // assistant
-  asst:['Assistant','Assistente','Asistente'],
-  asst_sub:['Always one step ahead','Sempre un passo avanti','Siempre un paso adelante'],
-  asst_hero:['Tell me what you want to build.','Dimmi cosa vuoi costruire.','Dime qué quieres construir.'],
-  asst_hero_sub:['I\u2019ll assemble the right stack for your goal — in seconds.',
-                 'Assemblo lo stack giusto per il tuo obiettivo — in pochi secondi.',
-                 'Armo el stack ideal para tu objetivo — en segundos.'],
-  asst_ph:['Ask Forma anything…','Chiedimi qualsiasi cosa…','Pregúntame lo que quieras…'],
-  open_asst:['Open Assistant','Apri l\u2019Assistente','Abrir Asistente'],
-  asst_g1:['Want to grow on LinkedIn? I\u2019d start with Opus Clip and a writing tool.',
-           'Vuoi crescere su LinkedIn? Partirei da Opus Clip e un tool di scrittura.',
-           '¿Quieres crecer en LinkedIn? Empezaría con Opus Clip y una herramienta de escritura.'],
+  asst: ['Assistant', 'Assistente', 'Asistente'],
+  asst_sub: ['Always one step ahead', 'Sempre un passo avanti', 'Siempre un paso adelante'],
+  asst_hero: ['Tell me what you want to build.', 'Dimmi cosa vuoi costruire.', 'Dime qué quieres construir.'],
+  asst_hero_sub: ['I\u2019ll assemble the right stack for your goal — in seconds.', 'Assemblo lo stack giusto per il tuo obiettivo — in pochi secondi.', 'Armo el stack ideal para tu objetivo — en segundos.'],
+  asst_ph: ['Ask Forma anything…', 'Chiedimi qualsiasi cosa…', 'Pregúntame lo que quieras…'],
+  open_asst: ['Open Assistant', 'Apri l\u2019Assistente', 'Abrir Asistente'],
+  asst_g1: ['Want to grow on LinkedIn? I\u2019d start with Opus Clip and a writing tool.', 'Vuoi crescere su LinkedIn? Partirei da Opus Clip e un tool di scrittura.', '¿Quieres crecer en LinkedIn? Empezaría con Opus Clip y una herramienta de escritura.'],
   // settings
-  set_title:['Profile settings','Impostazioni profilo','Ajustes de perfil'],
-  set_sub:['Manage your account, preferences and language.','Gestisci account, preferenze e lingua.','Gestiona tu cuenta, preferencias e idioma.'],
-  set_profile:['Profile','Profilo','Perfil'],
-  set_photo:['Profile photo','Foto profilo','Foto de perfil'],
-  set_photo_hint:['PNG or JPG, square works best','PNG o JPG, meglio quadrata','PNG o JPG, mejor cuadrada'],
-  set_change_photo:['Change photo','Cambia foto','Cambiar foto'],
-  set_remove:['Remove','Rimuovi','Quitar'],
-  set_name:['Full name','Nome completo','Nombre completo'],
-  set_handle:['Username','Nome utente','Usuario'],
-  set_bio:['Headline','Headline','Titular'],
-  set_account:['Account','Account','Cuenta'],
-  set_email:['Email address','Indirizzo email','Correo electrónico'],
-  set_password:['Password','Password','Contraseña'],
-  set_current_pw:['Current password','Password attuale','Contraseña actual'],
-  set_new_pw:['New password','Nuova password','Nueva contraseña'],
-  set_confirm_pw:['Confirm new password','Conferma nuova password','Confirmar nueva contraseña'],
-  set_change_pw:['Change password','Cambia password','Cambiar contraseña'],
-  set_lang:['Language','Lingua','Idioma'],
-  set_lang_sub:['Forma\u2019s interface will switch instantly.','L\u2019interfaccia di Forma cambierà subito.','La interfaz de Forma cambiará al instante.'],
-  set_save:['Save changes','Salva modifiche','Guardar cambios'],
-  set_saved_toast:['Changes saved','Modifiche salvate','Cambios guardados'],
-  set_pw_toast:['Password updated','Password aggiornata','Contraseña actualizada'],
-  set_pw_mismatch:['Passwords don\u2019t match','Le password non corrispondono','Las contraseñas no coinciden'],
-  edit_profile:['Edit profile','Modifica profilo','Editar perfil'],
+  set_title: ['Profile settings', 'Impostazioni profilo', 'Ajustes de perfil'],
+  set_sub: ['Manage your account, preferences and language.', 'Gestisci account, preferenze e lingua.', 'Gestiona tu cuenta, preferencias e idioma.'],
+  set_profile: ['Profile', 'Profilo', 'Perfil'],
+  set_photo: ['Profile photo', 'Foto profilo', 'Foto de perfil'],
+  set_photo_hint: ['PNG or JPG, square works best', 'PNG o JPG, meglio quadrata', 'PNG o JPG, mejor cuadrada'],
+  set_change_photo: ['Change photo', 'Cambia foto', 'Cambiar foto'],
+  set_remove: ['Remove', 'Rimuovi', 'Quitar'],
+  set_name: ['Full name', 'Nome completo', 'Nombre completo'],
+  set_handle: ['Username', 'Nome utente', 'Usuario'],
+  set_bio: ['Headline', 'Headline', 'Titular'],
+  set_account: ['Account', 'Account', 'Cuenta'],
+  set_email: ['Email address', 'Indirizzo email', 'Correo electrónico'],
+  set_password: ['Password', 'Password', 'Contraseña'],
+  set_current_pw: ['Current password', 'Password attuale', 'Contraseña actual'],
+  set_new_pw: ['New password', 'Nuova password', 'Nueva contraseña'],
+  set_confirm_pw: ['Confirm new password', 'Conferma nuova password', 'Confirmar nueva contraseña'],
+  set_change_pw: ['Change password', 'Cambia password', 'Cambiar contraseña'],
+  set_lang: ['Language', 'Lingua', 'Idioma'],
+  set_lang_sub: ['Forma\u2019s interface will switch instantly.', 'L\u2019interfaccia di Forma cambierà subito.', 'La interfaz de Forma cambiará al instante.'],
+  set_save: ['Save changes', 'Salva modifiche', 'Guardar cambios'],
+  set_saved_toast: ['Changes saved', 'Modifiche salvate', 'Cambios guardados'],
+  set_pw_toast: ['Password updated', 'Password aggiornata', 'Contraseña actualizada'],
+  set_pw_mismatch: ['Passwords don\u2019t match', 'Le password non corrispondono', 'Las contraseñas no coinciden'],
+  edit_profile: ['Edit profile', 'Modifica profilo', 'Editar perfil'],
   // toasts
-  t_added:['added to your stack','aggiunto al tuo stack','añadido a tu stack'],
-  t_removed:['removed from your stack','rimosso dal tuo stack','quitado de tu stack'],
-  t_saved:['saved','salvato','guardado'],
+  t_added: ['added to your stack', 'aggiunto al tuo stack', 'añadido a tu stack'],
+  t_removed: ['removed from your stack', 'rimosso dal tuo stack', 'quitado de tu stack'],
+  t_saved: ['saved', 'salvato', 'guardado'],
   // activity strings (with {x})
-  act_added:['Added {x} to your stack','Hai aggiunto {x} allo stack','Añadiste {x} a tu stack'],
-  act_collection:['Created the collection {x}','Hai creato la collezione {x}','Creaste la colección {x}'],
-  act_saved:['Saved {x}','Hai salvato {x}','Guardaste {x}'],
-  act_trending:['{x} is trending in your categories','{x} è di tendenza nelle tue categorie','{x} es tendencia en tus categorías'],
-  act_profile:['Updated your profile','Hai aggiornato il profilo','Actualizaste tu perfil'],
-  pro_plan:['Pro plan','Piano Pro','Plan Pro'],
+  act_added: ['Added {x} to your stack', 'Hai aggiunto {x} allo stack', 'Añadiste {x} a tu stack'],
+  act_collection: ['Created the collection {x}', 'Hai creato la collezione {x}', 'Creaste la colección {x}'],
+  act_saved: ['Saved {x}', 'Hai salvato {x}', 'Guardaste {x}'],
+  act_trending: ['{x} is trending in your categories', '{x} è di tendenza nelle tue categorie', '{x} es tendencia en tus categorías'],
+  act_profile: ['Updated your profile', 'Hai aggiornato il profilo', 'Actualizaste tu perfil'],
+  pro_plan: ['Pro plan', 'Piano Pro', 'Plan Pro']
 };
-const LANGS = ['en','it','es']; window.LANGS = LANGS;
-window.LANG_LABEL = {en:'English', it:'Italiano', es:'Español'};
-window.makeT = (lang) => {
+const LANGS = ['en', 'it', 'es'];
+window.LANGS = LANGS;
+window.LANG_LABEL = {
+  en: 'English',
+  it: 'Italiano',
+  es: 'Español'
+};
+window.makeT = lang => {
   const i = Math.max(0, LANGS.indexOf(lang));
   return (key, vars) => {
-    let s = (STR[key] && STR[key][i]) || key;
-    if(vars) Object.entries(vars).forEach(([k,v])=> s = s.replace('{'+k+'}', v));
+    let s = STR[key] && STR[key][i] || key;
+    if (vars) Object.entries(vars).forEach(([k, v]) => s = s.replace('{' + k + '}', v));
     return s;
   };
 };
 
 /* monogram component — shows favicon when website is provided, falls back to letter */
-window.Mono = ({m, website, size=44, r, fs=18}) => {
-  const domain = website && website !== '#' ? website.replace(/^https?:\/\//,'').replace(/\/.*/,'') : null;
+window.Mono = ({
+  m,
+  website,
+  size = 44,
+  r,
+  fs = 18
+}) => {
+  const domain = website && website !== '#' ? website.replace(/^https?:\/\//, '').replace(/\/.*/, '') : null;
   const radius = r || 'var(--rsm)';
   if (domain) {
     const src = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-    return (
-      <div className="mono" style={{width:size,height:size,borderRadius:radius,overflow:'hidden',padding:0,background:'#fff'}}>
-        <img src={src} alt={m}
-             style={{width:'100%',height:'100%',objectFit:'contain',display:'block'}}
-             onError={e=>{e.currentTarget.style.display='none';e.currentTarget.parentNode.textContent=m;}}/>
-      </div>
-    );
+    return /*#__PURE__*/React.createElement("div", {
+      className: "mono",
+      style: {
+        width: size,
+        height: size,
+        borderRadius: radius,
+        overflow: 'hidden',
+        padding: 0,
+        background: '#fff'
+      }
+    }, /*#__PURE__*/React.createElement("img", {
+      src: src,
+      alt: m,
+      style: {
+        width: '100%',
+        height: '100%',
+        objectFit: 'contain',
+        display: 'block'
+      },
+      onError: e => {
+        e.currentTarget.style.display = 'none';
+        e.currentTarget.parentNode.textContent = m;
+      }
+    }));
   }
-  return (
-    <div className="mono" style={{width:size,height:size,borderRadius:radius,fontSize:fs}}>{m}</div>
-  );
-};
-</script>
-<script type="text/babel">/* ============================================================
+  return /*#__PURE__*/React.createElement("div", {
+    className: "mono",
+    style: {
+      width: size,
+      height: size,
+      borderRadius: radius,
+      fontSize: fs
+    }
+  }, m);
+};</script>
+<script>/* ============================================================
    Forma — Home + section views (Stack, Discover, Collections, Trending)
    ============================================================ */
-const { useState:hUseState, useMemo:hUseMemo } = React;
+const {
+  useState: hUseState,
+  useMemo: hUseMemo
+} = React;
 
 /* ---- shared tool card ---- */
-window.ToolCard = function ToolCard({id, why, t, inStack, saved, onStack, onSave, onOpen, dense}){
-  const tl=window.toolsById[id]; if(!tl) return null;
-  return (
-    <div className="tcard" onClick={()=>onOpen?onOpen(id):onStack(id)}>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-        <window.Mono m={tl.m} website={tl.website}/>
-        <div className={"heart"+(saved?' on':'')} onClick={e=>{e.stopPropagation();onSave(id);}} aria-label="save">
-          {saved?'\u2665':'\u2661'}
-        </div>
-      </div>
-      <div>
-        <div style={{fontWeight:600,fontSize:15.5}}>{tl.n}</div>
-        <div className="meta" style={{marginTop:3,lineHeight:1.45,minHeight:dense?0:34}}>{tl.d}</div>
-      </div>
-      <div style={{display:'flex',alignItems:'center',gap:8,marginTop:'auto',paddingTop:4}}>
-        <span className="tag">{tl.c}</span>
-        {why && <span className="meta" style={{display:'inline-flex',alignItems:'center',gap:5,fontSize:11.5}}><window.Star size={10} color="var(--ink-3)"/>{why}</span>}
-        <button className={inStack?'pill':'pill dark'} style={{marginLeft:'auto',padding:'7px 13px',fontSize:12.5}}
-          onClick={e=>{e.stopPropagation();onStack(id);}}>
-          {inStack ? <><window.Icon.check size={14}/> {t('in_stack')}</> : <>+ {t('add')}</>}
-        </button>
-      </div>
-    </div>
-  );
+window.ToolCard = function ToolCard({
+  id,
+  why,
+  t,
+  inStack,
+  saved,
+  onStack,
+  onSave,
+  onOpen,
+  dense
+}) {
+  const tl = window.toolsById[id];
+  if (!tl) return null;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "tcard",
+    onClick: () => onOpen ? onOpen(id) : onStack(id)
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start'
+    }
+  }, /*#__PURE__*/React.createElement(window.Mono, {
+    m: tl.m,
+    website: tl.website
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "heart" + (saved ? ' on' : ''),
+    onClick: e => {
+      e.stopPropagation();
+      onSave(id);
+    },
+    "aria-label": "save"
+  }, saved ? '\u2665' : '\u2661')), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 600,
+      fontSize: 15.5
+    }
+  }, tl.n), /*#__PURE__*/React.createElement("div", {
+    className: "meta",
+    style: {
+      marginTop: 3,
+      lineHeight: 1.45,
+      minHeight: dense ? 0 : 34
+    }
+  }, tl.d)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+      marginTop: 'auto',
+      paddingTop: 4
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "tag"
+  }, tl.c), why && /*#__PURE__*/React.createElement("span", {
+    className: "meta",
+    style: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 5,
+      fontSize: 11.5
+    }
+  }, /*#__PURE__*/React.createElement(window.Star, {
+    size: 10,
+    color: "var(--ink-3)"
+  }), why), /*#__PURE__*/React.createElement("button", {
+    className: inStack ? 'pill' : 'pill dark',
+    style: {
+      marginLeft: 'auto',
+      padding: '7px 13px',
+      fontSize: 12.5
+    },
+    onClick: e => {
+      e.stopPropagation();
+      onStack(id);
+    }
+  }, inStack ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(window.Icon.check, {
+    size: 14
+  }), " ", t('in_stack')) : /*#__PURE__*/React.createElement(React.Fragment, null, "+ ", t('add')))));
 };
-
-window.ToolDetailModal = function ToolDetailModal({id, t, inStack, saved, onStack, onSave, onClose}){
-  const tl=window.toolsById[id]; if(!tl) return null;
-  return (
-    <div className="scrim show" onClick={onClose}>
-      <div className="modal" onClick={e=>e.stopPropagation()} style={{padding:'32px 28px'}}>
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:20}}>
-          <window.Mono m={tl.m} website={tl.website} size={52} r={14} fs={22}/>
-          <button className="heart" style={{background:'transparent',border:'none'}} onClick={onClose}><window.Icon.close size={16}/></button>
-        </div>
-        <h2 className="serif" style={{fontSize:26,fontWeight:700,marginBottom:6}}>{tl.n}</h2>
-        <div className="meta" style={{marginBottom:16,lineHeight:1.6,fontSize:14.5}}>{tl.d}</div>
-        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:22}}>
-          {tl.c && <span className="tag">{tl.c}</span>}
-          {tl.pricing && <span className="tag">{tl.pricing}</span>}
-        </div>
-        <div style={{display:'flex',gap:10,alignItems:'center'}}>
-          <button className={inStack?'pill':'pill dark'} style={{flex:1,justifyContent:'center'}} onClick={()=>onStack(id)}>
-            {inStack ? <><window.Icon.check size={15}/> {t('in_stack')}</> : <>+ {t('add')}</>}
-          </button>
-          <div className={"heart"+(saved?' on':'')} onClick={()=>onSave(id)} style={{cursor:'pointer'}}>{saved?'♥':'♡'}</div>
-        </div>
-        {tl.website && tl.website!=='#' && (
-          <a href={tl.website} target="_blank" rel="noopener noreferrer"
-             className="pill ghost" style={{display:'flex',marginTop:10,justifyContent:'center',textDecoration:'none',color:'var(--ink-2)',fontSize:13}}>
-            {t('open')} <window.Icon.arrow size={14}/>
-          </a>
-        )}
-      </div>
-    </div>
-  );
+window.ToolDetailModal = function ToolDetailModal({
+  id,
+  t,
+  inStack,
+  saved,
+  onStack,
+  onSave,
+  onClose
+}) {
+  const tl = window.toolsById[id];
+  if (!tl) return null;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "scrim show",
+    onClick: onClose
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "modal",
+    onClick: e => e.stopPropagation(),
+    style: {
+      padding: '32px 28px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement(window.Mono, {
+    m: tl.m,
+    website: tl.website,
+    size: 52,
+    r: 14,
+    fs: 22
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "heart",
+    style: {
+      background: 'transparent',
+      border: 'none'
+    },
+    onClick: onClose
+  }, /*#__PURE__*/React.createElement(window.Icon.close, {
+    size: 16
+  }))), /*#__PURE__*/React.createElement("h2", {
+    className: "serif",
+    style: {
+      fontSize: 26,
+      fontWeight: 700,
+      marginBottom: 6
+    }
+  }, tl.n), /*#__PURE__*/React.createElement("div", {
+    className: "meta",
+    style: {
+      marginBottom: 16,
+      lineHeight: 1.6,
+      fontSize: 14.5
+    }
+  }, tl.d), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8,
+      flexWrap: 'wrap',
+      marginBottom: 22
+    }
+  }, tl.c && /*#__PURE__*/React.createElement("span", {
+    className: "tag"
+  }, tl.c), tl.pricing && /*#__PURE__*/React.createElement("span", {
+    className: "tag"
+  }, tl.pricing)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 10,
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: inStack ? 'pill' : 'pill dark',
+    style: {
+      flex: 1,
+      justifyContent: 'center'
+    },
+    onClick: () => onStack(id)
+  }, inStack ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(window.Icon.check, {
+    size: 15
+  }), " ", t('in_stack')) : /*#__PURE__*/React.createElement(React.Fragment, null, "+ ", t('add'))), /*#__PURE__*/React.createElement("div", {
+    className: "heart" + (saved ? ' on' : ''),
+    onClick: () => onSave(id),
+    style: {
+      cursor: 'pointer'
+    }
+  }, saved ? '♥' : '♡')), tl.website && tl.website !== '#' && /*#__PURE__*/React.createElement("a", {
+    href: tl.website,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    className: "pill ghost",
+    style: {
+      display: 'flex',
+      marginTop: 10,
+      justifyContent: 'center',
+      textDecoration: 'none',
+      color: 'var(--ink-2)',
+      fontSize: 13
+    }
+  }, t('open'), " ", /*#__PURE__*/React.createElement(window.Icon.arrow, {
+    size: 14
+  }))));
 };
-
-const SectionHead = ({title, sub, action, onAction}) => (
-  <div style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',gap:16,marginBottom:18}}>
-    <div>
-      <h2 className="serif" style={{fontSize:24,fontWeight:700,letterSpacing:'-.005em'}}>{title}</h2>
-      {sub && <div className="meta" style={{marginTop:5}}>{sub}</div>}
-    </div>
-    {action && <button className="pill ghost" style={{padding:'8px 4px',fontSize:13,color:'var(--ink-2)',border:'none'}} onClick={onAction}>
-      {action} <window.Icon.arrow size={15}/></button>}
-  </div>
-);
+const SectionHead = ({
+  title,
+  sub,
+  action,
+  onAction
+}) => /*#__PURE__*/React.createElement("div", {
+  style: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    gap: 16,
+    marginBottom: 18
+  }
+}, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
+  className: "serif",
+  style: {
+    fontSize: 24,
+    fontWeight: 700,
+    letterSpacing: '-.005em'
+  }
+}, title), sub && /*#__PURE__*/React.createElement("div", {
+  className: "meta",
+  style: {
+    marginTop: 5
+  }
+}, sub)), action && /*#__PURE__*/React.createElement("button", {
+  className: "pill ghost",
+  style: {
+    padding: '8px 4px',
+    fontSize: 13,
+    color: 'var(--ink-2)',
+    border: 'none'
+  },
+  onClick: onAction
+}, action, " ", /*#__PURE__*/React.createElement(window.Icon.arrow, {
+  size: 15
+})));
 window.SectionHead = SectionHead;
-
-const grid = (min=240)=>({display:'grid',gridTemplateColumns:`repeat(auto-fill,minmax(${min}px,1fr))`,gap:16});
+const grid = (min = 240) => ({
+  display: 'grid',
+  gridTemplateColumns: `repeat(auto-fill,minmax(${min}px,1fr))`,
+  gap: 16
+});
 
 /* ===================== HOME ===================== */
-window.HomeView = function HomeView(props){
-  const {t, name, stack, saved, actions, collections, nav, showActivity, showTrending, lang, onOpen} = props;
-  const hour=new Date().getHours();
-  const greet = hour<12?t('greet_morning'):hour<18?t('greet_after'):t('greet_evening');
-  const card = (id,why)=>(<window.ToolCard key={id} id={id} why={why} t={t}
-      inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave} onOpen={onOpen}/>);
-
-  return (
-    <div className="stagger" style={{display:'flex',flexDirection:'column',gap:46}}>
-      {/* hero */}
-      <header style={{animationDelay:'0ms'}}>
-        <div className="label" style={{marginBottom:14}}>{new Date().toLocaleDateString(lang,{weekday:'long',month:'long',day:'numeric'})}</div>
-        <h1 className="serif" style={{fontSize:'clamp(34px,5vw,52px)',fontWeight:800,letterSpacing:'-.015em',lineHeight:1.03}}>
-          {greet}, {name}.
-        </h1>
-        <p className="serif" style={{fontSize:'clamp(18px,2.4vw,23px)',fontStyle:'italic',color:'var(--ink-2)',marginTop:12,maxWidth:560}}>
-          {t('tagline')}
-        </p>
-        <div style={{display:'flex',gap:11,marginTop:26,flexWrap:'wrap'}}>
-          <button className="pill dark" onClick={()=>nav('discover')}><window.Star size={14} color="#fff"/> {t('cta_discover')}</button>
-          <button className="pill" onClick={()=>nav('stack')}>{t('cta_build')}</button>
-        </div>
-      </header>
-
-      {/* my stack */}
-      <section>
-        <SectionHead title={t('s_stack')} sub={t('s_stack_sub')} action={t('manage')} onAction={()=>nav('stack')}/>
-        <div style={grid(238)}>
-          {[...stack].slice(0,4).map(id=>card(id))}
-          <button onClick={()=>nav('discover')} style={{border:'1.5px dashed var(--line)',borderRadius:20,background:'transparent',
-            display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:10,color:'var(--ink-3)',cursor:'pointer',minHeight:150,transition:'.16s'}}
-            onMouseEnter={e=>e.currentTarget.style.borderColor='var(--ink-3)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--line)'}>
-            <window.Icon.plus size={22}/><span style={{fontSize:13,fontWeight:500}}>{t('add_tool')}</span>
-          </button>
-        </div>
-      </section>
-
-      {/* recommended */}
-      <section>
-        <SectionHead title={t('s_reco')} sub={t('s_reco_sub')} action={t('see_all')} onAction={()=>nav('discover')}/>
-        <div style={grid(258)}>{window.RECO.map(r=>card(r.id, r.why))}</div>
-      </section>
-
-      {/* collections */}
-      <section>
-        <SectionHead title={t('s_collections')} action={t('new_collection')} onAction={()=>nav('collections')}/>
-        <div style={grid(220)}>
-          {collections.slice(0,4).map(c=>(
-            <button key={c.id} className="tcard" style={{alignItems:'stretch',textAlign:'left'}} onClick={()=>nav('collections',c.id)}>
-              <div style={{height:90,position:'relative',overflow:'hidden',background:'#16140E',borderRadius:'var(--rsm)'}}>
-                <div style={{position:'absolute',inset:0,display:'flex',alignItems:'flex-end',gap:6,padding:12}}>
-                  {c.tools.slice(0,4).map(id=>{const tl=window.toolsById[id];return tl?<window.Mono key={id} m={tl.m} website={tl.website} size={30} r={9} fs={13}/>:null;})}
-                </div>
-              </div>
-              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginTop:'auto'}}>
-                <div><div className="serif" style={{fontWeight:700,fontSize:16}}>{c.n}</div>
-                  <div className="meta" style={{marginTop:2}}>{c.tools.length} {t('tools_count')}</div></div>
-                <window.Icon.arrow size={16} color="var(--ink-3)"/>
-              </div>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* trending + activity row */}
-      {(showTrending||showActivity) && (
-      <section style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))',gap:24}}>
-        {showTrending && (
-          <div>
-            <SectionHead title={t('s_trending')} action={t('see_all')} onAction={()=>nav('trending')}/>
-            <div className="soft" style={{padding:'8px 8px',boxShadow:'var(--shadow-sm)'}}>
-              {window.TRENDING.slice(0,5).map((tr,i)=>{const tl=window.toolsById[tr.id];return(
-                <div key={tr.id} className="toolrow" style={{padding:'12px 14px',borderTop:i?'1px solid var(--line-2)':'none',cursor:'pointer'}}
-                  onClick={()=>actions.toggleStack(tr.id)}>
-                  <span className="serif" style={{fontSize:15,color:'var(--ink-3)',width:18}}>{i+1}</span>
-                  <window.Mono m={tl.m} website={tl.website} size={36} r={10} fs={15}/>
-                  <div style={{flex:1,minWidth:0}}><div style={{fontWeight:600,fontSize:14}}>{tl.n} {tr.badge&&<span className="tag" style={{marginLeft:6,padding:'2px 8px',fontSize:10,color:'var(--ink)',borderColor:'var(--ink)'}}>{tr.badge}</span>}</div><div className="meta">{tl.c}</div></div>
-                  <span style={{fontSize:13,fontWeight:600,color:'#3aa76d'}}>{tr.t}</span>
-                </div>
-              );})}
-            </div>
-          </div>
-        )}
-        {showActivity && (
-          <div>
-            <SectionHead title={t('s_activity')}/>
-            <div className="soft" style={{padding:'8px 8px',boxShadow:'var(--shadow-sm)'}}>
-              {window.ACTIVITY.map((a,i)=>{const Ic=a.ic==='star'?window.Star:(window.Icon[a.ic]||window.Icon.bolt);return(
-                <div key={i} className="toolrow" style={{padding:'13px 14px',borderTop:i?'1px solid var(--line-2)':'none',alignItems:'flex-start'}}>
-                  <div style={{width:34,height:34,borderRadius:10,background:'var(--fill)',display:'grid',placeItems:'center',flex:'none',color:'var(--ink)'}}>
-                    <Ic size={16}/>
-                  </div>
-                  <div style={{flex:1}}>
-                    <div style={{fontSize:13.5,lineHeight:1.4}}
-                      dangerouslySetInnerHTML={{__html:t(a.key,{x:`<b style="font-weight:600">${a.a}</b>`})}}/>
-                    <div className="meta" style={{marginTop:2,fontSize:11.5}}>{a.t}</div>
-                  </div>
-                </div>
-              );})}
-            </div>
-          </div>
-        )}
-      </section>
-      )}
-    </div>
-  );
+window.HomeView = function HomeView(props) {
+  const {
+    t,
+    name,
+    stack,
+    saved,
+    actions,
+    collections,
+    nav,
+    showActivity,
+    showTrending,
+    lang,
+    onOpen
+  } = props;
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? t('greet_morning') : hour < 18 ? t('greet_after') : t('greet_evening');
+  const card = (id, why) => /*#__PURE__*/React.createElement(window.ToolCard, {
+    key: id,
+    id: id,
+    why: why,
+    t: t,
+    inStack: stack.has(id),
+    saved: saved.has(id),
+    onStack: actions.toggleStack,
+    onSave: actions.toggleSave,
+    onOpen: onOpen
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    className: "stagger",
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 46
+    }
+  }, /*#__PURE__*/React.createElement("header", {
+    style: {
+      animationDelay: '0ms'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "label",
+    style: {
+      marginBottom: 14
+    }
+  }, new Date().toLocaleDateString(lang, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric'
+  })), /*#__PURE__*/React.createElement("h1", {
+    className: "serif",
+    style: {
+      fontSize: 'clamp(34px,5vw,52px)',
+      fontWeight: 800,
+      letterSpacing: '-.015em',
+      lineHeight: 1.03
+    }
+  }, greet, ", ", name, "."), /*#__PURE__*/React.createElement("p", {
+    className: "serif",
+    style: {
+      fontSize: 'clamp(18px,2.4vw,23px)',
+      fontStyle: 'italic',
+      color: 'var(--ink-2)',
+      marginTop: 12,
+      maxWidth: 560
+    }
+  }, t('tagline')), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 11,
+      marginTop: 26,
+      flexWrap: 'wrap'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "pill dark",
+    onClick: () => nav('discover')
+  }, /*#__PURE__*/React.createElement(window.Star, {
+    size: 14,
+    color: "#fff"
+  }), " ", t('cta_discover')), /*#__PURE__*/React.createElement("button", {
+    className: "pill",
+    onClick: () => nav('stack')
+  }, t('cta_build')))), /*#__PURE__*/React.createElement("section", null, /*#__PURE__*/React.createElement(SectionHead, {
+    title: t('s_stack'),
+    sub: t('s_stack_sub'),
+    action: t('manage'),
+    onAction: () => nav('stack')
+  }), /*#__PURE__*/React.createElement("div", {
+    style: grid(238)
+  }, [...stack].slice(0, 4).map(id => card(id)), /*#__PURE__*/React.createElement("button", {
+    onClick: () => nav('discover'),
+    style: {
+      border: '1.5px dashed var(--line)',
+      borderRadius: 20,
+      background: 'transparent',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 10,
+      color: 'var(--ink-3)',
+      cursor: 'pointer',
+      minHeight: 150,
+      transition: '.16s'
+    },
+    onMouseEnter: e => e.currentTarget.style.borderColor = 'var(--ink-3)',
+    onMouseLeave: e => e.currentTarget.style.borderColor = 'var(--line)'
+  }, /*#__PURE__*/React.createElement(window.Icon.plus, {
+    size: 22
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      fontWeight: 500
+    }
+  }, t('add_tool'))))), /*#__PURE__*/React.createElement("section", null, /*#__PURE__*/React.createElement(SectionHead, {
+    title: t('s_reco'),
+    sub: t('s_reco_sub'),
+    action: t('see_all'),
+    onAction: () => nav('discover')
+  }), /*#__PURE__*/React.createElement("div", {
+    style: grid(258)
+  }, window.RECO.map(r => card(r.id, r.why)))), /*#__PURE__*/React.createElement("section", null, /*#__PURE__*/React.createElement(SectionHead, {
+    title: t('s_collections'),
+    action: t('new_collection'),
+    onAction: () => nav('collections')
+  }), /*#__PURE__*/React.createElement("div", {
+    style: grid(220)
+  }, collections.slice(0, 4).map(c => /*#__PURE__*/React.createElement("button", {
+    key: c.id,
+    className: "tcard",
+    style: {
+      alignItems: 'stretch',
+      textAlign: 'left'
+    },
+    onClick: () => nav('collections', c.id)
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 90,
+      position: 'relative',
+      overflow: 'hidden',
+      background: '#16140E',
+      borderRadius: 'var(--rsm)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      display: 'flex',
+      alignItems: 'flex-end',
+      gap: 6,
+      padding: 12
+    }
+  }, c.tools.slice(0, 4).map(id => {
+    const tl = window.toolsById[id];
+    return tl ? /*#__PURE__*/React.createElement(window.Mono, {
+      key: id,
+      m: tl.m,
+      website: tl.website,
+      size: 30,
+      r: 9,
+      fs: 13
+    }) : null;
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "serif",
+    style: {
+      fontWeight: 700,
+      fontSize: 16
+    }
+  }, c.n), /*#__PURE__*/React.createElement("div", {
+    className: "meta",
+    style: {
+      marginTop: 2
+    }
+  }, c.tools.length, " ", t('tools_count'))), /*#__PURE__*/React.createElement(window.Icon.arrow, {
+    size: 16,
+    color: "var(--ink-3)"
+  })))))), (showTrending || showActivity) && /*#__PURE__*/React.createElement("section", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))',
+      gap: 24
+    }
+  }, showTrending && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(SectionHead, {
+    title: t('s_trending'),
+    action: t('see_all'),
+    onAction: () => nav('trending')
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "soft",
+    style: {
+      padding: '8px 8px',
+      boxShadow: 'var(--shadow-sm)'
+    }
+  }, window.TRENDING.slice(0, 5).map((tr, i) => {
+    const tl = window.toolsById[tr.id];
+    return /*#__PURE__*/React.createElement("div", {
+      key: tr.id,
+      className: "toolrow",
+      style: {
+        padding: '12px 14px',
+        borderTop: i ? '1px solid var(--line-2)' : 'none',
+        cursor: 'pointer'
+      },
+      onClick: () => actions.toggleStack(tr.id)
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "serif",
+      style: {
+        fontSize: 15,
+        color: 'var(--ink-3)',
+        width: 18
+      }
+    }, i + 1), /*#__PURE__*/React.createElement(window.Mono, {
+      m: tl.m,
+      website: tl.website,
+      size: 36,
+      r: 10,
+      fs: 15
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        minWidth: 0
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 600,
+        fontSize: 14
+      }
+    }, tl.n, " ", tr.badge && /*#__PURE__*/React.createElement("span", {
+      className: "tag",
+      style: {
+        marginLeft: 6,
+        padding: '2px 8px',
+        fontSize: 10,
+        color: 'var(--ink)',
+        borderColor: 'var(--ink)'
+      }
+    }, tr.badge)), /*#__PURE__*/React.createElement("div", {
+      className: "meta"
+    }, tl.c)), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 13,
+        fontWeight: 600,
+        color: '#3aa76d'
+      }
+    }, tr.t));
+  }))), showActivity && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(SectionHead, {
+    title: t('s_activity')
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "soft",
+    style: {
+      padding: '8px 8px',
+      boxShadow: 'var(--shadow-sm)'
+    }
+  }, window.ACTIVITY.map((a, i) => {
+    const Ic = a.ic === 'star' ? window.Star : window.Icon[a.ic] || window.Icon.bolt;
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "toolrow",
+      style: {
+        padding: '13px 14px',
+        borderTop: i ? '1px solid var(--line-2)' : 'none',
+        alignItems: 'flex-start'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: 34,
+        height: 34,
+        borderRadius: 10,
+        background: 'var(--fill)',
+        display: 'grid',
+        placeItems: 'center',
+        flex: 'none',
+        color: 'var(--ink)'
+      }
+    }, /*#__PURE__*/React.createElement(Ic, {
+      size: 16
+    })), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 13.5,
+        lineHeight: 1.4
+      },
+      dangerouslySetInnerHTML: {
+        __html: t(a.key, {
+          x: `<b style="font-weight:600">${a.a}</b>`
+        })
+      }
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "meta",
+      style: {
+        marginTop: 2,
+        fontSize: 11.5
+      }
+    }, a.t)));
+  })))));
 };
 
 /* ===================== MY STACK ===================== */
-window.StackView = function StackView({t, stack, saved, actions, nav, lang, onOpen}){
-  const stackArr=[...stack], savedOnly=[...saved].filter(id=>!stack.has(id));
-  const card=(id)=>(<window.ToolCard key={id} id={id} t={t} inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave} onOpen={onOpen}/>);
-  return (
-    <div className="stagger" style={{display:'flex',flexDirection:'column',gap:40}}>
-      <header>
-        <div className="label" style={{marginBottom:12}}>{t('nav_stack')}</div>
-        <h1 className="serif" style={{fontSize:'clamp(30px,4vw,42px)',fontWeight:800,letterSpacing:'-.01em'}}>{t('s_stack')}</h1>
-        <p className="meta" style={{marginTop:8,fontSize:14}}>{stackArr.length} {t('tools_count')} · {savedOnly.length} {t('saved_n').toLowerCase()}</p>
-      </header>
-      <section>
-        <SectionHead title={t('in_stack')} action={t('cta_discover')} onAction={()=>nav('discover')}/>
-        {stackArr.length? <div style={grid(238)}>{stackArr.map(card)}</div>
-          : <div className="meta">—</div>}
-      </section>
-      {savedOnly.length>0 && (
-        <section>
-          <SectionHead title={t('saved_n')}/>
-          <div style={grid(238)}>{savedOnly.map(card)}</div>
-        </section>
-      )}
-    </div>
-  );
+window.StackView = function StackView({
+  t,
+  stack,
+  saved,
+  actions,
+  nav,
+  lang,
+  onOpen
+}) {
+  const stackArr = [...stack],
+    savedOnly = [...saved].filter(id => !stack.has(id));
+  const card = id => /*#__PURE__*/React.createElement(window.ToolCard, {
+    key: id,
+    id: id,
+    t: t,
+    inStack: stack.has(id),
+    saved: saved.has(id),
+    onStack: actions.toggleStack,
+    onSave: actions.toggleSave,
+    onOpen: onOpen
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    className: "stagger",
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 40
+    }
+  }, /*#__PURE__*/React.createElement("header", null, /*#__PURE__*/React.createElement("div", {
+    className: "label",
+    style: {
+      marginBottom: 12
+    }
+  }, t('nav_stack')), /*#__PURE__*/React.createElement("h1", {
+    className: "serif",
+    style: {
+      fontSize: 'clamp(30px,4vw,42px)',
+      fontWeight: 800,
+      letterSpacing: '-.01em'
+    }
+  }, t('s_stack')), /*#__PURE__*/React.createElement("p", {
+    className: "meta",
+    style: {
+      marginTop: 8,
+      fontSize: 14
+    }
+  }, stackArr.length, " ", t('tools_count'), " \xB7 ", savedOnly.length, " ", t('saved_n').toLowerCase())), /*#__PURE__*/React.createElement("section", null, /*#__PURE__*/React.createElement(SectionHead, {
+    title: t('in_stack'),
+    action: t('cta_discover'),
+    onAction: () => nav('discover')
+  }), stackArr.length ? /*#__PURE__*/React.createElement("div", {
+    style: grid(238)
+  }, stackArr.map(card)) : /*#__PURE__*/React.createElement("div", {
+    className: "meta"
+  }, "\u2014")), savedOnly.length > 0 && /*#__PURE__*/React.createElement("section", null, /*#__PURE__*/React.createElement(SectionHead, {
+    title: t('saved_n')
+  }), /*#__PURE__*/React.createElement("div", {
+    style: grid(238)
+  }, savedOnly.map(card))));
 };
 
 /* ===================== DISCOVER ===================== */
-window.DiscoverView = function DiscoverView({t, stack, saved, actions, lang, onOpen}){
-  const [cat,setCat]=hUseState('All'); const [q,setQ]=hUseState('');
-  const list=hUseMemo(()=>window.TOOLS.filter(tl=>
-    (cat==='All'||tl.c===cat) && (!q || (tl.n+tl.d+tl.c).toLowerCase().includes(q.toLowerCase()))
-  ),[cat,q]);
-  return (
-    <div className="fade-in" style={{display:'flex',flexDirection:'column',gap:28}}>
-      <header>
-        <div className="label" style={{marginBottom:12}}>{t('nav_discover')}</div>
-        <h1 className="serif" style={{fontSize:'clamp(30px,4vw,42px)',fontWeight:800,letterSpacing:'-.01em'}}>{t('cta_discover')}</h1>
-      </header>
-      <div style={{display:'flex',alignItems:'center',gap:11,background:'var(--surface)',border:'1px solid var(--line)',borderRadius:999,padding:'13px 20px',maxWidth:520,boxShadow:'var(--shadow-sm)'}}>
-        <window.Icon.search size={18} color="var(--ink-3)"/>
-        <input value={q} onChange={e=>setQ(e.target.value)} placeholder={t('asst_ph')} style={{border:'none',outline:'none',background:'transparent',flex:1,fontSize:14.5}}/>
-      </div>
-      <div className="scrl" style={{display:'flex',gap:8,paddingBottom:4,overflowX:'auto'}}>
-        {window.CATEGORIES.map(c=><button key={c} className={"chip"+(cat===c?' on':'')} onClick={()=>setCat(c)}>{c}</button>)}
-      </div>
-      <div style={grid(248)}>
-        {list.map(tl=><window.ToolCard key={tl.id} id={tl.id} t={t} inStack={stack.has(tl.id)} saved={saved.has(tl.id)} onStack={actions.toggleStack} onSave={actions.toggleSave} onOpen={onOpen}/>)}
-      </div>
-    </div>
-  );
+window.DiscoverView = function DiscoverView({
+  t,
+  stack,
+  saved,
+  actions,
+  lang,
+  onOpen
+}) {
+  const [cat, setCat] = hUseState('All');
+  const [q, setQ] = hUseState('');
+  const list = hUseMemo(() => window.TOOLS.filter(tl => (cat === 'All' || tl.c === cat) && (!q || (tl.n + tl.d + tl.c).toLowerCase().includes(q.toLowerCase()))), [cat, q]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "fade-in",
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 28
+    }
+  }, /*#__PURE__*/React.createElement("header", null, /*#__PURE__*/React.createElement("div", {
+    className: "label",
+    style: {
+      marginBottom: 12
+    }
+  }, t('nav_discover')), /*#__PURE__*/React.createElement("h1", {
+    className: "serif",
+    style: {
+      fontSize: 'clamp(30px,4vw,42px)',
+      fontWeight: 800,
+      letterSpacing: '-.01em'
+    }
+  }, t('cta_discover'))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 11,
+      background: 'var(--surface)',
+      border: '1px solid var(--line)',
+      borderRadius: 999,
+      padding: '13px 20px',
+      maxWidth: 520,
+      boxShadow: 'var(--shadow-sm)'
+    }
+  }, /*#__PURE__*/React.createElement(window.Icon.search, {
+    size: 18,
+    color: "var(--ink-3)"
+  }), /*#__PURE__*/React.createElement("input", {
+    value: q,
+    onChange: e => setQ(e.target.value),
+    placeholder: t('asst_ph'),
+    style: {
+      border: 'none',
+      outline: 'none',
+      background: 'transparent',
+      flex: 1,
+      fontSize: 14.5
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "scrl",
+    style: {
+      display: 'flex',
+      gap: 8,
+      paddingBottom: 4,
+      overflowX: 'auto'
+    }
+  }, window.CATEGORIES.map(c => /*#__PURE__*/React.createElement("button", {
+    key: c,
+    className: "chip" + (cat === c ? ' on' : ''),
+    onClick: () => setCat(c)
+  }, c))), /*#__PURE__*/React.createElement("div", {
+    style: grid(248)
+  }, list.map(tl => /*#__PURE__*/React.createElement(window.ToolCard, {
+    key: tl.id,
+    id: tl.id,
+    t: t,
+    inStack: stack.has(tl.id),
+    saved: saved.has(tl.id),
+    onStack: actions.toggleStack,
+    onSave: actions.toggleSave,
+    onOpen: onOpen
+  }))));
 };
 
 /* ===================== COLLECTIONS ===================== */
-window.CollectionsView = function CollectionsView({t, collections, openId, stack, saved, actions, nav, lang, onOpen}){
-  const col = collections.find(c=>c.id===openId);
-  if(col){
-    return (
-      <div className="fade-in" style={{display:'flex',flexDirection:'column',gap:26}}>
-        <button className="pill ghost" style={{alignSelf:'flex-start',border:'none',padding:'6px 4px'}} onClick={()=>nav('collections')}>
-          <span style={{transform:'rotate(180deg)',display:'inline-flex'}}><window.Icon.arrow size={16}/></span> {t('nav_collections')}
-        </button>
-        <header>
-          <div className="label" style={{marginBottom:10}}>{t('nav_collections')}</div>
-          <h1 className="serif" style={{fontSize:'clamp(30px,4vw,42px)',fontWeight:800,letterSpacing:'-.01em'}}>{col.n}</h1>
-          <p className="meta" style={{marginTop:8}}>{col.tools.length} {t('tools_count')}</p>
-        </header>
-        <div style={grid(248)}>
-          {col.tools.map(id=><window.ToolCard key={id} id={id} t={t} inStack={stack.has(id)} saved={saved.has(id)} onStack={actions.toggleStack} onSave={actions.toggleSave} onOpen={onOpen}/>)}
-        </div>
-      </div>
-    );
+window.CollectionsView = function CollectionsView({
+  t,
+  collections,
+  openId,
+  stack,
+  saved,
+  actions,
+  nav,
+  lang,
+  onOpen
+}) {
+  const col = collections.find(c => c.id === openId);
+  if (col) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "fade-in",
+      style: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 26
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      className: "pill ghost",
+      style: {
+        alignSelf: 'flex-start',
+        border: 'none',
+        padding: '6px 4px'
+      },
+      onClick: () => nav('collections')
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        transform: 'rotate(180deg)',
+        display: 'inline-flex'
+      }
+    }, /*#__PURE__*/React.createElement(window.Icon.arrow, {
+      size: 16
+    })), " ", t('nav_collections')), /*#__PURE__*/React.createElement("header", null, /*#__PURE__*/React.createElement("div", {
+      className: "label",
+      style: {
+        marginBottom: 10
+      }
+    }, t('nav_collections')), /*#__PURE__*/React.createElement("h1", {
+      className: "serif",
+      style: {
+        fontSize: 'clamp(30px,4vw,42px)',
+        fontWeight: 800,
+        letterSpacing: '-.01em'
+      }
+    }, col.n), /*#__PURE__*/React.createElement("p", {
+      className: "meta",
+      style: {
+        marginTop: 8
+      }
+    }, col.tools.length, " ", t('tools_count'))), /*#__PURE__*/React.createElement("div", {
+      style: grid(248)
+    }, col.tools.map(id => /*#__PURE__*/React.createElement(window.ToolCard, {
+      key: id,
+      id: id,
+      t: t,
+      inStack: stack.has(id),
+      saved: saved.has(id),
+      onStack: actions.toggleStack,
+      onSave: actions.toggleSave,
+      onOpen: onOpen
+    }))));
   }
-  return (
-    <div className="fade-in" style={{display:'flex',flexDirection:'column',gap:26}}>
-      <header style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',gap:16,flexWrap:'wrap'}}>
-        <div>
-          <div className="label" style={{marginBottom:12}}>{t('nav_collections')}</div>
-          <h1 className="serif" style={{fontSize:'clamp(30px,4vw,42px)',fontWeight:800,letterSpacing:'-.01em'}}>{t('s_collections')}</h1>
-        </div>
-        <button className="pill"><window.Icon.plus size={15}/> {t('new_collection')}</button>
-      </header>
-      <div style={grid(260)}>
-        {collections.map(c=>(
-          <button key={c.id} className="tcard" style={{textAlign:'left'}} onClick={()=>nav('collections',c.id)}>
-            <div style={{height:120,position:'relative',overflow:'hidden',background:'#16140E',borderRadius:'var(--rsm)'}}>
-              <div style={{position:'absolute',inset:0,display:'flex',flexWrap:'wrap',alignContent:'flex-end',gap:7,padding:14}}>
-                {c.tools.slice(0,6).map(id=>{const tl=window.toolsById[id];return tl?<window.Mono key={id} m={tl.m} website={tl.website} size={34} r={10} fs={14}/>:null;})}
-              </div>
-            </div>
-            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginTop:6}}>
-              <div><div className="serif" style={{fontWeight:700,fontSize:18}}>{c.n}</div>
-                <div className="meta" style={{marginTop:2}}>{c.tools.length} {t('tools_count')}</div></div>
-              <window.Icon.arrow size={17} color="var(--ink-3)"/>
-            </div>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    className: "fade-in",
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 26
+    }
+  }, /*#__PURE__*/React.createElement("header", {
+    style: {
+      display: 'flex',
+      alignItems: 'flex-end',
+      justifyContent: 'space-between',
+      gap: 16,
+      flexWrap: 'wrap'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "label",
+    style: {
+      marginBottom: 12
+    }
+  }, t('nav_collections')), /*#__PURE__*/React.createElement("h1", {
+    className: "serif",
+    style: {
+      fontSize: 'clamp(30px,4vw,42px)',
+      fontWeight: 800,
+      letterSpacing: '-.01em'
+    }
+  }, t('s_collections'))), /*#__PURE__*/React.createElement("button", {
+    className: "pill"
+  }, /*#__PURE__*/React.createElement(window.Icon.plus, {
+    size: 15
+  }), " ", t('new_collection'))), /*#__PURE__*/React.createElement("div", {
+    style: grid(260)
+  }, collections.map(c => /*#__PURE__*/React.createElement("button", {
+    key: c.id,
+    className: "tcard",
+    style: {
+      textAlign: 'left'
+    },
+    onClick: () => nav('collections', c.id)
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 120,
+      position: 'relative',
+      overflow: 'hidden',
+      background: '#16140E',
+      borderRadius: 'var(--rsm)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      display: 'flex',
+      flexWrap: 'wrap',
+      alignContent: 'flex-end',
+      gap: 7,
+      padding: 14
+    }
+  }, c.tools.slice(0, 6).map(id => {
+    const tl = window.toolsById[id];
+    return tl ? /*#__PURE__*/React.createElement(window.Mono, {
+      key: id,
+      m: tl.m,
+      website: tl.website,
+      size: 34,
+      r: 10,
+      fs: 14
+    }) : null;
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: 6
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "serif",
+    style: {
+      fontWeight: 700,
+      fontSize: 18
+    }
+  }, c.n), /*#__PURE__*/React.createElement("div", {
+    className: "meta",
+    style: {
+      marginTop: 2
+    }
+  }, c.tools.length, " ", t('tools_count'))), /*#__PURE__*/React.createElement(window.Icon.arrow, {
+    size: 17,
+    color: "var(--ink-3)"
+  }))))));
 };
 
 /* ===================== TRENDING ===================== */
-window.TrendingView = function TrendingView({t, stack, saved, actions, lang}){
-  return (
-    <div className="fade-in" style={{display:'flex',flexDirection:'column',gap:26}}>
-      <header>
-        <div className="label" style={{marginBottom:12}}>{t('nav_trending')}</div>
-        <h1 className="serif" style={{fontSize:'clamp(30px,4vw,42px)',fontWeight:800,letterSpacing:'-.01em'}}>{t('s_trending')}</h1>
-      </header>
-      <div className="soft" style={{padding:'8px 10px'}}>
-        {window.TRENDING.map((tr,i)=>{const tl=window.toolsById[tr.id];return(
-          <div key={tr.id} className="toolrow" style={{padding:'16px 14px',borderTop:i?'1px solid var(--line-2)':'none'}}>
-            <span className="serif" style={{fontSize:22,color:'var(--ink-3)',width:30}}>{i+1}</span>
-            <window.Mono m={tl.m} website={tl.website} size={46} r={13} fs={19}/>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{fontWeight:600,fontSize:16}}>{tl.n} {tr.badge&&<span className="tag" style={{marginLeft:6,padding:'2px 8px',fontSize:10,color:'var(--ink)',borderColor:'var(--ink)'}}>{tr.badge}</span>}</div>
-              <div className="meta" style={{marginTop:2}}>{tl.d}</div>
-            </div>
-            <span style={{fontSize:14,fontWeight:600,color:'#3aa76d'}}>{tr.t}</span>
-            <button className={stack.has(tr.id)?'pill':'pill dark'} style={{padding:'8px 14px',fontSize:13}} onClick={()=>actions.toggleStack(tr.id)}>
-              {stack.has(tr.id)?<><window.Icon.check size={14}/> {t('in_stack')}</>:<>+ {t('add')}</>}
-            </button>
-          </div>
-        );})}
-      </div>
-    </div>
-  );
-};
-</script>
-<script type="text/babel">/* ============================================================
+window.TrendingView = function TrendingView({
+  t,
+  stack,
+  saved,
+  actions,
+  lang
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "fade-in",
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 26
+    }
+  }, /*#__PURE__*/React.createElement("header", null, /*#__PURE__*/React.createElement("div", {
+    className: "label",
+    style: {
+      marginBottom: 12
+    }
+  }, t('nav_trending')), /*#__PURE__*/React.createElement("h1", {
+    className: "serif",
+    style: {
+      fontSize: 'clamp(30px,4vw,42px)',
+      fontWeight: 800,
+      letterSpacing: '-.01em'
+    }
+  }, t('s_trending'))), /*#__PURE__*/React.createElement("div", {
+    className: "soft",
+    style: {
+      padding: '8px 10px'
+    }
+  }, window.TRENDING.map((tr, i) => {
+    const tl = window.toolsById[tr.id];
+    return /*#__PURE__*/React.createElement("div", {
+      key: tr.id,
+      className: "toolrow",
+      style: {
+        padding: '16px 14px',
+        borderTop: i ? '1px solid var(--line-2)' : 'none'
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "serif",
+      style: {
+        fontSize: 22,
+        color: 'var(--ink-3)',
+        width: 30
+      }
+    }, i + 1), /*#__PURE__*/React.createElement(window.Mono, {
+      m: tl.m,
+      website: tl.website,
+      size: 46,
+      r: 13,
+      fs: 19
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        minWidth: 0
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 600,
+        fontSize: 16
+      }
+    }, tl.n, " ", tr.badge && /*#__PURE__*/React.createElement("span", {
+      className: "tag",
+      style: {
+        marginLeft: 6,
+        padding: '2px 8px',
+        fontSize: 10,
+        color: 'var(--ink)',
+        borderColor: 'var(--ink)'
+      }
+    }, tr.badge)), /*#__PURE__*/React.createElement("div", {
+      className: "meta",
+      style: {
+        marginTop: 2
+      }
+    }, tl.d)), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 14,
+        fontWeight: 600,
+        color: '#3aa76d'
+      }
+    }, tr.t), /*#__PURE__*/React.createElement("button", {
+      className: stack.has(tr.id) ? 'pill' : 'pill dark',
+      style: {
+        padding: '8px 14px',
+        fontSize: 13
+      },
+      onClick: () => actions.toggleStack(tr.id)
+    }, stack.has(tr.id) ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(window.Icon.check, {
+      size: 14
+    }), " ", t('in_stack')) : /*#__PURE__*/React.createElement(React.Fragment, null, "+ ", t('add'))));
+  })));
+};</script>
+<script>/* ============================================================
    Forma — AI Assistant (conversation engine, canned but reactive)
    ============================================================ */
-const { useState:aUseState, useRef:aUseRef, useEffect:aUseEffect } = React;
+const {
+  useState: aUseState,
+  useRef: aUseRef,
+  useEffect: aUseEffect
+} = React;
 
 /* goal -> recipe */
 const RECIPES = {
-  linkedin: {q:['Grow on LinkedIn','Crescere su LinkedIn','Crecer en LinkedIn'],
-    name:'LinkedIn Growth', tools:['taplio','opus','jasper','gamma'],
-    r:['Here\u2019s a lean LinkedIn stack: schedule with Taplio, turn talks into clips with Opus Clip, draft posts with Jasper, and make carousels in Gamma.',
-       'Ecco uno stack snello per LinkedIn: pianifica con Taplio, crea clip con Opus Clip, scrivi i post con Jasper e i caroselli con Gamma.',
-       'Un stack ágil para LinkedIn: programa con Taplio, crea clips con Opus Clip, redacta con Jasper y carruseles en Gamma.']},
-  newsletter:{q:['Start a newsletter','Avviare una newsletter','Crear un newsletter'],
-    name:'Newsletter Stack', tools:['beehiiv','jasper','grammarly','notion'],
-    r:['For a newsletter I\u2019d pair beehiiv for sending & growth, Jasper for drafts, Grammarly to polish, and Notion AI to plan issues.',
-       'Per una newsletter userei beehiiv per invio e crescita, Jasper per le bozze, Grammarly per rifinire e Notion AI per pianificare.',
-       'Para un newsletter usaría beehiiv para envío y crecimiento, Jasper para borradores, Grammarly para pulir y Notion AI para planear.']},
-  visual:{q:['Visual branding','Branding visivo','Branding visual'],
-    name:'Visual Branding', tools:['canva','midjourney','gamma','descript'],
-    r:['Build a visual identity with Midjourney for original imagery, Canva AI for on-brand assets, Gamma for layouts, and Descript for video.',
-       'Costruisci un\u2019identità visiva con Midjourney per le immagini, Canva AI per gli asset, Gamma per i layout e Descript per i video.',
-       'Crea una identidad visual con Midjourney, Canva AI para assets, Gamma para layouts y Descript para video.']},
-  video:{q:['Repurpose my video','Riusare i miei video','Reutilizar mis videos'],
-    name:'Content Repurposing', tools:['descript','opus','eleven'],
-    r:['To repurpose video: edit fast in Descript, cut shorts with Opus Clip, and add voiceover with ElevenLabs.',
-       'Per riusare i video: monta veloce in Descript, taglia gli short con Opus Clip e aggiungi voce con ElevenLabs.',
-       'Para reutilizar video: edita rápido en Descript, corta shorts con Opus Clip y añade voz con ElevenLabs.']},
+  linkedin: {
+    q: ['Grow on LinkedIn', 'Crescere su LinkedIn', 'Crecer en LinkedIn'],
+    name: 'LinkedIn Growth',
+    tools: ['taplio', 'opus', 'jasper', 'gamma'],
+    r: ['Here\u2019s a lean LinkedIn stack: schedule with Taplio, turn talks into clips with Opus Clip, draft posts with Jasper, and make carousels in Gamma.', 'Ecco uno stack snello per LinkedIn: pianifica con Taplio, crea clip con Opus Clip, scrivi i post con Jasper e i caroselli con Gamma.', 'Un stack ágil para LinkedIn: programa con Taplio, crea clips con Opus Clip, redacta con Jasper y carruseles en Gamma.']
+  },
+  newsletter: {
+    q: ['Start a newsletter', 'Avviare una newsletter', 'Crear un newsletter'],
+    name: 'Newsletter Stack',
+    tools: ['beehiiv', 'jasper', 'grammarly', 'notion'],
+    r: ['For a newsletter I\u2019d pair beehiiv for sending & growth, Jasper for drafts, Grammarly to polish, and Notion AI to plan issues.', 'Per una newsletter userei beehiiv per invio e crescita, Jasper per le bozze, Grammarly per rifinire e Notion AI per pianificare.', 'Para un newsletter usaría beehiiv para envío y crecimiento, Jasper para borradores, Grammarly para pulir y Notion AI para planear.']
+  },
+  visual: {
+    q: ['Visual branding', 'Branding visivo', 'Branding visual'],
+    name: 'Visual Branding',
+    tools: ['canva', 'midjourney', 'gamma', 'descript'],
+    r: ['Build a visual identity with Midjourney for original imagery, Canva AI for on-brand assets, Gamma for layouts, and Descript for video.', 'Costruisci un\u2019identità visiva con Midjourney per le immagini, Canva AI per gli asset, Gamma per i layout e Descript per i video.', 'Crea una identidad visual con Midjourney, Canva AI para assets, Gamma para layouts y Descript para video.']
+  },
+  video: {
+    q: ['Repurpose my video', 'Riusare i miei video', 'Reutilizar mis videos'],
+    name: 'Content Repurposing',
+    tools: ['descript', 'opus', 'eleven'],
+    r: ['To repurpose video: edit fast in Descript, cut shorts with Opus Clip, and add voiceover with ElevenLabs.', 'Per riusare i video: monta veloce in Descript, taglia gli short con Opus Clip e aggiungi voce con ElevenLabs.', 'Para reutilizar video: edita rápido en Descript, corta shorts con Opus Clip y añade voz con ElevenLabs.']
+  }
 };
-
-function pickRecipe(text){
-  const s=(text||'').toLowerCase();
-  if(/linkedin|personal brand|post/.test(s)) return 'linkedin';
-  if(/news|email|mail|subscrib|iscrit|boletin|newsletter/.test(s)) return 'newsletter';
-  if(/visual|brand|logo|image|design|grafic|imagen/.test(s)) return 'visual';
-  if(/video|reel|short|clip|youtube|podcast/.test(s)) return 'video';
+function pickRecipe(text) {
+  const s = (text || '').toLowerCase();
+  if (/linkedin|personal brand|post/.test(s)) return 'linkedin';
+  if (/news|email|mail|subscrib|iscrit|boletin|newsletter/.test(s)) return 'newsletter';
+  if (/visual|brand|logo|image|design|grafic|imagen/.test(s)) return 'visual';
+  if (/video|reel|short|clip|youtube|podcast/.test(s)) return 'video';
   return 'linkedin';
 }
-
-window.Assistant = function Assistant({t, lang, accent, onAddMany, onSaveCollection, compact}){
+window.Assistant = function Assistant({
+  t,
+  lang,
+  accent,
+  onAddMany,
+  onSaveCollection,
+  compact
+}) {
   const li = Math.max(0, window.LANGS.indexOf(lang));
-  const [msgs,setMsgs]=aUseState([{from:'a', text:t('asst_g1')}]);
-  const [text,setText]=aUseState('');
-  const [typing,setTyping]=aUseState(false);
-  const endRef=aUseRef(null);
-  aUseEffect(()=>{ endRef.current && endRef.current.scrollIntoView?null:null;
-    const sc=endRef.current&&endRef.current.parentElement; if(sc) sc.scrollTop=sc.scrollHeight; },[msgs,typing]);
-
-  function respond(userText){
-    const key=pickRecipe(userText);
-    const rec=RECIPES[key];
+  const [msgs, setMsgs] = aUseState([{
+    from: 'a',
+    text: t('asst_g1')
+  }]);
+  const [text, setText] = aUseState('');
+  const [typing, setTyping] = aUseState(false);
+  const endRef = aUseRef(null);
+  aUseEffect(() => {
+    endRef.current && endRef.current.scrollIntoView ? null : null;
+    const sc = endRef.current && endRef.current.parentElement;
+    if (sc) sc.scrollTop = sc.scrollHeight;
+  }, [msgs, typing]);
+  function respond(userText) {
+    const key = pickRecipe(userText);
+    const rec = RECIPES[key];
     setTyping(true);
-    setTimeout(()=>{
+    setTimeout(() => {
       setTyping(false);
-      setMsgs(m=>[...m,{from:'a', text:rec.r[li], tools:rec.tools, recipe:key}]);
+      setMsgs(m => [...m, {
+        from: 'a',
+        text: rec.r[li],
+        tools: rec.tools,
+        recipe: key
+      }]);
     }, 750);
   }
-  function send(v){
-    const val=(v??text).trim(); if(!val) return;
-    setMsgs(m=>[...m,{from:'u', text:val}]); setText(''); respond(val);
+  function send(v) {
+    const val = (v ?? text).trim();
+    if (!val) return;
+    setMsgs(m => [...m, {
+      from: 'u',
+      text: val
+    }]);
+    setText('');
+    respond(val);
   }
-  const quick = Object.values(RECIPES).map(r=>r.q[li]);
-
-  return (
-    <div style={{display:'flex',flexDirection:'column',height:'100%',minHeight:0}}>
-      <div style={{display:'flex',alignItems:'center',gap:9}}>
-        <window.Star size={17} color="var(--accent)"/>
-        <div style={{fontWeight:600,fontSize:15}}>{t('asst')}</div>
-        <span className="meta" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:6}}>
-          <span style={{width:7,height:7,borderRadius:9,background:'#3aa76d',display:'inline-block'}}></span>online
-        </span>
-      </div>
-      <div className="meta" style={{marginTop:4,marginBottom:14}}>{t('asst_sub')}</div>
-
-      <div className="scrl" style={{flex:1,minHeight:0,display:'flex',flexDirection:'column',gap:12,paddingRight:4}}>
-        {msgs.map((m,i)=>(
-          <div key={i} className="fade-in" style={{alignSelf:m.from==='u'?'flex-end':'flex-start',maxWidth:'90%'}}>
-            <div style={{
-              background:m.from==='u'?'var(--accent)':'var(--fill)', color:m.from==='u'?'#fff':'var(--ink)',
-              borderRadius:m.from==='u'?'16px 16px 4px 16px':'16px 16px 16px 4px',
-              padding:'11px 14px',fontSize:13.5,lineHeight:1.5}}>
-              {m.text}
-            </div>
-            {m.tools && (
-              <div style={{marginTop:9,display:'flex',flexDirection:'column',gap:7}}>
-                {m.tools.map(id=>{const tl=window.toolsById[id];return(
-                  <div key={id} className="toolrow" style={{background:'var(--surface)',border:'1px solid var(--line)',borderRadius:12,padding:'8px 10px'}}>
-                    <window.Mono m={tl.m} website={tl.website} size={30} r={9} fs={13}/>
-                    <div style={{flex:1,minWidth:0}}><div style={{fontWeight:600,fontSize:13}}>{tl.n}</div><div className="meta" style={{fontSize:11}}>{tl.c}</div></div>
-                  </div>
-                );})}
-                <div style={{display:'flex',gap:7,marginTop:2}}>
-                  <button className="pill dark" style={{padding:'8px 13px',fontSize:12.5,flex:1}}
-                    onClick={()=>onAddMany(m.tools)}>{t('add')} → {t('nav_stack')}</button>
-                  <button className="pill" style={{padding:'8px 13px',fontSize:12.5,flex:1}}
-                    onClick={()=>onSaveCollection(RECIPES[m.recipe].name, m.tools)}>{t('s_collections').split(' ')[0]} +</button>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-        {typing && (
-          <div style={{alignSelf:'flex-start',background:'var(--fill)',borderRadius:'16px 16px 16px 4px',padding:'13px 16px',display:'flex',gap:5}}>
-            {[0,1,2].map(i=><span key={i} style={{width:6,height:6,borderRadius:9,background:'var(--ink-3)',animation:`bob 1s ${i*0.15}s infinite`}}></span>)}
-          </div>
-        )}
-        <div ref={endRef}></div>
-      </div>
-
-      {/* quick replies */}
-      <div style={{display:'flex',flexWrap:'wrap',gap:7,margin:'12px 0'}}>
-        {quick.map(q=>(
-          <button key={q} className="chip" style={{padding:'7px 12px',fontSize:12}} onClick={()=>send(q)}>{q}</button>
-        ))}
-      </div>
-
-      {/* composer */}
-      <div style={{display:'flex',alignItems:'center',gap:9,background:'var(--surface)',border:'1px solid var(--line)',borderRadius:16,padding:'7px 7px 7px 15px'}}>
-        <input value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>{if(e.key==='Enter')send();}}
-          placeholder={t('asst_ph')} style={{border:'none',outline:'none',background:'transparent',flex:1,fontSize:13.5}}/>
-        <button className="avatar" style={{width:34,height:34,border:'none',cursor:'pointer'}} onClick={()=>send()}>
-          <window.Icon.send size={16} color="#fff"/>
-        </button>
-      </div>
-      <style>{`@keyframes bob{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}`}</style>
-    </div>
-  );
-};
-</script>
-<script type="text/babel">/* ============================================================
+  const quick = Object.values(RECIPES).map(r => r.q[li]);
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      minHeight: 0
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 9
+    }
+  }, /*#__PURE__*/React.createElement(window.Star, {
+    size: 17,
+    color: "var(--accent)"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 600,
+      fontSize: 15
+    }
+  }, t('asst')), /*#__PURE__*/React.createElement("span", {
+    className: "meta",
+    style: {
+      marginLeft: 'auto',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 6
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 7,
+      height: 7,
+      borderRadius: 9,
+      background: '#3aa76d',
+      display: 'inline-block'
+    }
+  }), "online")), /*#__PURE__*/React.createElement("div", {
+    className: "meta",
+    style: {
+      marginTop: 4,
+      marginBottom: 14
+    }
+  }, t('asst_sub')), /*#__PURE__*/React.createElement("div", {
+    className: "scrl",
+    style: {
+      flex: 1,
+      minHeight: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 12,
+      paddingRight: 4
+    }
+  }, msgs.map((m, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "fade-in",
+    style: {
+      alignSelf: m.from === 'u' ? 'flex-end' : 'flex-start',
+      maxWidth: '90%'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: m.from === 'u' ? 'var(--accent)' : 'var(--fill)',
+      color: m.from === 'u' ? '#fff' : 'var(--ink)',
+      borderRadius: m.from === 'u' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+      padding: '11px 14px',
+      fontSize: 13.5,
+      lineHeight: 1.5
+    }
+  }, m.text), m.tools && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 9,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 7
+    }
+  }, m.tools.map(id => {
+    const tl = window.toolsById[id];
+    return /*#__PURE__*/React.createElement("div", {
+      key: id,
+      className: "toolrow",
+      style: {
+        background: 'var(--surface)',
+        border: '1px solid var(--line)',
+        borderRadius: 12,
+        padding: '8px 10px'
+      }
+    }, /*#__PURE__*/React.createElement(window.Mono, {
+      m: tl.m,
+      website: tl.website,
+      size: 30,
+      r: 9,
+      fs: 13
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        minWidth: 0
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 600,
+        fontSize: 13
+      }
+    }, tl.n), /*#__PURE__*/React.createElement("div", {
+      className: "meta",
+      style: {
+        fontSize: 11
+      }
+    }, tl.c)));
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 7,
+      marginTop: 2
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "pill dark",
+    style: {
+      padding: '8px 13px',
+      fontSize: 12.5,
+      flex: 1
+    },
+    onClick: () => onAddMany(m.tools)
+  }, t('add'), " \u2192 ", t('nav_stack')), /*#__PURE__*/React.createElement("button", {
+    className: "pill",
+    style: {
+      padding: '8px 13px',
+      fontSize: 12.5,
+      flex: 1
+    },
+    onClick: () => onSaveCollection(RECIPES[m.recipe].name, m.tools)
+  }, t('s_collections').split(' ')[0], " +"))))), typing && /*#__PURE__*/React.createElement("div", {
+    style: {
+      alignSelf: 'flex-start',
+      background: 'var(--fill)',
+      borderRadius: '16px 16px 16px 4px',
+      padding: '13px 16px',
+      display: 'flex',
+      gap: 5
+    }
+  }, [0, 1, 2].map(i => /*#__PURE__*/React.createElement("span", {
+    key: i,
+    style: {
+      width: 6,
+      height: 6,
+      borderRadius: 9,
+      background: 'var(--ink-3)',
+      animation: `bob 1s ${i * 0.15}s infinite`
+    }
+  }))), /*#__PURE__*/React.createElement("div", {
+    ref: endRef
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: 7,
+      margin: '12px 0'
+    }
+  }, quick.map(q => /*#__PURE__*/React.createElement("button", {
+    key: q,
+    className: "chip",
+    style: {
+      padding: '7px 12px',
+      fontSize: 12
+    },
+    onClick: () => send(q)
+  }, q))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 9,
+      background: 'var(--surface)',
+      border: '1px solid var(--line)',
+      borderRadius: 16,
+      padding: '7px 7px 7px 15px'
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    value: text,
+    onChange: e => setText(e.target.value),
+    onKeyDown: e => {
+      if (e.key === 'Enter') send();
+    },
+    placeholder: t('asst_ph'),
+    style: {
+      border: 'none',
+      outline: 'none',
+      background: 'transparent',
+      flex: 1,
+      fontSize: 13.5
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "avatar",
+    style: {
+      width: 34,
+      height: 34,
+      border: 'none',
+      cursor: 'pointer'
+    },
+    onClick: () => send()
+  }, /*#__PURE__*/React.createElement(window.Icon.send, {
+    size: 16,
+    color: "#fff"
+  }))), /*#__PURE__*/React.createElement("style", null, `@keyframes bob{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}`));
+};</script>
+<script>/* ============================================================
    Forma — Profile Settings (photo, profile, email, password, language)
    ============================================================ */
-const { useState:sUseState, useRef:sUseRef } = React;
-
-const SetCard = ({icon:Ic, title, sub, children}) => (
-  <div className="soft fade-in" style={{padding:'26px 28px',boxShadow:'var(--shadow-sm)'}}>
-    <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:20}}>
-      <div style={{width:38,height:38,borderRadius:11,background:'var(--fill)',display:'grid',placeItems:'center',color:'var(--ink)'}}>
-        <Ic size={19}/>
-      </div>
-      <div>
-        <h3 style={{fontSize:16,fontWeight:600}}>{title}</h3>
-        {sub && <div className="meta" style={{marginTop:2}}>{sub}</div>}
-      </div>
-    </div>
-    {children}
-  </div>
-);
-
-const Field = ({label, children}) => (
-  <label className="field"><span className="meta" style={{fontWeight:500,color:'var(--ink-2)'}}>{label}</span>{children}</label>
-);
-
-window.Settings = function Settings({t, lang, setLang, profile, setProfile, onToast}){
-  const [form,setForm]=sUseState(profile);
-  const [pw,setPw]=sUseState({cur:'',nw:'',cf:''});
-  const fileRef=sUseRef(null);
-  const up=(k,v)=>setForm(f=>({...f,[k]:v}));
-
-  function onFile(e){
-    const f=e.target.files&&e.target.files[0]; if(!f) return;
-    const rd=new FileReader(); rd.onload=()=>{ up('photo', rd.result); }; rd.readAsDataURL(f);
+const {
+  useState: sUseState,
+  useRef: sUseRef
+} = React;
+const SetCard = ({
+  icon: Ic,
+  title,
+  sub,
+  children
+}) => /*#__PURE__*/React.createElement("div", {
+  className: "soft fade-in",
+  style: {
+    padding: '26px 28px',
+    boxShadow: 'var(--shadow-sm)'
   }
-  function saveProfile(){ setProfile(form); onToast(t('set_saved_toast'), 'check'); }
-  function changePw(){
-    if(!pw.nw || pw.nw!==pw.cf){ onToast(t('set_pw_mismatch'),'lock'); return; }
-    setPw({cur:'',nw:'',cf:''}); onToast(t('set_pw_toast'),'lock');
+}, /*#__PURE__*/React.createElement("div", {
+  style: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 20
   }
-
-  return (
-    <div style={{maxWidth:720,margin:'0 auto',display:'flex',flexDirection:'column',gap:18,paddingBottom:40}}>
-      <div className="fade-in">
-        <div className="label" style={{marginBottom:10}}>{t('nav_settings')}</div>
-        <h1 className="serif" style={{fontSize:38,fontWeight:800,letterSpacing:'-.01em'}}>{t('set_title')}</h1>
-        <p className="meta" style={{marginTop:8,fontSize:14}}>{t('set_sub')}</p>
-      </div>
-
-      {/* photo + profile */}
-      <SetCard icon={window.Icon.user} title={t('set_profile')}>
-        <div style={{display:'flex',alignItems:'center',gap:18,marginBottom:22}}>
-          <div className="avatar" style={{width:76,height:76,fontSize:30,
-                backgroundImage:form.photo?`url(${form.photo})`:'none'}}>
-            {!form.photo && form.name.slice(0,1)}
-          </div>
-          <div style={{flex:1}}>
-            <div style={{fontWeight:600,fontSize:14.5,marginBottom:2}}>{t('set_photo')}</div>
-            <div className="meta" style={{marginBottom:12}}>{t('set_photo_hint')}</div>
-            <div style={{display:'flex',gap:9}}>
-              <button className="pill" style={{padding:'9px 15px',fontSize:13}} onClick={()=>fileRef.current.click()}>
-                <window.Icon.camera size={15}/> {t('set_change_photo')}
-              </button>
-              {form.photo && <button className="pill ghost" style={{padding:'9px 15px',fontSize:13,color:'var(--ink-3)'}} onClick={()=>up('photo',null)}>{t('set_remove')}</button>}
-              <input ref={fileRef} type="file" accept="image/*" onChange={onFile} style={{display:'none'}}/>
-            </div>
-          </div>
-        </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
-          <Field label={t('set_name')}><input className="input" value={form.name} onChange={e=>up('name',e.target.value)}/></Field>
-          <Field label={t('set_handle')}><input className="input" value={form.handle} onChange={e=>up('handle',e.target.value)}/></Field>
-        </div>
-        <div style={{marginTop:14}}>
-          <Field label={t('set_bio')}><input className="input" value={form.bio} onChange={e=>up('bio',e.target.value)}/></Field>
-        </div>
-      </SetCard>
-
-      {/* account / email */}
-      <SetCard icon={window.Icon.user} title={t('set_account')}>
-        <Field label={t('set_email')}>
-          <input className="input" type="email" value={form.email} onChange={e=>up('email',e.target.value)}/>
-        </Field>
-        <div style={{marginTop:18,display:'flex',justifyContent:'flex-end'}}>
-          <button className="pill dark" onClick={saveProfile}><window.Icon.check size={16} color="#fff"/> {t('set_save')}</button>
-        </div>
-      </SetCard>
-
-      {/* password */}
-      <SetCard icon={window.Icon.lock} title={t('set_password')}>
-        <div style={{display:'flex',flexDirection:'column',gap:14}}>
-          <Field label={t('set_current_pw')}><input className="input" type="password" placeholder="••••••••" value={pw.cur} onChange={e=>setPw(p=>({...p,cur:e.target.value}))}/></Field>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
-            <Field label={t('set_new_pw')}><input className="input" type="password" placeholder="••••••••" value={pw.nw} onChange={e=>setPw(p=>({...p,nw:e.target.value}))}/></Field>
-            <Field label={t('set_confirm_pw')}><input className="input" type="password" placeholder="••••••••" value={pw.cf} onChange={e=>setPw(p=>({...p,cf:e.target.value}))}/></Field>
-          </div>
-        </div>
-        <div style={{marginTop:18,display:'flex',justifyContent:'flex-end'}}>
-          <button className="pill" onClick={changePw}><window.Icon.lock size={15}/> {t('set_change_pw')}</button>
-        </div>
-      </SetCard>
-
-      {/* language */}
-      <SetCard icon={window.Icon.globe} title={t('set_lang')} sub={t('set_lang_sub')}>
-        <div style={{display:'flex',flexDirection:'column',gap:10}}>
-          {window.LANGS.map(L=>(
-            <button key={L} onClick={()=>setLang(L)} style={{
-              display:'flex',alignItems:'center',gap:13,padding:'14px 16px',borderRadius:14,cursor:'pointer',textAlign:'left',
-              border:'1px solid '+(lang===L?'var(--ink)':'var(--line)'),
-              background:lang===L?'var(--fill)':'var(--surface)',transition:'.16s'}}>
-              <span style={{fontFamily:'var(--serif)',fontWeight:700,fontSize:15,width:30}}>{L.toUpperCase()}</span>
-              <span style={{flex:1,fontWeight:500,fontSize:14.5}}>{window.LANG_LABEL[L]}</span>
-              <span style={{width:22,height:22,borderRadius:999,display:'grid',placeItems:'center',
-                    border:'1px solid '+(lang===L?'var(--ink)':'var(--line)'),background:lang===L?'var(--ink)':'transparent'}}>
-                {lang===L && <window.Icon.check size={13} color="#fff"/>}
-              </span>
-            </button>
-          ))}
-        </div>
-      </SetCard>
-    </div>
-  );
-};
-</script>
-<script type="text/babel">/* ============================================================
+}, /*#__PURE__*/React.createElement("div", {
+  style: {
+    width: 38,
+    height: 38,
+    borderRadius: 11,
+    background: 'var(--fill)',
+    display: 'grid',
+    placeItems: 'center',
+    color: 'var(--ink)'
+  }
+}, /*#__PURE__*/React.createElement(Ic, {
+  size: 19
+})), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+  style: {
+    fontSize: 16,
+    fontWeight: 600
+  }
+}, title), sub && /*#__PURE__*/React.createElement("div", {
+  className: "meta",
+  style: {
+    marginTop: 2
+  }
+}, sub))), children);
+const Field = ({
+  label,
+  children
+}) => /*#__PURE__*/React.createElement("label", {
+  className: "field"
+}, /*#__PURE__*/React.createElement("span", {
+  className: "meta",
+  style: {
+    fontWeight: 500,
+    color: 'var(--ink-2)'
+  }
+}, label), children);
+window.Settings = function Settings({
+  t,
+  lang,
+  setLang,
+  profile,
+  setProfile,
+  onToast
+}) {
+  const [form, setForm] = sUseState(profile);
+  const [pw, setPw] = sUseState({
+    cur: '',
+    nw: '',
+    cf: ''
+  });
+  const fileRef = sUseRef(null);
+  const up = (k, v) => setForm(f => ({
+    ...f,
+    [k]: v
+  }));
+  function onFile(e) {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      up('photo', rd.result);
+    };
+    rd.readAsDataURL(f);
+  }
+  function saveProfile() {
+    setProfile(form);
+    onToast(t('set_saved_toast'), 'check');
+  }
+  function changePw() {
+    if (!pw.nw || pw.nw !== pw.cf) {
+      onToast(t('set_pw_mismatch'), 'lock');
+      return;
+    }
+    setPw({
+      cur: '',
+      nw: '',
+      cf: ''
+    });
+    onToast(t('set_pw_toast'), 'lock');
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      maxWidth: 720,
+      margin: '0 auto',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 18,
+      paddingBottom: 40
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "fade-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "label",
+    style: {
+      marginBottom: 10
+    }
+  }, t('nav_settings')), /*#__PURE__*/React.createElement("h1", {
+    className: "serif",
+    style: {
+      fontSize: 38,
+      fontWeight: 800,
+      letterSpacing: '-.01em'
+    }
+  }, t('set_title')), /*#__PURE__*/React.createElement("p", {
+    className: "meta",
+    style: {
+      marginTop: 8,
+      fontSize: 14
+    }
+  }, t('set_sub'))), /*#__PURE__*/React.createElement(SetCard, {
+    icon: window.Icon.user,
+    title: t('set_profile')
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 18,
+      marginBottom: 22
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "avatar",
+    style: {
+      width: 76,
+      height: 76,
+      fontSize: 30,
+      backgroundImage: form.photo ? `url(${form.photo})` : 'none'
+    }
+  }, !form.photo && form.name.slice(0, 1)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 600,
+      fontSize: 14.5,
+      marginBottom: 2
+    }
+  }, t('set_photo')), /*#__PURE__*/React.createElement("div", {
+    className: "meta",
+    style: {
+      marginBottom: 12
+    }
+  }, t('set_photo_hint')), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 9
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "pill",
+    style: {
+      padding: '9px 15px',
+      fontSize: 13
+    },
+    onClick: () => fileRef.current.click()
+  }, /*#__PURE__*/React.createElement(window.Icon.camera, {
+    size: 15
+  }), " ", t('set_change_photo')), form.photo && /*#__PURE__*/React.createElement("button", {
+    className: "pill ghost",
+    style: {
+      padding: '9px 15px',
+      fontSize: 13,
+      color: 'var(--ink-3)'
+    },
+    onClick: () => up('photo', null)
+  }, t('set_remove')), /*#__PURE__*/React.createElement("input", {
+    ref: fileRef,
+    type: "file",
+    accept: "image/*",
+    onChange: onFile,
+    style: {
+      display: 'none'
+    }
+  })))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: 14
+    }
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: t('set_name')
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "input",
+    value: form.name,
+    onChange: e => up('name', e.target.value)
+  })), /*#__PURE__*/React.createElement(Field, {
+    label: t('set_handle')
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "input",
+    value: form.handle,
+    onChange: e => up('handle', e.target.value)
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 14
+    }
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: t('set_bio')
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "input",
+    value: form.bio,
+    onChange: e => up('bio', e.target.value)
+  })))), /*#__PURE__*/React.createElement(SetCard, {
+    icon: window.Icon.user,
+    title: t('set_account')
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: t('set_email')
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "input",
+    type: "email",
+    value: form.email,
+    onChange: e => up('email', e.target.value)
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 18,
+      display: 'flex',
+      justifyContent: 'flex-end'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "pill dark",
+    onClick: saveProfile
+  }, /*#__PURE__*/React.createElement(window.Icon.check, {
+    size: 16,
+    color: "#fff"
+  }), " ", t('set_save')))), /*#__PURE__*/React.createElement(SetCard, {
+    icon: window.Icon.lock,
+    title: t('set_password')
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 14
+    }
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: t('set_current_pw')
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "input",
+    type: "password",
+    placeholder: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+    value: pw.cur,
+    onChange: e => setPw(p => ({
+      ...p,
+      cur: e.target.value
+    }))
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: 14
+    }
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: t('set_new_pw')
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "input",
+    type: "password",
+    placeholder: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+    value: pw.nw,
+    onChange: e => setPw(p => ({
+      ...p,
+      nw: e.target.value
+    }))
+  })), /*#__PURE__*/React.createElement(Field, {
+    label: t('set_confirm_pw')
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "input",
+    type: "password",
+    placeholder: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+    value: pw.cf,
+    onChange: e => setPw(p => ({
+      ...p,
+      cf: e.target.value
+    }))
+  })))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 18,
+      display: 'flex',
+      justifyContent: 'flex-end'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "pill",
+    onClick: changePw
+  }, /*#__PURE__*/React.createElement(window.Icon.lock, {
+    size: 15
+  }), " ", t('set_change_pw')))), /*#__PURE__*/React.createElement(SetCard, {
+    icon: window.Icon.globe,
+    title: t('set_lang'),
+    sub: t('set_lang_sub')
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 10
+    }
+  }, window.LANGS.map(L => /*#__PURE__*/React.createElement("button", {
+    key: L,
+    onClick: () => setLang(L),
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 13,
+      padding: '14px 16px',
+      borderRadius: 14,
+      cursor: 'pointer',
+      textAlign: 'left',
+      border: '1px solid ' + (lang === L ? 'var(--ink)' : 'var(--line)'),
+      background: lang === L ? 'var(--fill)' : 'var(--surface)',
+      transition: '.16s'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: 'var(--serif)',
+      fontWeight: 700,
+      fontSize: 15,
+      width: 30
+    }
+  }, L.toUpperCase()), /*#__PURE__*/React.createElement("span", {
+    style: {
+      flex: 1,
+      fontWeight: 500,
+      fontSize: 14.5
+    }
+  }, window.LANG_LABEL[L]), /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 22,
+      height: 22,
+      borderRadius: 999,
+      display: 'grid',
+      placeItems: 'center',
+      border: '1px solid ' + (lang === L ? 'var(--ink)' : 'var(--line)'),
+      background: lang === L ? 'var(--ink)' : 'transparent'
+    }
+  }, lang === L && /*#__PURE__*/React.createElement(window.Icon.check, {
+    size: 13,
+    color: "#fff"
+  })))))));
+};</script>
+<script>function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+/* ============================================================
    Forma — App shell (Command layout): sidebar + main + assistant
    ============================================================ */
-const { useState, useEffect, useRef, useCallback } = React;
-const { useTweaks, TweaksPanel, TweakSection, TweakText, TweakRadio, TweakToggle } = window;
-
+const {
+  useState,
+  useEffect,
+  useRef,
+  useCallback
+} = React;
+const {
+  useTweaks,
+  TweaksPanel,
+  TweakSection,
+  TweakText,
+  TweakRadio,
+  TweakToggle
+} = window;
 const ACCENTS = {
-  'Monochrome':'#16140E',
-  'Sage':'oklch(0.52 0.055 155)',
-  'Clay':'oklch(0.55 0.085 55)',
-  'Indigo':'oklch(0.52 0.085 268)',
+  'Monochrome': '#16140E',
+  'Sage': 'oklch(0.52 0.055 155)',
+  'Clay': 'oklch(0.55 0.085 55)',
+  'Indigo': 'oklch(0.52 0.085 268)'
 };
-
-const NAV = [
-  {id:'home', ic:'home', key:'nav_home'},
-  {id:'stack', ic:'stack', key:'nav_stack'},
-  {id:'discover', ic:'discover', key:'nav_discover'},
-  {id:'collections', ic:'collections', key:'nav_collections'},
-  {id:'trending', ic:'trending', key:'nav_trending'},
-];
-
-function App(){
+const NAV = [{
+  id: 'home',
+  ic: 'home',
+  key: 'nav_home'
+}, {
+  id: 'stack',
+  ic: 'stack',
+  key: 'nav_stack'
+}, {
+  id: 'discover',
+  ic: 'discover',
+  key: 'nav_discover'
+}, {
+  id: 'collections',
+  ic: 'collections',
+  key: 'nav_collections'
+}, {
+  id: 'trending',
+  ic: 'trending',
+  key: 'nav_trending'
+}];
+function App() {
   const [tw, setTweak] = useTweaks(TWEAK_DEFAULTS);
-
-  const [lang, setLang] = useState(()=>localStorage.getItem('forma.lang')||'it');
-  useEffect(()=>{ localStorage.setItem('forma.lang',lang); document.documentElement.lang=lang; },[lang]);
+  const [lang, setLang] = useState(() => localStorage.getItem('forma.lang') || 'it');
+  useEffect(() => {
+    localStorage.setItem('forma.lang', lang);
+    document.documentElement.lang = lang;
+  }, [lang]);
   const t = window.makeT(lang);
-
-  const [route, setRoute] = useState({v:'home', p:null});
-  const nav = useCallback((v,p=null)=>{ setRoute({v,p}); setMenu(false); document.querySelector('#main')?.scrollTo(0,0); },[]);
-
-  const [stack, setStack] = useState(()=>new Set(window.DEFAULT_STACK));
-  const [saved, setSaved] = useState(()=>new Set(window.DEFAULT_SAVED));
-  const [collections, setCollections] = useState(()=>window.COLLECTIONS.map(c=>({...c})));
-  const [profile, setProfile] = useState({name:tw.userName||'Alfredo', handle:'alfredo', bio:'Building my personal brand with AI', email:'alfredo@forma.app', photo:null});
-
-  useEffect(()=>{ setProfile(p=> p.name===tw.userName?p:({...p,name:tw.userName})); },[tw.userName]);
+  const [route, setRoute] = useState({
+    v: 'home',
+    p: null
+  });
+  const nav = useCallback((v, p = null) => {
+    setRoute({
+      v,
+      p
+    });
+    setMenu(false);
+    document.querySelector('#main')?.scrollTo(0, 0);
+  }, []);
+  const [stack, setStack] = useState(() => new Set(window.DEFAULT_STACK));
+  const [saved, setSaved] = useState(() => new Set(window.DEFAULT_SAVED));
+  const [collections, setCollections] = useState(() => window.COLLECTIONS.map(c => ({
+    ...c
+  })));
+  const [profile, setProfile] = useState({
+    name: tw.userName || 'Alfredo',
+    handle: 'alfredo',
+    bio: 'Building my personal brand with AI',
+    email: 'alfredo@forma.app',
+    photo: null
+  });
+  useEffect(() => {
+    setProfile(p => p.name === tw.userName ? p : {
+      ...p,
+      name: tw.userName
+    });
+  }, [tw.userName]);
 
   /* accent + card style -> CSS vars */
-  useEffect(()=>{ document.documentElement.style.setProperty('--accent', ACCENTS[tw.accent]||ACCENTS.Monochrome); },[tw.accent]);
-  useEffect(()=>{
-    const r=document.documentElement.style;
-    if(tw.cardStyle==='Editorial flat'){ r.setProperty('--rcard','12px'); r.setProperty('--rsm','10px');
-      r.setProperty('--shadow','0 1px 0 rgba(22,20,14,.04)'); r.setProperty('--shadow-sm','0 1px 0 rgba(22,20,14,.03)'); }
-    else { r.setProperty('--rcard','22px'); r.setProperty('--rsm','14px');
-      r.setProperty('--shadow','0 1px 2px rgba(22,20,14,.05), 0 12px 32px rgba(22,20,14,.06)');
-      r.setProperty('--shadow-sm','0 1px 2px rgba(22,20,14,.04), 0 4px 12px rgba(22,20,14,.04)'); }
-  },[tw.cardStyle]);
+  useEffect(() => {
+    document.documentElement.style.setProperty('--accent', ACCENTS[tw.accent] || ACCENTS.Monochrome);
+  }, [tw.accent]);
+  useEffect(() => {
+    const r = document.documentElement.style;
+    if (tw.cardStyle === 'Editorial flat') {
+      r.setProperty('--rcard', '12px');
+      r.setProperty('--rsm', '10px');
+      r.setProperty('--shadow', '0 1px 0 rgba(22,20,14,.04)');
+      r.setProperty('--shadow-sm', '0 1px 0 rgba(22,20,14,.03)');
+    } else {
+      r.setProperty('--rcard', '22px');
+      r.setProperty('--rsm', '14px');
+      r.setProperty('--shadow', '0 1px 2px rgba(22,20,14,.05), 0 12px 32px rgba(22,20,14,.06)');
+      r.setProperty('--shadow-sm', '0 1px 2px rgba(22,20,14,.04), 0 4px 12px rgba(22,20,14,.04)');
+    }
+  }, [tw.cardStyle]);
 
   /* toast */
-  const [toast, setToast] = useState(null); const tmr=useRef();
-  const fire = useCallback((msg,icon)=>{ setToast({msg,icon,id:Date.now()}); clearTimeout(tmr.current); tmr.current=setTimeout(()=>setToast(null),2200); },[]);
+  const [toast, setToast] = useState(null);
+  const tmr = useRef();
+  const fire = useCallback((msg, icon) => {
+    setToast({
+      msg,
+      icon,
+      id: Date.now()
+    });
+    clearTimeout(tmr.current);
+    tmr.current = setTimeout(() => setToast(null), 2200);
+  }, []);
 
   /* actions */
-  const toggleStack = useCallback((id)=>{ setStack(s=>{ const n=new Set(s); if(n.has(id)){n.delete(id); fire(`${window.toolsById[id].n} ${t('t_removed')}`,'close');} else {n.add(id); fire(`${window.toolsById[id].n} ${t('t_added')}`,'check');} return n; }); },[fire,lang]);
-  const toggleSave = useCallback((id)=>{ setSaved(s=>{ const n=new Set(s); if(n.has(id))n.delete(id); else {n.add(id); fire(`${window.toolsById[id].n} ${t('t_saved')}`,'star');} return n; }); },[fire,lang]);
-  const addMany = useCallback((ids)=>{ setStack(s=>{ const n=new Set(s); ids.forEach(i=>n.add(i)); return n; }); fire(`${ids.length} → ${t('nav_stack')}`,'check'); },[fire,lang]);
-  const saveCollection = useCallback((name,ids)=>{ const id='c'+Date.now(); setCollections(c=>[{id,n:name,tools:ids},...c]); fire(`${name} ${t('t_saved')}`,'collections'); nav('collections',id); },[fire,lang,nav]);
-  const actions = {toggleStack, toggleSave, addMany, saveCollection};
+  const toggleStack = useCallback(id => {
+    setStack(s => {
+      const n = new Set(s);
+      if (n.has(id)) {
+        n.delete(id);
+        fire(`${window.toolsById[id].n} ${t('t_removed')}`, 'close');
+      } else {
+        n.add(id);
+        fire(`${window.toolsById[id].n} ${t('t_added')}`, 'check');
+      }
+      return n;
+    });
+  }, [fire, lang]);
+  const toggleSave = useCallback(id => {
+    setSaved(s => {
+      const n = new Set(s);
+      if (n.has(id)) n.delete(id);else {
+        n.add(id);
+        fire(`${window.toolsById[id].n} ${t('t_saved')}`, 'star');
+      }
+      return n;
+    });
+  }, [fire, lang]);
+  const addMany = useCallback(ids => {
+    setStack(s => {
+      const n = new Set(s);
+      ids.forEach(i => n.add(i));
+      return n;
+    });
+    fire(`${ids.length} → ${t('nav_stack')}`, 'check');
+  }, [fire, lang]);
+  const saveCollection = useCallback((name, ids) => {
+    const id = 'c' + Date.now();
+    setCollections(c => [{
+      id,
+      n: name,
+      tools: ids
+    }, ...c]);
+    fire(`${name} ${t('t_saved')}`, 'collections');
+    nav('collections', id);
+  }, [fire, lang, nav]);
+  const actions = {
+    toggleStack,
+    toggleSave,
+    addMany,
+    saveCollection
+  };
 
   /* tool detail modal */
   const [toolModal, setToolModal] = useState(null);
-  const openTool = useCallback((id)=>setToolModal(id),[]);
-  const closeTool = useCallback(()=>setToolModal(null),[]);
+  const openTool = useCallback(id => setToolModal(id), []);
+  const closeTool = useCallback(() => setToolModal(null), []);
 
   /* responsive */
-  const [w,setW]=useState(window.innerWidth);
-  useEffect(()=>{ const f=()=>setW(window.innerWidth); window.addEventListener('resize',f); return ()=>window.removeEventListener('resize',f); },[]);
-  const desktop = w>=1120, tablet = w>=760 && w<1120, mobile = w<760;
-  const [asst,setAsst]=useState(false);   // assistant drawer (tablet/mobile)
-  const [menu,setMenu]=useState(false);    // mobile menu (unused now / reserved)
+  const [w, setW] = useState(window.innerWidth);
+  useEffect(() => {
+    const f = () => setW(window.innerWidth);
+    window.addEventListener('resize', f);
+    return () => window.removeEventListener('resize', f);
+  }, []);
+  const desktop = w >= 1120,
+    tablet = w >= 760 && w < 1120,
+    mobile = w < 760;
+  const [asst, setAsst] = useState(false); // assistant drawer (tablet/mobile)
+  const [menu, setMenu] = useState(false); // mobile menu (unused now / reserved)
 
-  const viewProps = {t, lang, name:profile.name, stack, saved, actions, collections, nav,
-                     showActivity:tw.showActivity, showTrending:tw.showTrending, onOpen:openTool};
-
+  const viewProps = {
+    t,
+    lang,
+    name: profile.name,
+    stack,
+    saved,
+    actions,
+    collections,
+    nav,
+    showActivity: tw.showActivity,
+    showTrending: tw.showTrending,
+    onOpen: openTool
+  };
   const View = () => {
-    switch(route.v){
-      case 'stack': return <window.StackView {...viewProps}/>;
-      case 'discover': return <window.DiscoverView {...viewProps}/>;
-      case 'collections': return <window.CollectionsView {...viewProps} openId={route.p}/>;
-      case 'trending': return <window.TrendingView {...viewProps}/>;
-      case 'settings': return <window.Settings t={t} lang={lang} setLang={setLang} profile={profile} setProfile={setProfile} onToast={fire}/>;
-      default: return <window.HomeView {...viewProps}/>;
+    switch (route.v) {
+      case 'stack':
+        return /*#__PURE__*/React.createElement(window.StackView, viewProps);
+      case 'discover':
+        return /*#__PURE__*/React.createElement(window.DiscoverView, viewProps);
+      case 'collections':
+        return /*#__PURE__*/React.createElement(window.CollectionsView, _extends({}, viewProps, {
+          openId: route.p
+        }));
+      case 'trending':
+        return /*#__PURE__*/React.createElement(window.TrendingView, viewProps);
+      case 'settings':
+        return /*#__PURE__*/React.createElement(window.Settings, {
+          t: t,
+          lang: lang,
+          setLang: setLang,
+          profile: profile,
+          setProfile: setProfile,
+          onToast: fire
+        });
+      default:
+        return /*#__PURE__*/React.createElement(window.HomeView, viewProps);
     }
   };
-
-  const Avatar = ({size=38,fs=15}) => (
-    <div className="avatar" style={{width:size,height:size,fontSize:fs, backgroundImage:profile.photo?`url(${profile.photo})`:'none'}}>
-      {!profile.photo && profile.name.slice(0,1)}
-    </div>
-  );
+  const Avatar = ({
+    size = 38,
+    fs = 15
+  }) => /*#__PURE__*/React.createElement("div", {
+    className: "avatar",
+    style: {
+      width: size,
+      height: size,
+      fontSize: fs,
+      backgroundImage: profile.photo ? `url(${profile.photo})` : 'none'
+    }
+  }, !profile.photo && profile.name.slice(0, 1));
 
   /* ---- sidebar (desktop/tablet) ---- */
-  const Sidebar = () => (
-    <aside style={{borderRight:'1px solid var(--line)',padding:'24px 16px',display:'flex',flexDirection:'column',gap:5,
-                   width:230,flex:'none',height:'100%',background:'var(--bg)'}}>
-      <a href="index.html" style={{padding:'4px 10px 22px',cursor:'pointer',textDecoration:'none'}}>
-        <div className="wordmark" style={{fontSize:21}}><window.Star size={17}/> Forma</div>
-      </a>
-      {NAV.map(n=>{const Ic=window.Icon[n.ic];const on=route.v===n.id;return(
-        <div key={n.id} className={"sideitem"+(on?' on':'')} onClick={()=>nav(n.id)}>
-          <Ic size={19}/> {t(n.key)}
-        </div>
-      );})}
-      <div style={{flex:1}}/>
-      <button className="sideitem" style={{background:'transparent',width:'100%',border:'1px solid transparent',justifyContent:'flex-start'}} onClick={()=>setAsst(true)}>
-        <window.Star size={17} color="var(--accent)"/> {t('asst')}
-      </button>
-      <div className={"sideitem"+(route.v==='settings'?' on':'')} onClick={()=>nav('settings')} style={{marginTop:6,borderTop:'1px solid var(--line)',borderRadius:0,paddingTop:14,marginBottom:4}}>
-        <Avatar size={30} fs={13}/>
-        <div style={{lineHeight:1.2,overflow:'hidden'}}>
-          <div style={{fontSize:13.5,fontWeight:600,whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>{profile.name}</div>
-          <div className="meta" style={{fontSize:11}}>{t('pro_plan')}</div>
-        </div>
-      </div>
-    </aside>
-  );
+  const Sidebar = () => /*#__PURE__*/React.createElement("aside", {
+    style: {
+      borderRight: '1px solid var(--line)',
+      padding: '24px 16px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 5,
+      width: 230,
+      flex: 'none',
+      height: '100%',
+      background: 'var(--bg)'
+    }
+  }, /*#__PURE__*/React.createElement("a", {
+    href: "index.html",
+    style: {
+      padding: '4px 10px 22px',
+      cursor: 'pointer',
+      textDecoration: 'none'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "wordmark",
+    style: {
+      fontSize: 21
+    }
+  }, /*#__PURE__*/React.createElement(window.Star, {
+    size: 17
+  }), " Forma")), NAV.map(n => {
+    const Ic = window.Icon[n.ic];
+    const on = route.v === n.id;
+    return /*#__PURE__*/React.createElement("div", {
+      key: n.id,
+      className: "sideitem" + (on ? ' on' : ''),
+      onClick: () => nav(n.id)
+    }, /*#__PURE__*/React.createElement(Ic, {
+      size: 19
+    }), " ", t(n.key));
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "sideitem",
+    style: {
+      background: 'transparent',
+      width: '100%',
+      border: '1px solid transparent',
+      justifyContent: 'flex-start'
+    },
+    onClick: () => setAsst(true)
+  }, /*#__PURE__*/React.createElement(window.Star, {
+    size: 17,
+    color: "var(--accent)"
+  }), " ", t('asst')), /*#__PURE__*/React.createElement("div", {
+    className: "sideitem" + (route.v === 'settings' ? ' on' : ''),
+    onClick: () => nav('settings'),
+    style: {
+      marginTop: 6,
+      borderTop: '1px solid var(--line)',
+      borderRadius: 0,
+      paddingTop: 14,
+      marginBottom: 4
+    }
+  }, /*#__PURE__*/React.createElement(Avatar, {
+    size: 30,
+    fs: 13
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      lineHeight: 1.2,
+      overflow: 'hidden'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13.5,
+      fontWeight: 600,
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      overflow: 'hidden'
+    }
+  }, profile.name), /*#__PURE__*/React.createElement("div", {
+    className: "meta",
+    style: {
+      fontSize: 11
+    }
+  }, t('pro_plan')))));
 
   /* ---- assistant rail / drawer ---- */
-  const AsstInner = () => (
-    <window.Assistant t={t} lang={lang} accent={tw.accent} onAddMany={addMany} onSaveCollection={saveCollection}/>
-  );
-  const AsstRail = () => (
-    <aside style={{borderLeft:'1px solid var(--line)',background:'var(--surface)',padding:'24px 20px',width:330,flex:'none',height:'100%'}}>
-      <AsstInner/>
-    </aside>
-  );
+  const AsstInner = () => /*#__PURE__*/React.createElement(window.Assistant, {
+    t: t,
+    lang: lang,
+    accent: tw.accent,
+    onAddMany: addMany,
+    onSaveCollection: saveCollection
+  });
+  const AsstRail = () => /*#__PURE__*/React.createElement("aside", {
+    style: {
+      borderLeft: '1px solid var(--line)',
+      background: 'var(--surface)',
+      padding: '24px 20px',
+      width: 330,
+      flex: 'none',
+      height: '100%'
+    }
+  }, /*#__PURE__*/React.createElement(AsstInner, null));
 
   /* ---- mobile bottom nav ---- */
-  const BOTTOM=[NAV[0],NAV[2],NAV[1],NAV[3],{id:'settings',ic:'settings',key:'nav_settings'}];
-  const BottomBar = () => (
-    <nav style={{position:'fixed',bottom:0,left:0,right:0,height:64,background:'rgba(255,255,255,.92)',backdropFilter:'blur(12px)',
-                 borderTop:'1px solid var(--line)',display:'flex',zIndex:90,paddingBottom:'env(safe-area-inset-bottom)'}}>
-      {BOTTOM.map(n=>{const Ic=window.Icon[n.ic];const on=route.v===n.id;return(
-        <button key={n.id} onClick={()=>nav(n.id)} style={{flex:1,border:'none',background:'transparent',display:'flex',flexDirection:'column',
-          alignItems:'center',justifyContent:'center',gap:3,color:on?'var(--ink)':'var(--ink-3)',cursor:'pointer',fontSize:10,fontWeight:500}}>
-          <Ic size={21}/>{t(n.key)}
-        </button>
-      );})}
-    </nav>
-  );
-  const MobileTop = () => (
-    <header style={{position:'sticky',top:0,zIndex:80,display:'flex',alignItems:'center',gap:12,padding:'14px 18px',
-                    background:'rgba(250,250,248,.9)',backdropFilter:'blur(10px)',borderBottom:'1px solid var(--line)'}}>
-      <a href="index.html" style={{textDecoration:'none'}}><div className="wordmark" style={{fontSize:20}}><window.Star size={16}/> Forma</div></a>
-      <div style={{flex:1}}/>
-      <button className="heart" onClick={()=>nav('settings')} style={{background:'transparent'}}><Avatar size={32} fs={13}/></button>
-    </header>
-  );
-  const AsstFab = () => (
-    <button onClick={()=>setAsst(true)} style={{position:'fixed',right:18,bottom: mobile?78:24,zIndex:91,width:56,height:56,borderRadius:999,
-      background:'var(--accent)',border:'none',color:'#fff',boxShadow:'var(--shadow-lg)',cursor:'pointer',display:'grid',placeItems:'center',
-      transition:'transform .15s'}} onMouseDown={e=>e.currentTarget.style.transform='scale(.92)'} onMouseUp={e=>e.currentTarget.style.transform=''}>
-      <window.Star size={24} color="#fff"/>
-    </button>
-  );
-
-  return (
-    <div style={{height:'100%',display:'flex',flexDirection:'column'}}>
-      <div style={{flex:1,display:'flex',minHeight:0}}>
-        {!mobile && <Sidebar/>}
-        <main id="main" className="scrl" style={{flex:1,minWidth:0,height:'100%',overflowY:'auto'}}>
-          {mobile && <MobileTop/>}
-          <div style={{maxWidth:1040,margin:'0 auto',padding: mobile?'22px 18px 90px':'40px var(--gut) 60px'}}>
-            <View/>
-          </div>
-        </main>
-        {desktop && <AsstRail/>}
-      </div>
-
-      {mobile && <BottomBar/>}
-      {/* assistant FAB on tablet+mobile (rail hidden) */}
-      {!desktop && route.v!=='settings' && <AsstFab/>}
-
-      {/* assistant drawer */}
-      {!desktop && (
-        <div className={"scrim"+(asst?' show':'')} onClick={()=>setAsst(false)}>
-          <div onClick={e=>e.stopPropagation()} style={{background:'var(--surface)',borderRadius:24,width:'100%',maxWidth:440,
-               height: mobile?'82vh':'76vh',padding:'22px 20px',display:'flex',flexDirection:'column',boxShadow:'var(--shadow-lg)',
-               transform:asst?'none':'translateY(20px) scale(.97)',transition:'.24s cubic-bezier(.2,.8,.3,1)'}}>
-            <button className="heart" style={{alignSelf:'flex-end',background:'transparent',marginBottom:6}} onClick={()=>setAsst(false)}><window.Icon.close size={16}/></button>
-            <div style={{flex:1,minHeight:0}}><AsstInner/></div>
-          </div>
-        </div>
-      )}
-
-      {/* tool detail modal */}
-      {toolModal && (
-        <window.ToolDetailModal id={toolModal} t={t}
-          inStack={stack.has(toolModal)} saved={saved.has(toolModal)}
-          onStack={toggleStack} onSave={toggleSave} onClose={closeTool}/>
-      )}
-
-      {/* toast */}
-      {toast && (
-        <div className={"toast show"} key={toast.id}>
-          {toast.icon==='star'?<window.Star size={15} color="#fff"/>:React.createElement(window.Icon[toast.icon]||window.Icon.check,{size:16,color:'#fff'})}
-          {toast.msg}
-        </div>
-      )}
-
-      {/* Tweaks */}
-      <TweaksPanel title="Tweaks">
-        <TweakSection label="Identity"/>
-        <TweakText label="Your name" value={tw.userName} onChange={v=>setTweak('userName',v)}/>
-        <TweakSection label="Look & feel"/>
-        <TweakRadio label="Accent" value={tw.accent} options={Object.keys(ACCENTS)} onChange={v=>setTweak('accent',v)}/>
-        <TweakRadio label="Card style" value={tw.cardStyle} options={['Soft rounded','Editorial flat']} onChange={v=>setTweak('cardStyle',v)}/>
-        <TweakSection label="Sections"/>
-        <TweakToggle label="Trending tools" value={tw.showTrending} onChange={v=>setTweak('showTrending',v)}/>
-        <TweakToggle label="Activity feed" value={tw.showActivity} onChange={v=>setTweak('showActivity',v)}/>
-      </TweaksPanel>
-    </div>
-  );
+  const BOTTOM = [NAV[0], NAV[2], NAV[1], NAV[3], {
+    id: 'settings',
+    ic: 'settings',
+    key: 'nav_settings'
+  }];
+  const BottomBar = () => /*#__PURE__*/React.createElement("nav", {
+    style: {
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: 64,
+      background: 'rgba(255,255,255,.92)',
+      backdropFilter: 'blur(12px)',
+      borderTop: '1px solid var(--line)',
+      display: 'flex',
+      zIndex: 90,
+      paddingBottom: 'env(safe-area-inset-bottom)'
+    }
+  }, BOTTOM.map(n => {
+    const Ic = window.Icon[n.ic];
+    const on = route.v === n.id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: n.id,
+      onClick: () => nav(n.id),
+      style: {
+        flex: 1,
+        border: 'none',
+        background: 'transparent',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 3,
+        color: on ? 'var(--ink)' : 'var(--ink-3)',
+        cursor: 'pointer',
+        fontSize: 10,
+        fontWeight: 500
+      }
+    }, /*#__PURE__*/React.createElement(Ic, {
+      size: 21
+    }), t(n.key));
+  }));
+  const MobileTop = () => /*#__PURE__*/React.createElement("header", {
+    style: {
+      position: 'sticky',
+      top: 0,
+      zIndex: 80,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      padding: '14px 18px',
+      background: 'rgba(250,250,248,.9)',
+      backdropFilter: 'blur(10px)',
+      borderBottom: '1px solid var(--line)'
+    }
+  }, /*#__PURE__*/React.createElement("a", {
+    href: "index.html",
+    style: {
+      textDecoration: 'none'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "wordmark",
+    style: {
+      fontSize: 20
+    }
+  }, /*#__PURE__*/React.createElement(window.Star, {
+    size: 16
+  }), " Forma")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "heart",
+    onClick: () => nav('settings'),
+    style: {
+      background: 'transparent'
+    }
+  }, /*#__PURE__*/React.createElement(Avatar, {
+    size: 32,
+    fs: 13
+  })));
+  const AsstFab = () => /*#__PURE__*/React.createElement("button", {
+    onClick: () => setAsst(true),
+    style: {
+      position: 'fixed',
+      right: 18,
+      bottom: mobile ? 78 : 24,
+      zIndex: 91,
+      width: 56,
+      height: 56,
+      borderRadius: 999,
+      background: 'var(--accent)',
+      border: 'none',
+      color: '#fff',
+      boxShadow: 'var(--shadow-lg)',
+      cursor: 'pointer',
+      display: 'grid',
+      placeItems: 'center',
+      transition: 'transform .15s'
+    },
+    onMouseDown: e => e.currentTarget.style.transform = 'scale(.92)',
+    onMouseUp: e => e.currentTarget.style.transform = ''
+  }, /*#__PURE__*/React.createElement(window.Star, {
+    size: 24,
+    color: "#fff"
+  }));
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      display: 'flex',
+      minHeight: 0
+    }
+  }, !mobile && /*#__PURE__*/React.createElement(Sidebar, null), /*#__PURE__*/React.createElement("main", {
+    id: "main",
+    className: "scrl",
+    style: {
+      flex: 1,
+      minWidth: 0,
+      height: '100%',
+      overflowY: 'auto'
+    }
+  }, mobile && /*#__PURE__*/React.createElement(MobileTop, null), /*#__PURE__*/React.createElement("div", {
+    style: {
+      maxWidth: 1040,
+      margin: '0 auto',
+      padding: mobile ? '22px 18px 90px' : '40px var(--gut) 60px'
+    }
+  }, /*#__PURE__*/React.createElement(View, null))), desktop && /*#__PURE__*/React.createElement(AsstRail, null)), mobile && /*#__PURE__*/React.createElement(BottomBar, null), !desktop && route.v !== 'settings' && /*#__PURE__*/React.createElement(AsstFab, null), !desktop && /*#__PURE__*/React.createElement("div", {
+    className: "scrim" + (asst ? ' show' : ''),
+    onClick: () => setAsst(false)
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: e => e.stopPropagation(),
+    style: {
+      background: 'var(--surface)',
+      borderRadius: 24,
+      width: '100%',
+      maxWidth: 440,
+      height: mobile ? '82vh' : '76vh',
+      padding: '22px 20px',
+      display: 'flex',
+      flexDirection: 'column',
+      boxShadow: 'var(--shadow-lg)',
+      transform: asst ? 'none' : 'translateY(20px) scale(.97)',
+      transition: '.24s cubic-bezier(.2,.8,.3,1)'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "heart",
+    style: {
+      alignSelf: 'flex-end',
+      background: 'transparent',
+      marginBottom: 6
+    },
+    onClick: () => setAsst(false)
+  }, /*#__PURE__*/React.createElement(window.Icon.close, {
+    size: 16
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      minHeight: 0
+    }
+  }, /*#__PURE__*/React.createElement(AsstInner, null)))), toolModal && /*#__PURE__*/React.createElement(window.ToolDetailModal, {
+    id: toolModal,
+    t: t,
+    inStack: stack.has(toolModal),
+    saved: saved.has(toolModal),
+    onStack: toggleStack,
+    onSave: toggleSave,
+    onClose: closeTool
+  }), toast && /*#__PURE__*/React.createElement("div", {
+    className: "toast show",
+    key: toast.id
+  }, toast.icon === 'star' ? /*#__PURE__*/React.createElement(window.Star, {
+    size: 15,
+    color: "#fff"
+  }) : React.createElement(window.Icon[toast.icon] || window.Icon.check, {
+    size: 16,
+    color: '#fff'
+  }), toast.msg), /*#__PURE__*/React.createElement(TweaksPanel, {
+    title: "Tweaks"
+  }, /*#__PURE__*/React.createElement(TweakSection, {
+    label: "Identity"
+  }), /*#__PURE__*/React.createElement(TweakText, {
+    label: "Your name",
+    value: tw.userName,
+    onChange: v => setTweak('userName', v)
+  }), /*#__PURE__*/React.createElement(TweakSection, {
+    label: "Look & feel"
+  }), /*#__PURE__*/React.createElement(TweakRadio, {
+    label: "Accent",
+    value: tw.accent,
+    options: Object.keys(ACCENTS),
+    onChange: v => setTweak('accent', v)
+  }), /*#__PURE__*/React.createElement(TweakRadio, {
+    label: "Card style",
+    value: tw.cardStyle,
+    options: ['Soft rounded', 'Editorial flat'],
+    onChange: v => setTweak('cardStyle', v)
+  }), /*#__PURE__*/React.createElement(TweakSection, {
+    label: "Sections"
+  }), /*#__PURE__*/React.createElement(TweakToggle, {
+    label: "Trending tools",
+    value: tw.showTrending,
+    onChange: v => setTweak('showTrending', v)
+  }), /*#__PURE__*/React.createElement(TweakToggle, {
+    label: "Activity feed",
+    value: tw.showActivity,
+    onChange: v => setTweak('showActivity', v)
+  })));
 }
-
 function showAuthRetryUI() {
   var lang = localStorage.getItem('forma.lang') || 'it';
-  var msg = lang==='it' ? 'Impossibile verificare la sessione. Controlla la connessione e riprova.'
-    : lang==='es' ? 'No se pudo verificar la sesión. Comprueba tu conexión e inténtalo de nuevo.'
-    : 'Could not verify your session. Check your connection and retry.';
-  var retryLabel = lang==='it' ? '↻ Riprova' : lang==='es' ? '↻ Reintentar' : '↻ Retry';
+  var msg = lang === 'it' ? 'Impossibile verificare la sessione. Controlla la connessione e riprova.' : lang === 'es' ? 'No se pudo verificar la sesión. Comprueba tu conexión e inténtalo de nuevo.' : 'Could not verify your session. Check your connection and retry.';
+  var retryLabel = lang === 'it' ? '↻ Riprova' : lang === 'es' ? '↻ Reintentar' : '↻ Retry';
   var loader = document.getElementById('page-loader');
   if (loader) {
     loader.style.pointerEvents = 'auto';
-    loader.innerHTML = '<div style="text-align:center;font-family:system-ui,sans-serif;max-width:280px;padding:20px">'
-      + '<p style="margin:0 0 14px;color:#666;font-size:14px">' + msg + '</p>'
-      + '<button onclick="location.reload()" style="padding:9px 18px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:13px">' + retryLabel + '</button>'
-      + '</div>';
+    loader.innerHTML = '<div style="text-align:center;font-family:system-ui,sans-serif;max-width:280px;padding:20px">' + '<p style="margin:0 0 14px;color:#666;font-size:14px">' + msg + '</p>' + '<button onclick="location.reload()" style="padding:9px 18px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:13px">' + retryLabel + '</button>' + '</div>';
   }
 }
-
 (window._formaAuthPromise || Promise.resolve(null)).then(session => {
   if (!session) {
-    if (window._formaAuthError) { showAuthRetryUI(); return; }
+    if (window._formaAuthError) {
+      showAuthRetryUI();
+      return;
+    }
     window.location.replace('login.html');
     return;
   }
@@ -2111,10 +3882,13 @@ function showAuthRetryUI() {
     if (typeof TWEAK_DEFAULTS !== 'undefined') TWEAK_DEFAULTS.userName = firstName;
   }
   const loader = document.getElementById('page-loader');
-  if (loader) { loader.style.transition='opacity 280ms ease'; loader.style.opacity='0'; setTimeout(()=>loader.remove(),280); }
-  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
-}).catch(showAuthRetryUI);
-</script>
+  if (loader) {
+    loader.style.transition = 'opacity 280ms ease';
+    loader.style.opacity = '0';
+    setTimeout(() => loader.remove(), 280);
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
+}).catch(showAuthRetryUI);</script>
 
 </body>
 </html>
