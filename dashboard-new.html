@@ -1622,6 +1622,8 @@ const STR = {
   set_change_pw: ['Change password', 'Cambia password', 'Cambiar contraseña'],
   set_lang: ['Language', 'Lingua', 'Idioma'],
   set_lang_sub: ['Forma\u2019s interface will switch instantly.', 'L\u2019interfaccia di Forma cambierà subito.', 'La interfaz de Forma cambiará al instante.'],
+  set_signout_sub: ['Sign out of Forma on this device.', 'Esci da Forma su questo dispositivo.', 'Cerrar sesion de Forma en este dispositivo.'],
+  set_signout_btn: ['Sign out', 'Esci', 'Cerrar sesion'],
   set_save: ['Save changes', 'Salva modifiche', 'Guardar cambios'],
   set_saved_toast: ['Changes saved', 'Modifiche salvate', 'Cambios guardados'],
   set_pw_toast: ['Password updated', 'Password aggiornata', 'Contraseña actualizada'],
@@ -3052,6 +3054,11 @@ window.Settings = function Settings({
       });
     }
   }
+  async function signOut() {
+    const sb = window._formaSb;
+    if (sb) { try { await sb.auth.signOut(); } catch (e) {} }
+    window.location.replace('login.html');
+  }
   async function changePw() {
     if (!pw.cur) {
       onToast(lang === 'it' ? 'Inserisci la password attuale' : lang === 'es' ? 'Ingresa tu contraseña actual' : 'Enter your current password', 'lock');
@@ -3336,7 +3343,17 @@ window.Settings = function Settings({
   }, lang === L && /*#__PURE__*/React.createElement(window.Icon.check, {
     size: 13,
     color: "#fff"
-  })))))));
+  }))))))), /*#__PURE__*/React.createElement(SetCard, {
+    icon: window.Icon.arrow,
+    title: t('set_account'),
+    sub: t('set_signout_sub')
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "pill",
+    style: { color: '#B3261E', borderColor: 'rgba(179,38,30,.35)' },
+    onClick: signOut
+  }, /*#__PURE__*/React.createElement(window.Icon.arrow, {
+    size: 15
+  }), " ", t('set_signout_btn')));
 };
 })();</script>
 <script>(function(){
