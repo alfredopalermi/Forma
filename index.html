@@ -1006,6 +1006,8 @@ let bookmarks=JSON.parse(localStorage.getItem('ae_bm')||'[]');
 let compareList=JSON.parse(sessionStorage.getItem('ae_cmp')||'[]');
 let votes=JSON.parse(localStorage.getItem('ae_votes')||'{}');
 let myVotes=JSON.parse(localStorage.getItem('ae_myvotes')||'[]');
+var _voterId = localStorage.getItem('ae_voter_id');
+if(!_voterId){ _voterId = (crypto.randomUUID ? crypto.randomUUID() : (Date.now()+'-'+Math.random().toString(36).slice(2))); localStorage.setItem('ae_voter_id', _voterId); }
 let recentSearches=JSON.parse(localStorage.getItem('ae_recents')||'[]');
 let heroFilter='All';
 let searchFocusIdx=-1;
@@ -1693,7 +1695,8 @@ function renderBookmarks(){
 }
 
 function toggleVote(slug,btn){
-  if(myVotes.includes(slug)){
+  const wasVoted = myVotes.includes(slug);
+  if(wasVoted){
     myVotes=myVotes.filter(s=>s!==slug);votes[slug]=Math.max(0,(votes[slug]||0)-1);
     if(btn)btn.classList.remove('voted');
   }else{
@@ -1704,6 +1707,20 @@ function toggleVote(slug,btn){
   if(btn){const spans=btn.querySelectorAll('span');if(spans.length>=2)spans[spans.length-1].textContent=getVotes(slug)}
   saveState();
   const sv=document.getElementById('s-votes');if(sv)sv.textContent=totalVotes();
+
+  const req = wasVoted
+    ? _sb.from('votes').delete().eq('tool_slug',slug).eq('voter_id',_voterId)
+    : _sb.from('votes').insert({tool_slug:slug,voter_id:_voterId});
+  req.then(function(res){
+    if(res.error){
+      // revert - the write failed, don't leave the UI claiming a vote that isn't real
+      if(wasVoted){ myVotes.push(slug); votes[slug]=(votes[slug]||0)+1; if(btn)btn.classList.add('voted'); }
+      else { myVotes=myVotes.filter(s=>s!==slug); votes[slug]=Math.max(0,(votes[slug]||0)-1); if(btn)btn.classList.remove('voted'); }
+      if(btn){const spans=btn.querySelectorAll('span');if(spans.length>=2)spans[spans.length-1].textContent=getVotes(slug)}
+      saveState();
+      const sv2=document.getElementById('s-votes');if(sv2)sv2.textContent=totalVotes();
+    }
+  });
 }
 
 function toggleCmp(slug){
@@ -2901,9 +2918,18 @@ function resetSubmitForm(){
           tags: t.tags || [],
           addedAt: t.added_at,
           editorial: t.editorial,
-          i18n: t.i18n || {}
+          i18n: t.i18n || {},
+          votes: t.votes || 0
         };
       });
+      // votes/myVotes used to be purely local (never reflected anyone
+      // else's votes) - seed the displayed counts from the real totals now.
+      TOOLS.forEach(function(t){ votes[t.slug] = t.votes; });
+      try {
+        var _vr = await _sb.from('votes').select('tool_slug').eq('voter_id', _voterId);
+        if (_vr.data) myVotes = _vr.data.map(function(r){ return r.tool_slug; });
+      } catch(e) {}
+      saveState();
     }
   } catch(e) { console.error('Supabase fetch error:', e); }
 

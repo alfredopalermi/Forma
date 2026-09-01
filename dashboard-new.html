@@ -552,6 +552,12 @@ window._formaAuthPromise = (async () => {
     window.USER_COLLECTIONS = (colRows || []).map(r => ({ id: r.id, n: r.name, tools: r.tool_slugs || [] }));
   } catch(e) { window.USER_COLLECTIONS = []; }
 
+  // Fetch saved profile (see supabase_profiles_migration.sql)
+  try {
+    const { data: profRow } = await sb.from('profiles').select('name,handle,bio,photo_url').eq('user_id', session.user.id).maybeSingle();
+    window.USER_PROFILE = profRow || null;
+  } catch(e) { window.USER_PROFILE = null; }
+
   return session;
 })();
 </script>
@@ -3029,6 +3035,22 @@ window.Settings = function Settings({
   function saveProfile() {
     setProfile(form);
     onToast(t('set_saved_toast'), 'check');
+    const uid = window._formaUser && window._formaUser.id;
+    const sb = window._formaSb;
+    if (uid && sb) {
+      sb.from('profiles').upsert({
+        user_id: uid,
+        name: form.name,
+        handle: form.handle,
+        bio: form.bio,
+        photo_url: form.photo,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id' }).then(res => {
+        if (res.error) {
+          onToast(lang === 'it' ? 'Errore nel salvataggio' : lang === 'es' ? 'Error al guardar' : 'Save failed', 'close');
+        }
+      });
+    }
   }
   function changePw() {
     if (!pw.nw || pw.nw !== pw.cf) {
@@ -3368,12 +3390,15 @@ function App() {
   const [collections, setCollections] = useState(() => (window.USER_COLLECTIONS || []).map(c => ({
     ...c
   })));
-  const [profile, setProfile] = useState({
-    name: tw.userName || 'Alfredo',
-    handle: 'alfredo',
-    bio: 'Building my personal brand with AI',
-    email: 'alfredo@forma.app',
-    photo: null
+  const [profile, setProfile] = useState(() => {
+    const p = window.USER_PROFILE || {};
+    return {
+      name: p.name || tw.userName || 'Alfredo',
+      handle: p.handle || (tw.userName || 'user').toLowerCase(),
+      bio: p.bio || '',
+      email: (window._formaUser && window._formaUser.email) || '',
+      photo: p.photo_url || null
+    };
   });
   useEffect(() => {
     setProfile(p => p.name === tw.userName ? p : {
