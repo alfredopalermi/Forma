@@ -1714,6 +1714,8 @@ function updateCmpBar(){
   const n=compareList.length;
   if(bar)bar.classList.toggle('visible',n>0);
   if(pill){pill.classList.toggle('visible',n>0);const lbl=document.getElementById('cmp-pill-label');if(lbl)lbl.textContent=n>0?`Compare ${n} tool${n>1?'s':''}`:'Compare'}
+  const signinPill=document.getElementById('signin-pill');
+  if(signinPill)signinPill.style.bottom=(n>0&&bar)?`calc(${bar.offsetHeight}px + 24px + env(safe-area-inset-bottom,0px))`:'';
   if(goBtn)goBtn.disabled=n<2;
   if(count)count.textContent=`${n}/3`;
   if(slots){
