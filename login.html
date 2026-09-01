@@ -7,36 +7,36 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 L18.5 13.5 L30 16 L18.5 18.5 L16 30 L13.5 18.5 L2 16 L13.5 13.5 Z' fill='%23111'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:          #FAFAFA;
-      --bg-2:        #F3F4F6;
+      --bg:          #FAFAF8;
+      --bg-2:        #F2F1EB;
       --surface:     #FFFFFF;
-      --border:      #E5E7EB;
-      --border-soft: #F0F0F0;
-      --text:        #111111;
-      --text-2:      #4B5563;
-      --text-3:      #9CA3AF;
+      --border:      rgba(22,20,14,.10);
+      --border-soft: rgba(22,20,14,.06);
+      --text:        #16140E;
+      --text-2:      #56544B;
+      --text-3:      #8E8B80;
       --text-inv:    #FFFFFF;
-      --accent-soft: rgba(17,17,17,.06);
+      --accent-soft: #F2F1EB;
       --err:         #EF4444;
       --ok:          #10B981;
       --tr:          160ms ease;
-      --font-sans:   'DM Sans', system-ui, sans-serif;
-      --font-serif:  'DM Serif Display', Georgia, serif;
+      --font-sans:   'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --font-serif:  'Playfair Display', Georgia, 'Times New Roman', serif;
     }
     [data-theme="dark"] {
-      --bg:          #0F0F0F;
-      --bg-2:        #1A1A1A;
-      --surface:     #161616;
-      --border:      #2A2A2A;
-      --border-soft: #222222;
-      --text:        #F0F0F0;
-      --text-2:      #A0A0A0;
-      --text-3:      #555555;
-      --text-inv:    #111111;
-      --accent-soft: rgba(240,240,240,.06);
+      --bg:          #17150F;
+      --bg-2:        #211F17;
+      --surface:     #1D1B14;
+      --border:      rgba(240,238,230,.12);
+      --border-soft: rgba(240,238,230,.08);
+      --text:        #F2F0E8;
+      --text-2:      #B8B4A6;
+      --text-3:      #7A776C;
+      --text-inv:    #16140E;
+      --accent-soft: rgba(240,238,230,.06);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -73,7 +73,7 @@
       max-width: 380px;
       background: var(--surface);
       border: 1px solid var(--border-soft);
-      border-radius: 14px;
+      border-radius: 22px;
       padding: 28px 28px 24px;
     }
 
@@ -107,7 +107,7 @@
     .field input {
       width: 100%;
       padding: 9px 12px;
-      border-radius: 8px;
+      border-radius: 12px;
       border: 1px solid var(--border);
       background: var(--bg);
       color: var(--text);
@@ -134,7 +134,7 @@
       color: var(--ok);
       background: rgba(16,185,129,.08);
       border: 1px solid rgba(16,185,129,.2);
-      border-radius: 7px;
+      border-radius: 10px;
       padding: 10px 12px;
       margin-bottom: 12px;
       display: none;
@@ -146,7 +146,7 @@
     .auth-btn {
       width: 100%;
       padding: 10px;
-      border-radius: 8px;
+      border-radius: 12px;
       border: 1px solid var(--text);
       background: var(--text);
       color: var(--text-inv);
@@ -198,7 +198,7 @@
     .theme-btn {
       width: 30px; height: 30px;
       display: flex; align-items: center; justify-content: center;
-      border-radius: 7px;
+      border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--text-3);
