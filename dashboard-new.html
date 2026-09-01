@@ -2080,24 +2080,25 @@ function App(){
   );
 }
 
+function showAuthRetryUI() {
+  var lang = localStorage.getItem('forma.lang') || 'it';
+  var msg = lang==='it' ? 'Impossibile verificare la sessione. Controlla la connessione e riprova.'
+    : lang==='es' ? 'No se pudo verificar la sesión. Comprueba tu conexión e inténtalo de nuevo.'
+    : 'Could not verify your session. Check your connection and retry.';
+  var retryLabel = lang==='it' ? '↻ Riprova' : lang==='es' ? '↻ Reintentar' : '↻ Retry';
+  var loader = document.getElementById('page-loader');
+  if (loader) {
+    loader.style.pointerEvents = 'auto';
+    loader.innerHTML = '<div style="text-align:center;font-family:system-ui,sans-serif;max-width:280px;padding:20px">'
+      + '<p style="margin:0 0 14px;color:#666;font-size:14px">' + msg + '</p>'
+      + '<button onclick="location.reload()" style="padding:9px 18px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:13px">' + retryLabel + '</button>'
+      + '</div>';
+  }
+}
+
 (window._formaAuthPromise || Promise.resolve(null)).then(session => {
   if (!session) {
-    if (window._formaAuthError) {
-      var lang = localStorage.getItem('forma.lang') || 'it';
-      var msg = lang==='it' ? 'Impossibile verificare la sessione. Controlla la connessione e riprova.'
-        : lang==='es' ? 'No se pudo verificar la sesión. Comprueba tu conexión e inténtalo de nuevo.'
-        : 'Could not verify your session. Check your connection and retry.';
-      var retryLabel = lang==='it' ? '↻ Riprova' : lang==='es' ? '↻ Reintentar' : '↻ Retry';
-      var loader = document.getElementById('page-loader');
-      if (loader) {
-        loader.style.pointerEvents = 'auto';
-        loader.innerHTML = '<div style="text-align:center;font-family:system-ui,sans-serif;max-width:280px;padding:20px">'
-          + '<p style="margin:0 0 14px;color:#666;font-size:14px">' + msg + '</p>'
-          + '<button onclick="location.reload()" style="padding:9px 18px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:13px">' + retryLabel + '</button>'
-          + '</div>';
-      }
-      return;
-    }
+    if (window._formaAuthError) { showAuthRetryUI(); return; }
     window.location.replace('login.html');
     return;
   }
@@ -2112,7 +2113,7 @@ function App(){
   const loader = document.getElementById('page-loader');
   if (loader) { loader.style.transition='opacity 280ms ease'; loader.style.opacity='0'; setTimeout(()=>loader.remove(),280); }
   ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
-});
+}).catch(showAuthRetryUI);
 </script>
 
 </body>
