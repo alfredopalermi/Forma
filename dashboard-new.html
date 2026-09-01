@@ -2145,7 +2145,7 @@ window.HomeView = function HomeView(props) {
       padding: '8px 8px',
       boxShadow: 'var(--shadow-sm)'
     }
-  }, window.TRENDING.slice(0, 5).map((tr, i) => {
+  }, window.TRENDING.filter(tr => window.toolsById[tr.id]).slice(0, 5).map((tr, i) => {
     const tl = window.toolsById[tr.id];
     return /*#__PURE__*/React.createElement("div", {
       key: tr.id,
@@ -2587,7 +2587,7 @@ window.TrendingView = function TrendingView({
     style: {
       padding: '8px 10px'
     }
-  }, window.TRENDING.map((tr, i) => {
+  }, window.TRENDING.filter(tr => window.toolsById[tr.id]).map((tr, i) => {
     const tl = window.toolsById[tr.id];
     return /*#__PURE__*/React.createElement("div", {
       key: tr.id,
@@ -2819,7 +2819,7 @@ window.Assistant = function Assistant({
       flexDirection: 'column',
       gap: 7
     }
-  }, m.tools.map(id => {
+  }, m.tools.filter(id => window.toolsById[id]).map(id => {
     const tl = window.toolsById[id];
     return /*#__PURE__*/React.createElement("div", {
       key: id,
@@ -3431,10 +3431,10 @@ function App() {
       const n = new Set(s);
       if (n.has(id)) {
         n.delete(id);
-        fire(`${window.toolsById[id].n} ${t('t_removed')}`, 'close');
+        fire(`${window.toolsById[id]?.n || ''} ${t('t_removed')}`, 'close');
       } else {
         n.add(id);
-        fire(`${window.toolsById[id].n} ${t('t_added')}`, 'check');
+        fire(`${window.toolsById[id]?.n || ''} ${t('t_added')}`, 'check');
       }
       return n;
     });
@@ -3444,7 +3444,7 @@ function App() {
       const n = new Set(s);
       if (n.has(id)) n.delete(id);else {
         n.add(id);
-        fire(`${window.toolsById[id].n} ${t('t_saved')}`, 'star');
+        fire(`${window.toolsById[id]?.n || ''} ${t('t_saved')}`, 'star');
       }
       return n;
     });
