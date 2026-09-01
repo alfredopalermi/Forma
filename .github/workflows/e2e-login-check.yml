@@ -1,0 +1,31 @@
+name: E2E login/dashboard check
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # every 6 hours
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1
+          npx playwright install --with-deps chromium
+      - name: Log in and verify the dashboard renders
+        env:
+          HEALTHCHECK_EMAIL: ${{ secrets.HEALTHCHECK_EMAIL }}
+          HEALTHCHECK_PASSWORD: ${{ secrets.HEALTHCHECK_PASSWORD }}
+        run: node scripts/e2e-login-check.js
+      - name: Upload failure screenshot
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: healthcheck-failure
+          path: healthcheck-failure.png
+          if-no-files-found: ignore
