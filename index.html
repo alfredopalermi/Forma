@@ -2820,11 +2820,34 @@ function submitForm(){
   subValidateEmail();
   if(!(nameOk && urlOk && catOk && descOk)) return;
 
-  var wrap = document.getElementById('submit-form-wrap');
-  var suc  = document.getElementById('submit-success');
-  if(wrap){ wrap.classList.add('hidden'); setTimeout(function(){ wrap.style.display='none'; },220); }
-  if(suc)  setTimeout(function(){ suc.classList.add('show'); },200);
-  toast(_I.toast_nl || 'Submission received — thank you!');
+  var btn = document.getElementById('sub-btn');
+  if(btn) btn.disabled = true;
+
+  var catEl = document.getElementById('sub-cat');
+  var priceEl = document.getElementById('sub-price');
+  var emailEl = document.getElementById('sub-email');
+  var payload = {
+    name: document.getElementById('sub-name').value.trim(),
+    url: document.getElementById('sub-url').value.trim(),
+    category: catEl ? catEl.value : null,
+    pricing: priceEl ? priceEl.value : null,
+    description: document.getElementById('sub-desc').value.trim(),
+    submitter_email: (emailEl && emailEl.value.trim()) || null
+  };
+
+  _sb.from('tool_submissions').insert(payload).then(function(res){
+    if(btn) btn.disabled = false;
+    if(res.error){
+      var errMsg = _lang==='it' ? 'Qualcosa è andato storto, riprova.' : _lang==='es' ? 'Algo salió mal, inténtalo de nuevo.' : 'Something went wrong — please try again.';
+      toast(errMsg);
+      return;
+    }
+    var wrap = document.getElementById('submit-form-wrap');
+    var suc  = document.getElementById('submit-success');
+    if(wrap){ wrap.classList.add('hidden'); setTimeout(function(){ wrap.style.display='none'; },220); }
+    if(suc)  setTimeout(function(){ suc.classList.add('show'); },200);
+    toast(_I.toast_nl || 'Submission received — thank you!');
+  });
 }
 
 function resetSubmitForm(){
