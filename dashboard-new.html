@@ -553,7 +553,8 @@ window._formaAuthPromise = (async () => {
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
-<script>/* BEGIN USAGE */
+<script>(function(){
+/* BEGIN USAGE */
 // tweaks-panel.jsx
 // Reusable Tweaks shell + form-control helpers.
 // Exports (to window): useTweaks, TweaksPanel, TweakSection, TweakRow, TweakSlider,
@@ -1212,8 +1213,10 @@ Object.assign(window, {
   TweakNumber,
   TweakColor,
   TweakButton
-});</script>
-<script>/* ============================================================
+});
+})();</script>
+<script>(function(){
+/* ============================================================
    Forma — shared data, brand atoms, icons, i18n
    ============================================================ */
 
@@ -1703,8 +1706,10 @@ window.Mono = ({
       fontSize: fs
     }
   }, m);
-};</script>
-<script>/* ============================================================
+};
+})();</script>
+<script>(function(){
+/* ============================================================
    Forma — Home + section views (Stack, Discover, Collections, Trending)
    ============================================================ */
 const {
@@ -2645,8 +2650,10 @@ window.TrendingView = function TrendingView({
       size: 14
     }), " ", t('in_stack')) : /*#__PURE__*/React.createElement(React.Fragment, null, "+ ", t('add'))));
   })));
-};</script>
-<script>/* ============================================================
+};
+})();</script>
+<script>(function(){
+/* ============================================================
    Forma — AI Assistant (conversation engine, canned but reactive)
    ============================================================ */
 const {
@@ -2939,8 +2946,10 @@ window.Assistant = function Assistant({
     size: 16,
     color: "#fff"
   }))), /*#__PURE__*/React.createElement("style", null, `@keyframes bob{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}`));
-};</script>
-<script>/* ============================================================
+};
+})();</script>
+<script>(function(){
+/* ============================================================
    Forma — Profile Settings (photo, profile, email, password, language)
    ============================================================ */
 const {
@@ -3297,8 +3306,10 @@ window.Settings = function Settings({
     size: 13,
     color: "#fff"
   })))))));
-};</script>
-<script>function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+};
+})();</script>
+<script>(function(){
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 /* ============================================================
    Forma — App shell (Command layout): sidebar + main + assistant
    ============================================================ */
@@ -3888,7 +3899,8 @@ function showAuthRetryUI() {
     setTimeout(() => loader.remove(), 280);
   }
   ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
-}).catch(showAuthRetryUI);</script>
+}).catch(showAuthRetryUI);
+})();</script>
 
 </body>
 </html>
