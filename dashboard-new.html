@@ -3052,9 +3052,29 @@ window.Settings = function Settings({
       });
     }
   }
-  function changePw() {
+  async function changePw() {
+    if (!pw.cur) {
+      onToast(lang === 'it' ? 'Inserisci la password attuale' : lang === 'es' ? 'Ingresa tu contraseña actual' : 'Enter your current password', 'lock');
+      return;
+    }
     if (!pw.nw || pw.nw !== pw.cf) {
       onToast(t('set_pw_mismatch'), 'lock');
+      return;
+    }
+    if (pw.nw.length < 6) {
+      onToast(lang === 'it' ? 'Minimo 6 caratteri' : lang === 'es' ? 'Mínimo 6 caracteres' : 'Minimum 6 characters', 'lock');
+      return;
+    }
+    const sb = window._formaSb;
+    const email = window._formaUser && window._formaUser.email;
+    const { error: verifyErr } = await sb.auth.signInWithPassword({ email, password: pw.cur });
+    if (verifyErr) {
+      onToast(lang === 'it' ? 'Password attuale errata' : lang === 'es' ? 'Contraseña actual incorrecta' : 'Current password is incorrect', 'lock');
+      return;
+    }
+    const { error } = await sb.auth.updateUser({ password: pw.nw });
+    if (error) {
+      onToast(lang === 'it' ? 'Errore nel salvataggio' : lang === 'es' ? 'Error al guardar' : 'Save failed', 'lock');
       return;
     }
     setPw({

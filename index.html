@@ -341,8 +341,8 @@
         <h2 class="nl-h2">Stay ahead of the curve</h2>
         <p class="nl-p">New tools, honest reviews, curated picks — every week.</p>
         <div class="newsletter-form">
-          <input class="newsletter-input nl-inp" type="email" placeholder="your@email.com">
-          <button class="btn-white nl-btn" onclick="toast(_I.toast_nl)">Subscribe</button>
+          <input class="newsletter-input nl-inp" id="nl-email-input" type="email" placeholder="your@email.com">
+          <button class="btn-white nl-btn" onclick="subscribeNewsletter()">Subscribe</button>
         </div>
       </div>
     </div>
@@ -2896,6 +2896,31 @@ function resetSubmitForm(){
   var wrap=document.getElementById('submit-form-wrap');
   if(wrap){ wrap.style.display=''; wrap.classList.remove('hidden'); }
   var suc=document.getElementById('submit-success'); if(suc) suc.classList.remove('show');
+}
+
+function subscribeNewsletter(){
+  var input = document.getElementById('nl-email-input');
+  var email = input ? input.value.trim() : '';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    var invMsg = _lang==='it' ? 'Inserisci un\'email valida' : _lang==='es' ? 'Ingresa un correo válido' : 'Enter a valid email';
+    toast(invMsg);
+    return;
+  }
+  _sb.from('newsletter_subscribers').insert({email: email}).then(function(res){
+    if(res.error){
+      // unique_violation - already subscribed with this email, treat as success
+      if(res.error.code === '23505'){
+        toast(_I.toast_nl);
+        if(input) input.value='';
+        return;
+      }
+      var errMsg = _lang==='it' ? 'Qualcosa è andato storto, riprova.' : _lang==='es' ? 'Algo salió mal, inténtalo de nuevo.' : 'Something went wrong — please try again.';
+      toast(errMsg);
+      return;
+    }
+    toast(_I.toast_nl);
+    if(input) input.value='';
+  });
 }
 
 (async function(){
