@@ -538,12 +538,12 @@ window._formaAuthPromise = (async () => {
     }
   } catch(e) {}
 
-  // Fetch user stack (tool slugs saved by this user)
+  // Fetch user stack + saved (kind distinguishes the two; see supabase_user_stacks_migration.sql)
   try {
-    const { data: stackData } = await sb.from('user_stacks').select('tool_slug').eq('user_id', session.user.id);
-    const slugs = stackData ? stackData.map(r => r.tool_slug) : [];
-    window.DEFAULT_STACK = slugs;
-    window.DEFAULT_SAVED  = slugs;
+    const { data: rows } = await sb.from('user_stacks').select('tool_slug,kind').eq('user_id', session.user.id);
+    const list = rows || [];
+    window.DEFAULT_STACK = list.filter(r => r.kind === 'stack').map(r => r.tool_slug);
+    window.DEFAULT_SAVED = list.filter(r => r.kind === 'saved').map(r => r.tool_slug);
   } catch(e) { window.DEFAULT_STACK = []; window.DEFAULT_SAVED = []; }
 
   return session;
@@ -3426,37 +3426,55 @@ function App() {
   }, []);
 
   /* actions */
+  const persistToggle = useCallback(async (kind, id, wasIn) => {
+    const uid = window._formaUser && window._formaUser.id;
+    const sb = window._formaSb;
+    if (!uid || !sb) return true;
+    const { error } = wasIn
+      ? await sb.from('user_stacks').delete().eq('user_id', uid).eq('tool_slug', id).eq('kind', kind)
+      : await sb.from('user_stacks').insert({ user_id: uid, tool_slug: id, kind });
+    return !error;
+  }, []);
   const toggleStack = useCallback(id => {
-    setStack(s => {
-      const n = new Set(s);
-      if (n.has(id)) {
-        n.delete(id);
-        fire(`${window.toolsById[id]?.n || ''} ${t('t_removed')}`, 'close');
-      } else {
-        n.add(id);
-        fire(`${window.toolsById[id]?.n || ''} ${t('t_added')}`, 'check');
+    const wasIn = stack.has(id);
+    setStack(s => { const n = new Set(s); wasIn ? n.delete(id) : n.add(id); return n; });
+    fire(`${window.toolsById[id]?.n || ''} ${t(wasIn ? 't_removed' : 't_added')}`, wasIn ? 'close' : 'check');
+    persistToggle('stack', id, wasIn).then(ok => {
+      if (!ok) {
+        setStack(s => { const n = new Set(s); wasIn ? n.add(id) : n.delete(id); return n; });
+        fire(lang === 'it' ? 'Errore nel salvataggio' : lang === 'es' ? 'Error al guardar' : 'Save failed', 'close');
       }
-      return n;
     });
-  }, [fire, lang]);
+  }, [fire, lang, stack, persistToggle]);
   const toggleSave = useCallback(id => {
-    setSaved(s => {
-      const n = new Set(s);
-      if (n.has(id)) n.delete(id);else {
-        n.add(id);
-        fire(`${window.toolsById[id]?.n || ''} ${t('t_saved')}`, 'star');
+    const wasIn = saved.has(id);
+    setSaved(s => { const n = new Set(s); wasIn ? n.delete(id) : n.add(id); return n; });
+    if (!wasIn) fire(`${window.toolsById[id]?.n || ''} ${t('t_saved')}`, 'star');
+    persistToggle('saved', id, wasIn).then(ok => {
+      if (!ok) {
+        setSaved(s => { const n = new Set(s); wasIn ? n.add(id) : n.delete(id); return n; });
+        fire(lang === 'it' ? 'Errore nel salvataggio' : lang === 'es' ? 'Error al guardar' : 'Save failed', 'close');
       }
-      return n;
     });
-  }, [fire, lang]);
+  }, [fire, lang, saved, persistToggle]);
   const addMany = useCallback(ids => {
+    const newIds = ids.filter(i => !stack.has(i));
     setStack(s => {
       const n = new Set(s);
       ids.forEach(i => n.add(i));
       return n;
     });
     fire(`${ids.length} → ${t('nav_stack')}`, 'check');
-  }, [fire, lang]);
+    const uid = window._formaUser && window._formaUser.id;
+    const sb = window._formaSb;
+    if (uid && sb && newIds.length) {
+      sb.from('user_stacks')
+        .upsert(newIds.map(id => ({ user_id: uid, tool_slug: id, kind: 'stack' })), { onConflict: 'user_id,tool_slug,kind' })
+        .then(({ error }) => {
+          if (error) fire(lang === 'it' ? 'Errore nel salvataggio' : lang === 'es' ? 'Error al guardar' : 'Save failed', 'close');
+        });
+    }
+  }, [fire, lang, stack]);
   const saveCollection = useCallback((name, ids) => {
     const id = 'c' + Date.now();
     setCollections(c => [{
