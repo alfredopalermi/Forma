@@ -1479,16 +1479,16 @@ window.TOOLS = [{
 window.toolsById = Object.fromEntries(window.TOOLS.map(t => [t.id, t]));
 window.CATEGORIES = ['All', 'Writing', 'Design', 'Video', 'Marketing', 'Research', 'Productivity', 'Audio', 'Automation'];
 window.RECO = [{
-  id: 'opus',
+  id: 'runway-ml',
   why: 'For your LinkedIn goal'
 }, {
-  id: 'notion',
+  id: 'notion-ai',
   why: 'Pairs with your writing stack'
 }, {
-  id: 'eleven',
+  id: 'elevenlabs',
   why: 'Trending in Content'
 }, {
-  id: 'taplio',
+  id: 'clay',
   why: 'Most-saved this week'
 }];
 window.TRENDING = [{
@@ -1496,7 +1496,7 @@ window.TRENDING = [{
   t: '+38%',
   badge: ''
 }, {
-  id: 'opus',
+  id: 'runway-ml',
   t: '+126%',
   badge: 'New'
 }, {
@@ -1504,7 +1504,7 @@ window.TRENDING = [{
   t: '+54%',
   badge: ''
 }, {
-  id: 'beehiiv',
+  id: 'n8n',
   t: '+71%',
   badge: 'New'
 }, {
@@ -1515,23 +1515,23 @@ window.TRENDING = [{
 window.COLLECTIONS = [{
   id: 'linkedin',
   n: 'LinkedIn Growth',
-  tools: ['taplio', 'opus', 'jasper', 'gamma', 'perplexity', 'canva']
+  tools: ['clay', 'runway-ml', 'jasper', 'gamma', 'perplexity', 'canva-ai']
 }, {
   id: 'newsletter',
   n: 'Newsletter Stack',
-  tools: ['beehiiv', 'jasper', 'grammarly', 'notion']
+  tools: ['n8n', 'jasper', 'grammarly', 'notion-ai']
 }, {
   id: 'visual',
   n: 'Visual Branding',
-  tools: ['canva', 'midjourney', 'gamma', 'descript', 'eleven']
+  tools: ['canva-ai', 'midjourney', 'gamma', 'descript', 'elevenlabs']
 }, {
   id: 'content',
   n: 'Content Creation',
-  tools: ['descript', 'opus', 'eleven', 'jasper', 'grammarly', 'notion', 'canva', 'gamma']
+  tools: ['descript', 'runway-ml', 'elevenlabs', 'jasper', 'grammarly', 'notion-ai', 'canva-ai', 'gamma']
 }];
 /* default personal stack ids */
 window.DEFAULT_STACK = ['jasper', 'descript', 'gamma', 'perplexity'];
-window.DEFAULT_SAVED = ['jasper', 'descript', 'gamma', 'perplexity', 'opus', 'notion', 'taplio'];
+window.DEFAULT_SAVED = ['jasper', 'descript', 'gamma', 'perplexity', 'runway-ml', 'notion-ai', 'clay'];
 
 /* activity feed (relative time keys) */
 window.ACTIVITY = [{
@@ -1547,12 +1547,12 @@ window.ACTIVITY = [{
 }, {
   ic: 'star',
   key: 'act_saved',
-  a: 'Opus Clip',
+  a: 'Runway ML',
   t: 'Yesterday'
 }, {
   ic: 'trending',
   key: 'act_trending',
-  a: 'beehiiv',
+  a: 'n8n',
   t: '2d'
 }, {
   ic: 'user',
