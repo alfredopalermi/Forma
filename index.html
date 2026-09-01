@@ -1008,6 +1008,7 @@ let votes=JSON.parse(localStorage.getItem('ae_votes')||'{}');
 let myVotes=JSON.parse(localStorage.getItem('ae_myvotes')||'[]');
 var _voterId = localStorage.getItem('ae_voter_id');
 if(!_voterId){ _voterId = (crypto.randomUUID ? crypto.randomUUID() : (Date.now()+'-'+Math.random().toString(36).slice(2))); localStorage.setItem('ae_voter_id', _voterId); }
+var _effectiveVoterId = _voterId; // becomes the real account id once login state resolves, see the async init below
 let recentSearches=JSON.parse(localStorage.getItem('ae_recents')||'[]');
 let heroFilter='All';
 let searchFocusIdx=-1;
@@ -1709,8 +1710,8 @@ function toggleVote(slug,btn){
   const sv=document.getElementById('s-votes');if(sv)sv.textContent=totalVotes();
 
   const req = wasVoted
-    ? _sb.from('votes').delete().eq('tool_slug',slug).eq('voter_id',_voterId)
-    : _sb.from('votes').insert({tool_slug:slug,voter_id:_voterId});
+    ? _sb.from('votes').delete().eq('tool_slug',slug).eq('voter_id',_effectiveVoterId)
+    : _sb.from('votes').insert({tool_slug:slug,voter_id:_effectiveVoterId});
   req.then(function(res){
     if(res.error){
       // revert - the write failed, don't leave the UI claiming a vote that isn't real
@@ -2895,6 +2896,13 @@ function resetSubmitForm(){
     if(bm){bm.classList.toggle('active',l===_lang);bm.textContent=flagM[l];}
   });
 
+  // Resolve who's voting: the real account if logged in (so PC and phone
+  // under the same login share one vote instead of counting twice), the
+  // anonymous per-browser id otherwise.
+  var _sess = null;
+  try { _sess = (await _sb.auth.getSession()).data.session; } catch(e) {}
+  _effectiveVoterId = _sess ? _sess.user.id : _voterId;
+
   // Fetch tools from Supabase
   try {
     var _sbRes = await _sb.from('tools').select('*').order('id');
@@ -2926,7 +2934,7 @@ function resetSubmitForm(){
       // else's votes) - seed the displayed counts from the real totals now.
       TOOLS.forEach(function(t){ votes[t.slug] = t.votes; });
       try {
-        var _vr = await _sb.from('votes').select('tool_slug').eq('voter_id', _voterId);
+        var _vr = await _sb.from('votes').select('tool_slug').eq('voter_id', _effectiveVoterId);
         if (_vr.data) myVotes = _vr.data.map(function(r){ return r.tool_slug; });
       } catch(e) {}
       saveState();
@@ -2945,7 +2953,6 @@ function resetSubmitForm(){
 
   // Load user stack from Supabase if logged in, override localStorage bookmarks
   try {
-    var _sess = (await _sb.auth.getSession()).data.session;
     if (_sess) {
       var _sr = await _sb.from('user_stacks').select('tool_slug').eq('user_id', _sess.user.id);
       if (_sr.data) { bookmarks = _sr.data.map(function(r){return r.tool_slug;}); saveState(); }
