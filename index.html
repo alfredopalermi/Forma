@@ -1035,7 +1035,8 @@ function getMyRating(slug){ return myRatings[slug] || 0 }
 
 function setRating(slug, star){
   const prev = myRatings[slug] || 0;
-  const r    = { ...getRatingData(slug) };
+  const prevRatingData = getRatingData(slug);
+  const r    = { ...prevRatingData };
   const isRemove = (star === prev);
 
   if(prev > 0){ r.sum -= prev; r.count -= 1; }
@@ -1051,6 +1052,20 @@ function setRating(slug, star){
   }
 
   ratings[slug] = r;
+
+  const ratingReq = isRemove
+    ? _sb.from('tool_ratings').delete().eq('tool_slug',slug).eq('voter_id',_effectiveVoterId)
+    : _sb.from('tool_ratings').upsert({tool_slug:slug,voter_id:_effectiveVoterId,rating:star}, {onConflict:'tool_slug,voter_id'});
+  ratingReq.then(function(res){
+    if(res.error){
+      ratings[slug] = prevRatingData;
+      if(prev > 0) myRatings[slug] = prev; else delete myRatings[slug];
+      saveRatings();
+      refreshStarsFor(slug);
+      var errMsg = _lang==='it' ? 'Errore nel salvataggio' : _lang==='es' ? 'Error al guardar' : 'Save failed';
+      toast(errMsg);
+    }
+  });
   saveRatings();
 
   document.querySelectorAll(`[data-stars="${slug}"] .star`).forEach(function(el){
@@ -2927,12 +2942,21 @@ function resetSubmitForm(){
           addedAt: t.added_at,
           editorial: t.editorial,
           i18n: t.i18n || {},
-          votes: t.votes || 0
+          votes: t.votes || 0,
+          ratingSum: t.rating_sum || 0,
+          ratingCount: t.rating_count || 0
         };
       });
       // votes/myVotes used to be purely local (never reflected anyone
       // else's votes) - seed the displayed counts from the real totals now.
-      TOOLS.forEach(function(t){ votes[t.slug] = t.votes; });
+      TOOLS.forEach(function(t){
+        votes[t.slug] = t.votes;
+        ratings[t.slug] = { sum: t.ratingSum, count: t.ratingCount };
+      });
+      try {
+        var _rr = await _sb.from('tool_ratings').select('tool_slug,rating').eq('voter_id', _effectiveVoterId);
+        if (_rr.data) { myRatings = {}; _rr.data.forEach(function(r){ myRatings[r.tool_slug] = r.rating; }); saveRatings(); }
+      } catch(e) {}
       try {
         var _vr = await _sb.from('votes').select('tool_slug').eq('voter_id', _effectiveVoterId);
         if (_vr.data) myVotes = _vr.data.map(function(r){ return r.tool_slug; });
