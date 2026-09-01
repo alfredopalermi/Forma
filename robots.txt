@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /login.html
+Disallow: /dashboard-new.html
+
+Sitemap: https://forma-alfredopalermi-1396s-projects.vercel.app/sitemap.xml

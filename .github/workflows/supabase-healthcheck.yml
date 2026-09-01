@@ -1,0 +1,25 @@
+name: Supabase health check
+
+on:
+  schedule:
+    - cron: '0 * * * *' # every hour
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase tools table
+        run: |
+          # Same public URL/key as supabase-config.js - update both if the project changes.
+          SUPA_URL="https://jymxvabsnaulijwvoxia.supabase.co"
+          SUPA_KEY="sb_publishable_a_KTvPaMDHo4IbK4bnjXwA_oMN8gybB"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: $SUPA_KEY" \
+            -H "Authorization: Bearer $SUPA_KEY" \
+            "$SUPA_URL/rest/v1/tools?select=id&limit=1")
+          echo "HTTP status: $STATUS"
+          if [ "$STATUS" -lt 200 ] || [ "$STATUS" -ge 300 ]; then
+            echo "::error::Supabase project unreachable or erroring (HTTP $STATUS). It may be paused - check https://supabase.com/dashboard"
+            exit 1
+          fi
